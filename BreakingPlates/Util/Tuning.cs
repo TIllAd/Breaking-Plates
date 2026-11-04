@@ -69,17 +69,26 @@ namespace BreakingPlates
             catch (Exception e) { Mod.LogWarning("Tuning laden fehlgeschlagen: " + e.Message); }
         }
 
-        // Schreibt alle bekannten Schlüssel mit aktuellen Werten (für den Start / zum Nachschauen).
+        // Legt die Datei an bzw. ergänzt neue Schlüssel (bestehende Werte bleiben unverändert).
         public static void WriteDefaultsIfMissing()
         {
             try
             {
-                if (File.Exists(FilePath)) return;
                 Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
-                var lines = new List<string> { "# Breaking Plates Live-Tuning. Werte aendern, im Spiel F8 druecken.", "" };
+                var lines = File.Exists(FilePath)
+                    ? new List<string>(File.ReadAllLines(FilePath))
+                    : new List<string> { "# Breaking Plates Live-Tuning. Werte aendern, im Spiel F8 druecken.", "" };
+                var existing = new HashSet<string>();
+                foreach (var l in lines)
+                {
+                    int eq = l.IndexOf('=');
+                    if (eq > 0 && !l.TrimStart().StartsWith("#")) existing.Add(l.Substring(0, eq).Trim());
+                }
                 var keys = new List<string>(Defaults.Keys); keys.Sort();
-                foreach (var k in keys) lines.Add($"{k} = {Defaults[k]}");
-                File.WriteAllLines(FilePath, lines);
+                bool changed = !File.Exists(FilePath);
+                foreach (var k in keys)
+                    if (!existing.Contains(k)) { lines.Add($"{k} = {Defaults[k]}"); changed = true; }
+                if (changed) File.WriteAllLines(FilePath, lines);
             }
             catch (Exception e) { Mod.LogWarning("Tuning schreiben fehlgeschlagen: " + e.Message); }
         }

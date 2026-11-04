@@ -103,14 +103,20 @@ namespace BreakingPlates.Custom
         private static void ApplyBag(GameObject root)
         {
             float w = Tuning.F("bag.width", 0.34f), h = Tuning.F("bag.height", 0.38f), b = Tuning.F("bag.bulge", 0.09f);
+            float tilt = Tuning.F("bag.tilt", 7f), skew = Tuning.F("bag.skew", 0.025f), wobble = Tuning.F("bag.wobble", 0.3f);
+            float lean = Tuning.F("bag.lean", 4f);
+            root.transform.localRotation = Quaternion.Euler(0f, Tuning.F("bag.turn", 12f), lean);
+
             var foil = root.transform.Find("Foil");
             var zip = root.transform.Find("Zip");
-            if (foil != null) foil.GetComponent<MeshFilter>().sharedMesh = ProcMesh.Pouch(w, h, b);
+            if (foil != null) foil.GetComponent<MeshFilter>().sharedMesh = ProcMesh.Pouch(w, h, b, 12, tilt, skew, wobble);
             if (zip != null)
             {
-                var zs = Tuning.V3("bag.zip.size", new Vector3(0.35f, 0.04f, 0.035f));
+                var zs = Tuning.V3("bag.zip.size", new Vector3(0.36f, 0.04f, 0.035f));
                 zip.localScale = zs;
-                zip.localPosition = new Vector3(0f, h - zs.y / 2f, 0f);
+                zip.localRotation = Quaternion.Euler(0f, 0f, tilt);
+                // Mitte der schrägen Oberkante (inkl. seitlichem Versatz)
+                zip.localPosition = new Vector3(skew, h - zs.y / 2f, 0f);
             }
         }
 

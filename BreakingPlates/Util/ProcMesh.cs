@@ -10,9 +10,10 @@ namespace BreakingPlates
 
         // Folien-Tütchen: flaches Kissen, an den Rändern verschweißt, in der Mitte aufgebläht.
         // Beidseitig (jedes Dreieck auch rückwärts), damit es aus jedem Winkel sichtbar ist.
-        public static Mesh Pouch(float width = 0.34f, float height = 0.4f, float bulge = 0.09f, int res = 12)
+        public static Mesh Pouch(float width = 0.34f, float height = 0.38f, float bulge = 0.09f, int res = 12,
+            float tiltDeg = 0f, float skew = 0f, float wobble = 0f)
         {
-            string key = $"pouch{width:0.####}_{height:0.####}_{bulge:0.####}_{res}";
+            string key = $"pouch{width:0.####}_{height:0.####}_{bulge:0.####}_{res}_{tiltDeg:0.##}_{skew:0.###}_{wobble:0.###}";
             if (Cache.TryGetValue(key, out var cached)) return cached;
 
             var verts = new List<Vector3>();
@@ -29,7 +30,12 @@ namespace BreakingPlates
                     // (verschweißter Streifen unter dem Druckverschluss).
                     float vv = Mathf.Clamp01(v / 0.88f);
                     float puff = Mathf.Sin(Mathf.PI * u) * Mathf.Pow(Mathf.Sin(Mathf.PI * vv), 0.6f) * (1f - 0.4f * vv);
-                    verts.Add(new Vector3((u - 0.5f) * width, v * height, dir * bulge * puff));
+                    // Knautschen: feste Pseudo-Zufallswellen, auf Vorder- und Rückseite verschieden.
+                    float crumple = 1f + wobble * (Mathf.Sin(u * 9.1f + v * 5.3f + side * 2f) * 0.6f + Mathf.Sin(u * 3.7f - v * 7.9f + side) * 0.4f);
+                    float px = (u - 0.5f) * width;
+                    // Schräge Oberkante (passt zum gekippten Verschluss) und seitlicher Versatz nach oben hin.
+                    float topY = height + px * Mathf.Tan(tiltDeg * Mathf.Deg2Rad);
+                    verts.Add(new Vector3(px + skew * v, v * topY, dir * bulge * puff * crumple));
                 }
                 for (int y = 0; y < res; y++)
                 for (int x = 0; x < res; x++)
