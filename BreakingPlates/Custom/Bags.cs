@@ -86,8 +86,11 @@ namespace BreakingPlates.Custom
                 {
                     _prefab = PrefabUtil.CreateRoot(PrefabName);
                     _content = MakeContent(_prefab.transform);
+                    // Inhalt flach drücken, damit er in der Folie bleibt (Tüte ist nur ~0,18 tief).
+                    _content.transform.localScale = Vector3.Scale(_content.transform.localScale, new Vector3(0.85f, 0.85f, 0.4f));
                     _chili = PrefabUtil.CloneCustomItem(GDOUtils.GetCustomGameDataObject<IngredientLib.Ingredient.Items.ChoppedJalapeno>(),
-                        _prefab.transform, "Chili P", new Vector3(0.06f, 0.12f, -0.04f), 0.55f);
+                        _prefab.transform, "Chili P", new Vector3(0.06f, 0.12f, 0f), 0.5f);
+                    _chili.transform.localScale = Vector3.Scale(_chili.transform.localScale, new Vector3(1f, 1f, 0.4f));
                     Bag(_prefab.transform);
                 }
                 return _prefab;

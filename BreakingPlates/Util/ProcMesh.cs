@@ -10,7 +10,7 @@ namespace BreakingPlates
 
         // Folien-Tütchen: flaches Kissen, an den Rändern verschweißt, in der Mitte aufgebläht.
         // Beidseitig (jedes Dreieck auch rückwärts), damit es aus jedem Winkel sichtbar ist.
-        public static Mesh Pouch(float width = 0.34f, float height = 0.4f, float bulge = 0.07f, int res = 12)
+        public static Mesh Pouch(float width = 0.34f, float height = 0.4f, float bulge = 0.09f, int res = 12)
         {
             string key = $"pouch{width}{height}{bulge}{res}";
             if (Cache.TryGetValue(key, out var cached)) return cached;
