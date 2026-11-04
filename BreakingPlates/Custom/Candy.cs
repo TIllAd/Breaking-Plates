@@ -123,8 +123,23 @@ namespace BreakingPlates.Custom
                 {
                     _prefab = PrefabUtil.CreateRoot("Crystal Pot");
                     Pot(_prefab.transform);
-                    // Eine geschlossene Kristallplatte.
-                    Liquid(_prefab.transform, "Crystal Slab", 0.16f, Materials.BlueCrystal);
+                    // Kristallkruste: Platte als Grund, darauf dicht gepackte, schräg herausragende Kristalle (wie eine Geode),
+                    // damit der Topf nicht mehr wie Wasser aussieht.
+                    Liquid(_prefab.transform, "Crystal Slab", 0.12f, Materials.BlueSyrup);
+                    var crust = new GameObject("Crust");
+                    crust.transform.SetParent(_prefab.transform, false);
+                    for (int ring = 0; ring < 2; ring++)
+                    {
+                        int n = ring == 0 ? 4 : 9;
+                        float r = ring == 0 ? 0.07f : 0.17f;
+                        for (int i = 0; i < n; i++)
+                        {
+                            float a = (i / (float)n + ring * 0.13f) * Mathf.PI * 2f;
+                            var c = Crystal(crust.transform, $"Crystal {ring}-{i}", new Vector3(Mathf.Cos(a) * r, 0.24f, Mathf.Sin(a) * r), 0.45f + 0.08f * (i % 3), a * Mathf.Rad2Deg);
+                            // nach außen gekippt, damit es "gewachsen" aussieht
+                            c.transform.localRotation = Quaternion.Euler(ring == 0 ? 10f : 32f, -a * Mathf.Rad2Deg + 90f, 0f) * Quaternion.Euler(0f, 0f, 45f);
+                        }
+                    }
                 }
                 return _prefab;
             }
