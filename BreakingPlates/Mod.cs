@@ -44,6 +44,7 @@ namespace BreakingPlates
             AddGameDataObject<SugarPot>();
             AddGameDataObject<BlueRockCandyDish>();
             AddGameDataObject<PureCandyDish>();
+            AddGameDataObject<ChiliPDish>();
 
             Events.BuildGameDataPreSetupEvent += (s, args) => PrefabUtil.FixMaterials();
 #if DEBUG

@@ -61,9 +61,23 @@ namespace BreakingPlates.Custom
             new ItemGroup.ItemSet { Min = 1, Max = 1, IsMandatory = true,
                 Items = new List<Item> { (Item)GDOUtils.GetCustomGameDataObject<EmptyBag>().GameDataObject } },
             new ItemGroup.ItemSet { Min = 1, Max = 1, Items = new List<Item> { Candy } },
+            // Karte "Chili P": geschnittene Jalapeños als Topping (nur mit Karte).
+            new ItemGroup.ItemSet { Min = 0, Max = 1, RequiresUnlock = true, Items = new List<Item> { ChiliP } },
         };
 
-        private GameObject _prefab, _content;
+        internal static Item ChiliP => (Item)GDOUtils.GetCustomGameDataObject<IngredientLib.Ingredient.Items.ChoppedJalapeno>().GameDataObject;
+
+        public override List<ItemGroup.ItemReward> Rewards => new List<ItemGroup.ItemReward>
+        {
+            new ItemGroup.ItemReward { Item = ChiliP, RewardAmount = 1 }
+        };
+
+        public override List<ItemGroupView.ColourBlindLabel> Labels => new List<ItemGroupView.ColourBlindLabel>
+        {
+            new ItemGroupView.ColourBlindLabel { Item = ChiliP, Text = "P" }
+        };
+
+        private GameObject _prefab, _content, _chili;
         public override GameObject Prefab
         {
             get
@@ -72,6 +86,8 @@ namespace BreakingPlates.Custom
                 {
                     _prefab = PrefabUtil.CreateRoot(PrefabName);
                     _content = MakeContent(_prefab.transform);
+                    _chili = PrefabUtil.CloneCustomItem(GDOUtils.GetCustomGameDataObject<IngredientLib.Ingredient.Items.ChoppedJalapeno>(),
+                        _prefab.transform, "Chili P", new Vector3(0.06f, 0.12f, -0.04f), 0.55f);
                     Bag(_prefab.transform);
                 }
                 return _prefab;
@@ -82,7 +98,8 @@ namespace BreakingPlates.Custom
         {
             Prefab.GetComponent<ItemGroupView>().ComponentGroups = new List<ItemGroupView.ComponentGroup>
             {
-                new ItemGroupView.ComponentGroup { Item = Candy, GameObject = _content }
+                new ItemGroupView.ComponentGroup { Item = Candy, GameObject = _content },
+                new ItemGroupView.ComponentGroup { Item = ChiliP, GameObject = _chili }
             };
         }
     }
@@ -103,7 +120,8 @@ namespace BreakingPlates.Custom
         protected override GameObject MakeContent(Transform parent) => PureCrystal(parent, "Pure Crystal", new Vector3(0f, 0.1f, 0f), 1f);
         public override List<ItemGroupView.ColourBlindLabel> Labels => new List<ItemGroupView.ColourBlindLabel>
         {
-            new ItemGroupView.ColourBlindLabel { Item = Candy, Text = "99" }
+            new ItemGroupView.ColourBlindLabel { Item = Candy, Text = "99" },
+            new ItemGroupView.ColourBlindLabel { Item = ChiliP, Text = "P" }
         };
     }
 }

@@ -131,4 +131,62 @@ namespace BreakingPlates.Custom
             })
         };
     }
+
+    // Extra: Chili P (Jalapeños schneiden und ins Tütchen).
+    public class ChiliPDish : CustomDish
+    {
+        public override string UniqueNameID => "Chili P Dish";
+        public override DishType Type => DishType.Extra;
+        public override CardType CardType => CardType.Default;
+        public override UnlockGroup UnlockGroup => UnlockGroup.Dish;
+        public override int Difficulty => 1;
+        public override DishCustomerChange CustomerMultiplier => DishCustomerChange.SmallDecrease;
+        public override List<Unlock> HardcodedRequirements => new List<Unlock>
+        {
+            (Dish)GDOUtils.GetCustomGameDataObject<BlueRockCandyDish>().GameDataObject
+        };
+        public override HashSet<Item> MinimumIngredients => new HashSet<Item>
+        {
+            (Item)GDOUtils.GetCustomGameDataObject<IngredientLib.Ingredient.Items.Jalapeno>().GameDataObject
+        };
+        public override HashSet<Process> RequiredProcesses => new HashSet<Process>
+        {
+            (Process)GDOUtils.GetExistingGDO(ProcessReferences.Chop)
+        };
+        public override HashSet<Dish.IngredientUnlock> IngredientsUnlocks
+        {
+            get
+            {
+                var chili = FilledBagBase.ChiliP;
+                return new HashSet<Dish.IngredientUnlock>
+                {
+                    new Dish.IngredientUnlock { MenuItem = (ItemGroup)GDOUtils.GetCustomGameDataObject<CandyBag>().GameDataObject, Ingredient = chili },
+                    new Dish.IngredientUnlock { MenuItem = (ItemGroup)GDOUtils.GetCustomGameDataObject<PureCandyBag>().GameDataObject, Ingredient = chili },
+                };
+            }
+        }
+
+        private GameObject _icon;
+        public override GameObject IconPrefab => _icon ??= MakeIcon();
+        private static GameObject MakeIcon()
+        {
+            var root = PrefabUtil.CreateRoot("Chili P - Icon");
+            PrefabUtil.CloneCustomItem(GDOUtils.GetCustomGameDataObject<IngredientLib.Ingredient.Items.ChoppedJalapeno>(), root.transform, "Chili", Vector3.zero, 1f);
+            return root;
+        }
+
+        public override Dictionary<Locale, string> Recipe => new Dictionary<Locale, string>
+        {
+            { Locale.English, "Chop a jalapeño and add it to the candy bag." }
+        };
+        public override List<(Locale, UnlockInfo)> InfoList => new List<(Locale, UnlockInfo)>
+        {
+            (Locale.English, new UnlockInfo
+            {
+                Name = "Chili P",
+                Description = "Customers may want a signature touch of chili in their bag",
+                FlavourText = "It's my signature."
+            })
+        };
+    }
 }
