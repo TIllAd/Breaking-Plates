@@ -56,34 +56,15 @@ namespace BreakingPlates.Custom
             return heap;
         }
 
-        // EXPERIMENT Kolben: Kugel aus zwei Rührschüssel-Hälften, Hals aus dem Wasser-Zylinder,
-        // Glas-Material vom Forschungs-Kolben, unten blaue Flüssigkeit.
+        // Erlenmeyerkolben (im Code erzeugt): Glas beidseitig sichtbar, unten blauer Sirup.
         public static GameObject Flask(Transform parent, string name, Vector3 pos, float scale = 1f)
         {
             var root = new GameObject(name);
             root.transform.SetParent(parent, false);
             root.transform.localPosition = pos;
             root.transform.localScale = Vector3.one * scale;
-
-            var glass = Ref(ItemReferences.ResearchFlask).Prefab.transform.Find("ResearchFlask/Cube.001").GetComponent<MeshRenderer>().sharedMaterial;
-            var bowl = Ref(ItemReferences.MixingBowlEmpty).Prefab.transform.Find("MixingBowl").gameObject;
-            var water = Ref(ItemReferences.Pot).Prefab.transform.Find("Water").gameObject;
-
-            // Bauch: untere Hälfte + umgedrehte obere Hälfte
-            var lower = PrefabUtil.CloneVisual(bowl, root.transform, "Bulb Lower", new Vector3(0f, 0.16f, 0f), 0.75f);
-            var upper = PrefabUtil.CloneVisual(bowl, root.transform, "Bulb Upper", new Vector3(0f, 0.16f, 0f), 0.75f);
-            upper.transform.localRotation = Quaternion.Euler(180f, 0f, 0f) * upper.transform.localRotation;
-            Materials.Apply(lower, glass);
-            Materials.Apply(upper, glass);
-
-            // Flüssigkeit im unteren Teil
-            var liquid = PrefabUtil.CloneVisual(bowl, root.transform, "Liquid", new Vector3(0f, 0.15f, 0f), 0.62f);
-            Materials.Apply(liquid, Materials.BlueSyrup);
-
-            // Hals
-            var neck = PrefabUtil.CloneVisual(water, root.transform, "Neck", new Vector3(0f, 0.42f, 0f));
-            neck.transform.localScale = new Vector3(0.11f, 0.13f, 0.11f);
-            Materials.Apply(neck, glass);
+            ProcMesh.Create("Glass", root.transform, ProcMesh.Lathe(ProcMesh.ErlenmeyerProfile, doubleSided: true), Materials.Glass, Vector3.zero);
+            ProcMesh.Create("Liquid", root.transform, ProcMesh.Lathe(ProcMesh.ErlenmeyerLiquidProfile, capTop: true), Materials.BlueSyrup, Vector3.zero);
             return root;
         }
 
@@ -94,10 +75,7 @@ namespace BreakingPlates.Custom
             var root = new GameObject("Bag");
             root.transform.SetParent(parent, false);
             ProcMesh.Create("Foil", root.transform, ProcMesh.Pouch(), Materials.Plastic, Vector3.zero);
-            var zip = new GameObject("Zip");
-            zip.transform.SetParent(root.transform, false);
-            for (int i = 0; i < ZipSegments; i++)
-                ProcMesh.Create("Seg" + i, zip.transform, ProcMesh.Box(Vector3.one), Materials.ZipRed, Vector3.zero);
+            MakeZip(root.transform, "Zip", Materials.ZipBlue);
             ApplyBag(root);
             Tuning.Register(root, "bag", ApplyBag);
             return root;
@@ -105,20 +83,40 @@ namespace BreakingPlates.Custom
 
         private const int ZipSegments = 8;
 
+        private static GameObject MakeZip(Transform parent, string name, Material material)
+        {
+            var zip = new GameObject(name);
+            zip.transform.SetParent(parent, false);
+            for (int i = 0; i < ZipSegments; i++)
+                ProcMesh.Create("Seg" + i, zip.transform, ProcMesh.Box(Vector3.one), material, Vector3.zero);
+            return zip;
+        }
+
+        // Roter Verschluss für Chili-P-Tütchen: liegt minimal größer über dem blauen und wird nur bei Chili eingeblendet.
+        public static GameObject ChiliZip(GameObject bag)
+        {
+            var zip = MakeZip(bag.transform, "ZipChili", Materials.ZipRed);
+            ApplyBag(bag);
+            return zip;
+        }
+
         private static void ApplyBag(GameObject root)
         {
-            float w = Tuning.F("bag.width", 0.34f), h = Tuning.F("bag.height", 0.38f), b = Tuning.F("bag.bulge", 0.09f);
-            float tilt = Tuning.F("bag.tilt", 6f), skew = Tuning.F("bag.skew", 0.02f), wobble = Tuning.F("bag.wobble", 0.3f);
-            float pinch = Tuning.F("bag.pinch", 0.14f), sag = Tuning.F("bag.sag", 0.03f), bow = Tuning.F("bag.bow", 0.025f);
+            float w = Tuning.F("bag.width", 0.42f), h = Tuning.F("bag.height", 0.45f), b = Tuning.F("bag.bulge", 0.08f);
+            float tilt = Tuning.F("bag.tilt", 7f), skew = Tuning.F("bag.skew", 0.025f), wobble = Tuning.F("bag.wobble", 0.3f);
+            float pinch = Tuning.F("bag.pinch", 0.22f), sag = Tuning.F("bag.sag", 0.02f), bow = Tuning.F("bag.bow", -0.01f);
             root.transform.localRotation = Quaternion.Euler(0f, Tuning.F("bag.turn", 12f), Tuning.F("bag.lean", 4f));
 
             var foil = root.transform.Find("Foil");
             if (foil != null) foil.GetComponent<MeshFilter>().sharedMesh = ProcMesh.Pouch(w, h, b, 14, tilt, skew, wobble, pinch, sag, bow);
 
-            // Verschluss aus Segmenten, die dem Bogen der Oberkante folgen.
-            var zip = root.transform.Find("Zip");
-            if (zip == null) return;
-            var zs = Tuning.V3("bag.zip.size", new Vector3(0.36f, 0.04f, 0.035f));
+            // Verschluss aus Segmenten, die dem Bogen der Oberkante folgen (blau; roter Chili-Verschluss etwas größer darüber).
+            foreach (var zipName in new[] { "Zip", "ZipChili" })
+            {
+            var zip = root.transform.Find(zipName);
+            if (zip == null) continue;
+            float grow = zipName == "ZipChili" ? 1.12f : 1f;
+            var zs = Tuning.V3("bag.zip.size", new Vector3(0.43f, 0.045f, 0.04f));
             float segW = w / ZipSegments;
             for (int i = 0; i < ZipSegments; i++)
             {
@@ -130,7 +128,8 @@ namespace BreakingPlates.Custom
                 float angle = Mathf.Atan2(y1 - y0, segW) * Mathf.Rad2Deg;
                 seg.localPosition = new Vector3(xm + skew, ym, 0f);
                 seg.localRotation = Quaternion.Euler(0f, 0f, angle);
-                seg.localScale = new Vector3(segW * 1.08f * zs.x / 0.36f, zs.y, zs.z);
+                seg.localScale = new Vector3(segW * 1.08f * zs.x / 0.43f, zs.y * grow, zs.z * grow);
+            }
             }
         }
 

@@ -96,17 +96,10 @@ namespace BreakingPlates.Custom
                     }
                     ApplyContent(_content);
                     Tuning.Register(_content, "bag.content." + PrefabName, ApplyContent);
-                    _chili = PrefabUtil.CloneCustomItem(GDOUtils.GetCustomGameDataObject<IngredientLib.Ingredient.Items.ChoppedJalapeno>(),
-                        _prefab.transform, "Chili P", new Vector3(0.06f, 0.12f, 0f), 0.5f);
-                    var chiliScale = _chili.transform.localScale;
-                    void ApplyChili(GameObject go)
-                    {
-                        go.transform.localScale = Vector3.Scale(chiliScale, Tuning.V3("bag.chili.scale", new Vector3(1f, 1f, 0.4f)));
-                        go.transform.localPosition = Tuning.V3("bag.chili.pos", new Vector3(0.06f, 0.12f, 0f));
-                    }
-                    ApplyChili(_chili);
-                    Tuning.Register(_chili, "bag.chili." + PrefabName, ApplyChili);
-                    Bag(_prefab.transform);
+                    var bag = Bag(_prefab.transform);
+                    // Chili P erkennt man am roten Verschluss.
+                    _chili = ChiliZip(bag);
+
                 }
                 return _prefab;
             }

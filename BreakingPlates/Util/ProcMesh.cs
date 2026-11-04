@@ -60,6 +60,60 @@ namespace BreakingPlates
             return mesh;
         }
 
+        // Profil eines Erlenmeyerkolbens: (Radius, Höhe), von unten nach oben.
+        public static readonly Vector2[] ErlenmeyerProfile =
+        {
+            new Vector2(0f, 0f), new Vector2(0.15f, 0f), new Vector2(0.17f, 0.02f), new Vector2(0.16f, 0.06f),
+            new Vector2(0.06f, 0.24f), new Vector2(0.05f, 0.27f), new Vector2(0.05f, 0.38f),
+            new Vector2(0.065f, 0.39f), new Vector2(0.065f, 0.41f), new Vector2(0.05f, 0.41f)
+        };
+        // Flüssigkeit: unterer Teil, etwas kleiner als das Glas.
+        public static readonly Vector2[] ErlenmeyerLiquidProfile =
+        {
+            new Vector2(0f, 0.01f), new Vector2(0.14f, 0.01f), new Vector2(0.155f, 0.03f), new Vector2(0.145f, 0.065f), new Vector2(0.115f, 0.12f)
+        };
+
+        // Rotationskörper aus einem Profil (wie auf der Drehbank). Optional doppelseitig und oben geschlossen.
+        public static Mesh Lathe(Vector2[] profile, int segments = 24, bool doubleSided = false, bool capTop = false)
+        {
+            string key = $"lathe{profile.GetHashCode()}_{segments}_{doubleSided}_{capTop}";
+            if (Cache.TryGetValue(key, out var cached)) return cached;
+            var verts = new List<Vector3>();
+            var tris = new List<int>();
+            int rows = profile.Length;
+            for (int s = 0; s <= segments; s++)
+            {
+                float a = s / (float)segments * Mathf.PI * 2f;
+                for (int r = 0; r < rows; r++)
+                    verts.Add(new Vector3(Mathf.Cos(a) * profile[r].x, profile[r].y, Mathf.Sin(a) * profile[r].x));
+            }
+            for (int s = 0; s < segments; s++)
+            for (int r = 0; r < rows - 1; r++)
+            {
+                int a = s * rows + r, b = a + 1, c = a + rows, d = c + 1;
+                tris.AddRange(new[] { a, b, c, b, d, c });
+                if (doubleSided) tris.AddRange(new[] { a, c, b, b, c, d });
+            }
+            if (capTop)
+            {
+                var top = profile[rows - 1];
+                int center = verts.Count;
+                verts.Add(new Vector3(0f, top.y, 0f));
+                for (int s = 0; s < segments; s++)
+                {
+                    int a = s * rows + rows - 1, c = (s + 1) * rows + rows - 1;
+                    tris.AddRange(new[] { center, c, a });
+                }
+            }
+            var mesh = new Mesh { name = "BreakingPlates Lathe" };
+            mesh.SetVertices(verts);
+            mesh.SetTriangles(tris, 0);
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            Cache[key] = mesh;
+            return mesh;
+        }
+
         // Höhe der Oberkante an Position x (für Folie und Verschluss gleich).
         public static float TopEdge(float x, float width, float height, float tiltDeg, float bow)
         {

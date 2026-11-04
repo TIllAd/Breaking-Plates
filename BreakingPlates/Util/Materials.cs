@@ -39,7 +39,19 @@ namespace BreakingPlates
                 return m;
             }
         }
-        public static Material ZipRed => Flat("Zip Red", Tuning.C("color.zip", new Color(0.85f, 0.15f, 0.15f)), 0.3f);
+        public static Material ZipRed => Flat("Zip Red", Tuning.C("color.zip.chili", new Color(0.85f, 0.15f, 0.15f)), 0.3f);
+        public static Material ZipBlue => Flat("Zip Blue", Tuning.C("color.zip", new Color(0.2f, 0.45f, 0.9f)), 0.3f);
+        public static Material Glass
+        {
+            get
+            {
+                if (Cache.TryGetValue("Glass", out var m) && m != null) return m;
+                m = new Material(Shader.Find("Simple Transparent")) { name = "BreakingPlates - Glass" };
+                m.SetColor("_Color", Tuning.C("color.glass", new Color(0.85f, 0.95f, 1f, 0.3f)));
+                Cache["Glass"] = m;
+                return m;
+            }
+        }
         public static Material LabelWhite => Flat("Label White", new Color(0.97f, 0.97f, 0.95f));
 
         // Bei F8: Farben der vorhandenen Materialien aktualisieren.
@@ -52,7 +64,9 @@ namespace BreakingPlates
             Set("Blue Syrup", "color.syrup", new Color(0.18f, 0.52f, 0.95f));
             Set("Blue Crystal", "color.crystal", new Color(0.45f, 0.8f, 1f));
             Set("Pure Crystal", "color.pure", new Color(0.55f, 0.88f, 1f));
-            Set("Zip Red", "color.zip", new Color(0.85f, 0.15f, 0.15f));
+            Set("Zip Red", "color.zip.chili", new Color(0.85f, 0.15f, 0.15f));
+            Set("Zip Blue", "color.zip", new Color(0.2f, 0.45f, 0.9f));
+            Set("Glass", "color.glass", new Color(0.85f, 0.95f, 1f, 0.3f), "_Color");
             Set("Plastic", "color.plastic", new Color(0.92f, 0.96f, 1f, 0.35f), "_Color");
         }
 
