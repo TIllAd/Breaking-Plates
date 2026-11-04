@@ -86,11 +86,26 @@ namespace BreakingPlates.Custom
                 {
                     _prefab = PrefabUtil.CreateRoot(PrefabName);
                     _content = MakeContent(_prefab.transform);
-                    // Inhalt flach drücken, damit er in der Folie bleibt (Tüte ist nur ~0,18 tief).
-                    _content.transform.localScale = Vector3.Scale(_content.transform.localScale, new Vector3(0.85f, 0.85f, 0.4f));
+                    // Inhalt flach drücken, damit er in der Folie bleibt. Live einstellbar: bag.content.pos/scale
+                    var baseScale = _content.transform.localScale;
+                    var basePos = _content.transform.localPosition;
+                    void ApplyContent(GameObject go)
+                    {
+                        go.transform.localScale = Vector3.Scale(baseScale, Tuning.V3("bag.content.scale", new Vector3(0.85f, 0.85f, 0.4f)));
+                        go.transform.localPosition = basePos + Tuning.V3("bag.content.offset", Vector3.zero);
+                    }
+                    ApplyContent(_content);
+                    Tuning.Register(_content, "bag.content." + PrefabName, ApplyContent);
                     _chili = PrefabUtil.CloneCustomItem(GDOUtils.GetCustomGameDataObject<IngredientLib.Ingredient.Items.ChoppedJalapeno>(),
                         _prefab.transform, "Chili P", new Vector3(0.06f, 0.12f, 0f), 0.5f);
-                    _chili.transform.localScale = Vector3.Scale(_chili.transform.localScale, new Vector3(1f, 1f, 0.4f));
+                    var chiliScale = _chili.transform.localScale;
+                    void ApplyChili(GameObject go)
+                    {
+                        go.transform.localScale = Vector3.Scale(chiliScale, Tuning.V3("bag.chili.scale", new Vector3(1f, 1f, 0.4f)));
+                        go.transform.localPosition = Tuning.V3("bag.chili.pos", new Vector3(0.06f, 0.12f, 0f));
+                    }
+                    ApplyChili(_chili);
+                    Tuning.Register(_chili, "bag.chili." + PrefabName, ApplyChili);
                     Bag(_prefab.transform);
                 }
                 return _prefab;

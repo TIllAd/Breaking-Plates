@@ -25,11 +25,20 @@ namespace BreakingPlates
             Logger.LogWarning($"{MOD_GUID} v{MOD_VERSION} in use!");
         }
 
-        protected override void OnUpdate() { }
+        protected override void OnUpdate()
+        {
+#if DEBUG
+            if (Input.GetKeyDown(KeyCode.F8)) Tuning.Reload();
+#endif
+        }
 
         protected override void OnPostActivate(KitchenMods.Mod mod)
         {
             Logger = InitLogger();
+#if DEBUG
+            Tuning.Load();
+            Tuning.RegisterGlobal(Materials.RefreshColors);
+#endif
 
             // Reihenfolge: Ergebnisse vor den Dingen, die auf sie verweisen.
             AddGameDataObject<BagProvider>();
@@ -47,6 +56,10 @@ namespace BreakingPlates
             AddGameDataObject<ChiliPDish>();
 
             Events.BuildGameDataPreSetupEvent += (s, args) => PrefabUtil.FixMaterials();
+#if DEBUG
+            // Nach dem Aufbau aller Prefabs: Datei mit allen Schlüsseln anlegen, falls noch keine da ist.
+            Events.BuildGameDataEvent += (s, args) => Tuning.WriteDefaultsIfMissing();
+#endif
 #if DEBUG
             // Nur in Debug-Builds: Spieldaten zum Nachschauen in eine Datei schreiben.
             Events.BuildGameDataEvent += (s, args) =>

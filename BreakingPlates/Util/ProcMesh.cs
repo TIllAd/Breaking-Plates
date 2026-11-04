@@ -12,7 +12,7 @@ namespace BreakingPlates
         // Beidseitig (jedes Dreieck auch rückwärts), damit es aus jedem Winkel sichtbar ist.
         public static Mesh Pouch(float width = 0.34f, float height = 0.4f, float bulge = 0.09f, int res = 12)
         {
-            string key = $"pouch{width}{height}{bulge}{res}";
+            string key = $"pouch{width:0.####}_{height:0.####}_{bulge:0.####}_{res}";
             if (Cache.TryGetValue(key, out var cached)) return cached;
 
             var verts = new List<Vector3>();

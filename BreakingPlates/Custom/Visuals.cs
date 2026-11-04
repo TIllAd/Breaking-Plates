@@ -88,15 +88,30 @@ namespace BreakingPlates.Custom
         }
 
         // Folien-Tütchen (im Code erzeugt): durchsichtige, aufgeblähte Folie + roter Druckverschluss oben.
+        // Live einstellbar (F8): bag.width, bag.height, bag.bulge, bag.zip.size
         public static GameObject Bag(Transform parent)
         {
             var root = new GameObject("Bag");
             root.transform.SetParent(parent, false);
-            const float height = 0.38f;
-            ProcMesh.Create("Foil", root.transform, ProcMesh.Pouch(height: height), Materials.Plastic, Vector3.zero);
-            // Verschluss sitzt auf der oberen Kante und deckt den flachen Streifen ab.
-            ProcMesh.Create("Zip", root.transform, ProcMesh.Box(new Vector3(0.35f, 0.04f, 0.035f)), Materials.ZipRed, new Vector3(0f, height - 0.02f, 0f));
+            ProcMesh.Create("Foil", root.transform, ProcMesh.Pouch(), Materials.Plastic, Vector3.zero);
+            ProcMesh.Create("Zip", root.transform, ProcMesh.Box(Vector3.one), Materials.ZipRed, Vector3.zero);
+            ApplyBag(root);
+            Tuning.Register(root, "bag", ApplyBag);
             return root;
+        }
+
+        private static void ApplyBag(GameObject root)
+        {
+            float w = Tuning.F("bag.width", 0.34f), h = Tuning.F("bag.height", 0.38f), b = Tuning.F("bag.bulge", 0.09f);
+            var foil = root.transform.Find("Foil");
+            var zip = root.transform.Find("Zip");
+            if (foil != null) foil.GetComponent<MeshFilter>().sharedMesh = ProcMesh.Pouch(w, h, b);
+            if (zip != null)
+            {
+                var zs = Tuning.V3("bag.zip.size", new Vector3(0.35f, 0.04f, 0.035f));
+                zip.localScale = zs;
+                zip.localPosition = new Vector3(0f, h - zs.y / 2f, 0f);
+            }
         }
 
         // Ein einzelner großer, besonders klarer Kristall (99 % Reinheit).

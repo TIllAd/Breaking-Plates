@@ -21,10 +21,10 @@ namespace BreakingPlates
         }
 
         // Das typische Blau.
-        public static Material BlueSyrup => Flat("Blue Syrup", new Color(0.18f, 0.52f, 0.95f), 0.4f);
-        public static Material BlueCrystal => Flat("Blue Crystal", new Color(0.45f, 0.8f, 1f), 0.9f);
+        public static Material BlueSyrup => Flat("Blue Syrup", Tuning.C("color.syrup", new Color(0.18f, 0.52f, 0.95f)), 0.4f);
+        public static Material BlueCrystal => Flat("Blue Crystal", Tuning.C("color.crystal", new Color(0.45f, 0.8f, 1f)), 0.9f);
 
-        public static Material PureCrystal => Flat("Pure Crystal", new Color(0.55f, 0.88f, 1f), 1f);
+        public static Material PureCrystal => Flat("Pure Crystal", Tuning.C("color.pure", new Color(0.55f, 0.88f, 1f)), 1f);
         public static Material Sugar => Flat("Sugar", new Color(0.97f, 0.95f, 0.9f), 0.3f);
 
         // Milchig-durchsichtiges Plastik (Shader "Simple Transparent" wie Gläser im Spiel).
@@ -34,13 +34,27 @@ namespace BreakingPlates
             {
                 if (Cache.TryGetValue("Plastic", out var m) && m != null) return m;
                 m = new Material(Shader.Find("Simple Transparent")) { name = "BreakingPlates - Plastic" };
-                m.SetColor("_Color", new Color(0.92f, 0.96f, 1f, 0.35f));
+                m.SetColor("_Color", Tuning.C("color.plastic", new Color(0.92f, 0.96f, 1f, 0.35f)));
                 Cache["Plastic"] = m;
                 return m;
             }
         }
-        public static Material ZipRed => Flat("Zip Red", new Color(0.85f, 0.15f, 0.15f), 0.3f);
+        public static Material ZipRed => Flat("Zip Red", Tuning.C("color.zip", new Color(0.85f, 0.15f, 0.15f)), 0.3f);
         public static Material LabelWhite => Flat("Label White", new Color(0.97f, 0.97f, 0.95f));
+
+        // Bei F8: Farben der vorhandenen Materialien aktualisieren.
+        public static void RefreshColors()
+        {
+            void Set(string key, string tuneKey, Color def, string prop = "_Color0")
+            {
+                if (Cache.TryGetValue(key, out var m) && m != null) m.SetColor(prop, Tuning.C(tuneKey, def));
+            }
+            Set("Blue Syrup", "color.syrup", new Color(0.18f, 0.52f, 0.95f));
+            Set("Blue Crystal", "color.crystal", new Color(0.45f, 0.8f, 1f));
+            Set("Pure Crystal", "color.pure", new Color(0.55f, 0.88f, 1f));
+            Set("Zip Red", "color.zip", new Color(0.85f, 0.15f, 0.15f));
+            Set("Plastic", "color.plastic", new Color(0.92f, 0.96f, 1f, 0.35f), "_Color");
+        }
 
         public static void Apply(GameObject go, Material material)
         {
