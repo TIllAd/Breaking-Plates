@@ -56,17 +56,24 @@ namespace BreakingPlates.Custom
             return heap;
         }
 
-        // Erlenmeyerkolben (im Code erzeugt): Glas beidseitig sichtbar, unten blauer Sirup.
-        public static GameObject Flask(Transform parent, string name, Vector3 pos, float scale = 1f)
+        // Erlenmeyerkolben (im Code erzeugt): Glas beidseitig sichtbar. Optional mit Flüssigkeit unten.
+        public static GameObject Flask(Transform parent, string name, Vector3 pos, float scale = 1f, Material liquid = null)
         {
             var root = new GameObject(name);
             root.transform.SetParent(parent, false);
             root.transform.localPosition = pos;
             root.transform.localScale = Vector3.one * scale;
             ProcMesh.Create("Glass", root.transform, ProcMesh.Lathe(ProcMesh.ErlenmeyerProfile, doubleSided: true), Materials.Glass, Vector3.zero);
-            ProcMesh.Create("Liquid", root.transform, ProcMesh.Lathe(ProcMesh.ErlenmeyerLiquidProfile, capTop: true), Materials.BlueSyrup, Vector3.zero);
+            if (liquid != null) FlaskLiquid(root.transform, "Liquid", liquid);
             return root;
         }
+
+        public static GameObject FlaskLiquid(Transform parent, string name, Material material) =>
+            ProcMesh.Create(name, parent, ProcMesh.Lathe(ProcMesh.ErlenmeyerLiquidProfile, capTop: true), material, Vector3.zero);
+
+        // Kristalle passend in den Kolbenboden (Radius ~0,15).
+        public static GameObject FlaskCrystals(Transform parent, string name, float y, int count = 7) =>
+            CrystalPile(parent, name, new Vector3(0f, y, 0f), 0.7f, count);
 
         // Folien-Tütchen (im Code erzeugt): durchsichtige, aufgeblähte Folie + roter Druckverschluss oben.
         // Live einstellbar (F8): bag.width, bag.height, bag.bulge, bag.zip.size

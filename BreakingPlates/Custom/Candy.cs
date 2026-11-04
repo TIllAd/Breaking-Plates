@@ -43,10 +43,12 @@ namespace BreakingPlates.Custom
                 if (_prefab == null)
                 {
                     _prefab = PrefabUtil.CreateRoot("Sugar Pot");
-                    Pot(_prefab.transform);
-                    _water = Liquid(_prefab.transform, "Water", 0.12f);
+                    // Optik: Erlenmeyerkolben statt Topf (Spiel-Logik bleibt der Topf).
+                    var flask = Flask(_prefab.transform, "Flask", Vector3.zero);
+                    _water = FlaskLiquid(flask.transform, "Water", Materials.Water);
                     // Zuckerberg ragt aus dem Wasser heraus.
-                    _sugar = SugarHeap(_prefab.transform, "Sugar", new Vector3(0f, 0.17f, 0f));
+                    _sugar = SugarHeap(flask.transform, "Sugar", new Vector3(0f, 0.04f, 0f));
+                    _sugar.transform.localScale = Vector3.one * 0.75f;
                 }
                 return _prefab;
             }
@@ -96,8 +98,7 @@ namespace BreakingPlates.Custom
                 if (_prefab == null)
                 {
                     _prefab = PrefabUtil.CreateRoot("Blue Syrup Pot");
-                    Pot(_prefab.transform);
-                    Liquid(_prefab.transform, "Syrup", 0.14f, Materials.BlueSyrup);
+                    Flask(_prefab.transform, "Flask", Vector3.zero, 1f, Materials.BlueSyrup);
                 }
                 return _prefab;
             }
@@ -130,24 +131,9 @@ namespace BreakingPlates.Custom
                 if (_prefab == null)
                 {
                     _prefab = PrefabUtil.CreateRoot("Crystal Pot");
-                    Pot(_prefab.transform);
-                    // Kristallkruste: Platte als Grund, darauf dicht gepackte, schräg herausragende Kristalle (wie eine Geode),
-                    // damit der Topf nicht mehr wie Wasser aussieht.
-                    Liquid(_prefab.transform, "Crystal Slab", 0.12f, Materials.BlueSyrup);
-                    var crust = new GameObject("Crust");
-                    crust.transform.SetParent(_prefab.transform, false);
-                    for (int ring = 0; ring < 2; ring++)
-                    {
-                        int n = ring == 0 ? 4 : 9;
-                        float r = ring == 0 ? 0.07f : 0.17f;
-                        for (int i = 0; i < n; i++)
-                        {
-                            float a = (i / (float)n + ring * 0.13f) * Mathf.PI * 2f;
-                            var c = Crystal(crust.transform, $"Crystal {ring}-{i}", new Vector3(Mathf.Cos(a) * r, 0.24f, Mathf.Sin(a) * r), 0.45f + 0.08f * (i % 3), a * Mathf.Rad2Deg);
-                            // nach außen gekippt, damit es "gewachsen" aussieht
-                            c.transform.localRotation = Quaternion.Euler(ring == 0 ? 10f : 32f, -a * Mathf.Rad2Deg + 90f, 0f) * Quaternion.Euler(0f, 0f, 45f);
-                        }
-                    }
+                    // Kolben mit auskristallisiertem Sirup: Kristalle füllen den Boden, ragen schräg heraus.
+                    var flask = Flask(_prefab.transform, "Flask", Vector3.zero, 1f, Materials.BlueSyrup);
+                    var crust = FlaskCrystals(flask.transform, "Crust", 0.06f, 8);
                 }
                 return _prefab;
             }
@@ -165,8 +151,8 @@ namespace BreakingPlates.Custom
         public override Item DisposesTo => Ref(ItemReferences.Pot);
         public override string ColourBlindTag => "Sh";
 
-        private static readonly Vector3 Full = new Vector3(0f, 0.22f, 0f);
-        private static readonly Vector3 Empty = new Vector3(0f, 0.02f, 0f);
+        private static readonly Vector3 Full = new Vector3(0f, 0.06f, 0f);
+        private static readonly Vector3 Empty = new Vector3(0f, -0.06f, 0f);
 
         private GameObject _prefab;
         public override GameObject Prefab
@@ -176,8 +162,8 @@ namespace BreakingPlates.Custom
                 if (_prefab == null)
                 {
                     _prefab = PrefabUtil.CreateRoot("Crystal Shards Pot");
-                    Pot(_prefab.transform);
-                    var pile = CrystalPile(_prefab.transform, "Shards", Full, 1.3f, 8);
+                    var flask = Flask(_prefab.transform, "Flask", Vector3.zero);
+                    var pile = FlaskCrystals(flask.transform, "Shards", Full.y, 8);
                     var view = _prefab.AddComponent<PositionSplittableView>();
                     ReflectionUtils.GetField<PositionSplittableView>("FullPosition").SetValue(view, Full);
                     ReflectionUtils.GetField<PositionSplittableView>("EmptyPosition").SetValue(view, Empty);

@@ -25,6 +25,7 @@ namespace BreakingPlates
         public static Material BlueCrystal => Flat("Blue Crystal", Tuning.C("color.crystal", new Color(0.45f, 0.8f, 1f)), 0.9f);
 
         public static Material PureCrystal => Flat("Pure Crystal", Tuning.C("color.pure", new Color(0.55f, 0.88f, 1f)), 1f);
+        public static Material Water => Flat("Water", Tuning.C("color.water", new Color(0.7f, 0.86f, 0.96f)), 0.6f);
         public static Material Sugar => Flat("Sugar", new Color(0.97f, 0.95f, 0.9f), 0.3f);
 
         // Milchig-durchsichtiges Plastik (Shader "Simple Transparent" wie Gläser im Spiel).
