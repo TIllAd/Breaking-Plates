@@ -56,6 +56,37 @@ namespace BreakingPlates.Custom
             return heap;
         }
 
+        // EXPERIMENT Kolben: Kugel aus zwei Rührschüssel-Hälften, Hals aus dem Wasser-Zylinder,
+        // Glas-Material vom Forschungs-Kolben, unten blaue Flüssigkeit.
+        public static GameObject Flask(Transform parent, string name, Vector3 pos, float scale = 1f)
+        {
+            var root = new GameObject(name);
+            root.transform.SetParent(parent, false);
+            root.transform.localPosition = pos;
+            root.transform.localScale = Vector3.one * scale;
+
+            var glass = Ref(ItemReferences.ResearchFlask).Prefab.transform.Find("ResearchFlask/Cube.001").GetComponent<MeshRenderer>().sharedMaterial;
+            var bowl = Ref(ItemReferences.MixingBowlEmpty).Prefab.GetComponentInChildren<MeshFilter>(true).gameObject;
+            var water = Ref(ItemReferences.Pot).Prefab.transform.Find("Water").gameObject;
+
+            // Bauch: untere Hälfte + umgedrehte obere Hälfte
+            var lower = PrefabUtil.CloneVisual(bowl, root.transform, "Bulb Lower", new Vector3(0f, 0.16f, 0f), 0.75f);
+            var upper = PrefabUtil.CloneVisual(bowl, root.transform, "Bulb Upper", new Vector3(0f, 0.16f, 0f), 0.75f);
+            upper.transform.localRotation = Quaternion.Euler(180f, 0f, 0f) * upper.transform.localRotation;
+            Materials.Apply(lower, glass);
+            Materials.Apply(upper, glass);
+
+            // Flüssigkeit im unteren Teil
+            var liquid = PrefabUtil.CloneVisual(bowl, root.transform, "Liquid", new Vector3(0f, 0.15f, 0f), 0.62f);
+            Materials.Apply(liquid, Materials.BlueSyrup);
+
+            // Hals
+            var neck = PrefabUtil.CloneVisual(water, root.transform, "Neck", new Vector3(0f, 0.42f, 0f));
+            neck.transform.localScale = new Vector3(0.11f, 0.13f, 0.11f);
+            Materials.Apply(neck, glass);
+            return root;
+        }
+
         // Ein Häufchen Kristalle (für Portion, Topf, Icon).
         public static GameObject CrystalPile(Transform parent, string name, Vector3 pos, float scale, int count = 5)
         {

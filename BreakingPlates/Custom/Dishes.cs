@@ -48,7 +48,16 @@ namespace BreakingPlates.Custom
 
         private GameObject _icon, _display;
         public override GameObject IconPrefab => _icon ??= MakeCandyDisplay("Blue Rock Candy - Icon");
-        public override GameObject DisplayPrefab => _display ??= MakeCandyDisplay("Blue Rock Candy - Display");
+        // EXPERIMENT: Kolben neben den Kristallen, um ihn im Hauptquartier anzuschauen.
+        public override GameObject DisplayPrefab => _display ??= MakeFlaskDisplay("Blue Rock Candy - Display");
+
+        private static GameObject MakeFlaskDisplay(string name)
+        {
+            var root = PrefabUtil.CreateRoot(name);
+            CrystalPile(root.transform, "Candy", new Vector3(0.18f, 0.05f, 0f), 1f, 5);
+            Flask(root.transform, "Flask", new Vector3(-0.15f, 0f, 0f), 1f);
+            return root;
+        }
 
         private static GameObject MakeCandyDisplay(string name)
         {
