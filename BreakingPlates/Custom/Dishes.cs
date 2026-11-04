@@ -22,7 +22,9 @@ namespace BreakingPlates.Custom
         public override List<string> StartingNameSet => new List<string>
         {
             "Say My Name", "Breaking Plates", "Blue Sky Sweets", "The One Who Cooks",
-            "Better Call Sugar", "Los Pollitos Hermanos", "99.1% Sugar", "Tread Lightly"
+            "Better Call Sugar", "Los Pollitos Hermanos", "99.1% Sugar", "Tread Lightly",
+            "Gray Matter Candy Co.", "Yeah, Science!", "Sweet Chemistry", "The Crystal Ship",
+            "Respect The Chemistry", "Cook Responsibly", "Blue Magic", "Sugar Rush Labs"
         };
 
         public override HashSet<Item> MinimumIngredients => new HashSet<Item>
@@ -57,7 +59,7 @@ namespace BreakingPlates.Custom
 
         public override Dictionary<Locale, string> Recipe => new Dictionary<Locale, string>
         {
-            { Locale.English, "Cook sugar and water in a pot. Take the blue syrup off the heat and let it crystallise, then smash it by hand on a counter. Serve the candy as it is - no plate needed." }
+            { Locale.English, "Cook sugar and water in a pot. Take the blue syrup off the heat and let it crystallise (a freezer speeds this up), then smash it by hand on a counter. Serve the candy as it is - no plate needed. Respect the chemistry." }
         };
         public override List<(Locale, UnlockInfo)> InfoList => new List<(Locale, UnlockInfo)>
         {
@@ -65,7 +67,7 @@ namespace BreakingPlates.Custom
             {
                 Name = "Blue Rock Candy",
                 Description = "Adds Blue Rock Candy as a main",
-                FlavourText = "Say my name."
+                FlavourText = "It's just sugar. Probably."
             })
         };
     }

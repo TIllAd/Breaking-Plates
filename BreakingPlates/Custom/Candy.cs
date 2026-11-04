@@ -77,8 +77,16 @@ namespace BreakingPlates.Custom
             Result = (Item)GDOUtils.GetCustomGameDataObject<CrystalPot>().GameDataObject
         };
 
+        // Abkürzung: im Gefrierschrank kristallisiert es deutlich schneller.
+        private static Item.ItemProcess Freeze => new Item.ItemProcess
+        {
+            Process = (Process)GDOUtils.GetExistingGDO(ProcessReferences.Freeze),
+            Duration = 4f,
+            Result = (Item)GDOUtils.GetCustomGameDataObject<CrystalPot>().GameDataObject
+        };
+
         public override Item.ItemProcess AutomaticItemProcess => CoolOff;
-        public override List<Item.ItemProcess> Processes => new List<Item.ItemProcess> { CoolOff };
+        public override List<Item.ItemProcess> Processes => new List<Item.ItemProcess> { CoolOff, Freeze };
 
         private GameObject _prefab;
         public override GameObject Prefab
