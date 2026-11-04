@@ -25,8 +25,10 @@ namespace BreakingPlates
                 for (int x = 0; x <= res; x++)
                 {
                     float u = x / (float)res, v = y / (float)res;
-                    // Aufblähung: Null am Rand, max. in der Mitte; oben (Verschluss) flacher.
-                    float puff = Mathf.Sin(Mathf.PI * u) * Mathf.Pow(Mathf.Sin(Mathf.PI * v), 0.6f) * (1f - 0.5f * v);
+                    // Aufblähung: Null an den Rändern, max. in der Mitte. Die oberen 12 % bleiben ganz flach
+                    // (verschweißter Streifen unter dem Druckverschluss).
+                    float vv = Mathf.Clamp01(v / 0.88f);
+                    float puff = Mathf.Sin(Mathf.PI * u) * Mathf.Pow(Mathf.Sin(Mathf.PI * vv), 0.6f) * (1f - 0.4f * vv);
                     verts.Add(new Vector3((u - 0.5f) * width, v * height, dir * bulge * puff));
                 }
                 for (int y = 0; y < res; y++)

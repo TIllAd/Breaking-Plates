@@ -92,8 +92,10 @@ namespace BreakingPlates.Custom
         {
             var root = new GameObject("Bag");
             root.transform.SetParent(parent, false);
-            ProcMesh.Create("Foil", root.transform, ProcMesh.Pouch(), Materials.Plastic, Vector3.zero);
-            ProcMesh.Create("Zip", root.transform, ProcMesh.Box(new Vector3(0.35f, 0.025f, 0.03f)), Materials.ZipRed, new Vector3(0f, 0.35f, 0f));
+            const float height = 0.38f;
+            ProcMesh.Create("Foil", root.transform, ProcMesh.Pouch(height: height), Materials.Plastic, Vector3.zero);
+            // Verschluss sitzt auf der oberen Kante und deckt den flachen Streifen ab.
+            ProcMesh.Create("Zip", root.transform, ProcMesh.Box(new Vector3(0.35f, 0.04f, 0.035f)), Materials.ZipRed, new Vector3(0f, height - 0.02f, 0f));
             return root;
         }
 
