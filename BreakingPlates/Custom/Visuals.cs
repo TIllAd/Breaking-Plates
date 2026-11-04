@@ -87,29 +87,13 @@ namespace BreakingPlates.Custom
             return root;
         }
 
-        // Zip-Tütchen: flaches, milchig-durchsichtiges Plastik, roter Zipper oben, weißes Etikett vorne.
+        // Folien-Tütchen (im Code erzeugt): durchsichtige, aufgeblähte Folie + roter Druckverschluss oben.
         public static GameObject Bag(Transform parent)
         {
-            var bagMesh = Ref(ItemReferences.LeftoversBag).Prefab.transform.Find("TakeawayBag").gameObject;
             var root = new GameObject("Bag");
             root.transform.SetParent(parent, false);
-
-            var body = PrefabUtil.CloneVisual(bagMesh, root.transform, "Body", Vector3.zero);
-            var baseScale = body.transform.localScale;
-            body.transform.localScale = Vector3.Scale(baseScale, new Vector3(0.7f, 0.45f, 0.75f));
-            Materials.Apply(body, Materials.Plastic);
-
-            // Zipper: sehr flache Kopie derselben Form am oberen Rand.
-            var zip = PrefabUtil.CloneVisual(bagMesh, root.transform, "Zip", Vector3.zero);
-            zip.transform.localScale = Vector3.Scale(baseScale, new Vector3(0.72f, 0.47f, 0.06f));
-            zip.transform.localPosition = new Vector3(0f, 0.27f, 0f);
-            Materials.Apply(zip, Materials.ZipRed);
-
-            // Etikett vorne.
-            var label = PrefabUtil.CloneVisual(bagMesh, root.transform, "Label", Vector3.zero);
-            label.transform.localScale = Vector3.Scale(baseScale, new Vector3(0.35f, 0.47f, 0.2f));
-            label.transform.localPosition = new Vector3(0f, 0.08f, -0.01f);
-            Materials.Apply(label, Materials.LabelWhite);
+            ProcMesh.Create("Foil", root.transform, ProcMesh.Pouch(), Materials.Plastic, Vector3.zero);
+            ProcMesh.Create("Zip", root.transform, ProcMesh.Box(new Vector3(0.35f, 0.025f, 0.03f)), Materials.ZipRed, new Vector3(0f, 0.35f, 0f));
             return root;
         }
 
