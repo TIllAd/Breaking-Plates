@@ -27,6 +27,21 @@ namespace BreakingPlates
         public static Material PureCrystal => Flat("Pure Crystal", new Color(0.55f, 0.88f, 1f), 1f);
         public static Material Sugar => Flat("Sugar", new Color(0.97f, 0.95f, 0.9f), 0.3f);
 
+        // Milchig-durchsichtiges Plastik (Shader "Simple Transparent" wie Gläser im Spiel).
+        public static Material Plastic
+        {
+            get
+            {
+                if (Cache.TryGetValue("Plastic", out var m) && m != null) return m;
+                m = new Material(Shader.Find("Simple Transparent")) { name = "BreakingPlates - Plastic" };
+                m.SetColor("_Color", new Color(0.92f, 0.96f, 1f, 0.35f));
+                Cache["Plastic"] = m;
+                return m;
+            }
+        }
+        public static Material ZipRed => Flat("Zip Red", new Color(0.85f, 0.15f, 0.15f), 0.3f);
+        public static Material LabelWhite => Flat("Label White", new Color(0.97f, 0.97f, 0.95f));
+
         public static void Apply(GameObject go, Material material)
         {
             foreach (var r in go.GetComponentsInChildren<MeshRenderer>(true))
