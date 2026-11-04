@@ -35,6 +35,14 @@ namespace BreakingPlates
             foreach (var a in gameData.Get<Appliance>().Where(a => appl.Any(k => a.name.ToLower().Contains(k))))
                 DumpObject(sb, a);
 
+            sb.AppendLine("\n##### Kosmetik (Hüte/Outfits)");
+            string[] cos = { "cowboy", "glasses", "bandana", "beanie", "tallchef", "baseball", "visor", "chef" };
+            foreach (var c in gameData.Get<PlayerCosmetic>().Where(c => cos.Any(k => c.name.ToLower().Contains(k))))
+            {
+                DumpObject(sb, c);
+                if (c.Visual != null) sb.AppendLine("   Visual-Hierarchie:\n" + Hierarchy(c.Visual.transform, "      "));
+            }
+
             sb.AppendLine("\n##### Eigene GDOs");
             foreach (var g in gameData.Get<GameDataObject>().Where(o => o.name != null && o.name.StartsWith("TillAd.PlateUp.BreakingPlates")))
                 DumpObject(sb, g);

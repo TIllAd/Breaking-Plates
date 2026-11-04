@@ -188,12 +188,22 @@ namespace BreakingPlates.Custom
         }
     }
 
-    // 5) Das Produkt. Wird ohne Teller serviert.
+    // 5) Das Produkt. Kommt in ein Tütchen. Mit der Karte "99 %" kann man es noch sortieren (Schneiden).
     public class BlueRockCandy : CustomItem
     {
         public override string UniqueNameID => "Blue Rock Candy";
         public override ItemStorage ItemStorageFlags => ItemStorage.StackableFood;
         public override ItemValue ItemValue => ItemValue.Medium;
+
+        public override List<Item.ItemProcess> Processes => new List<Item.ItemProcess>
+        {
+            new Item.ItemProcess
+            {
+                Process = (Process)GDOUtils.GetExistingGDO(ProcessReferences.Chop),
+                Duration = 1.5f,
+                Result = (Item)GDOUtils.GetCustomGameDataObject<PureBlueRockCandy>().GameDataObject
+            }
+        };
 
         private GameObject _prefab;
         public override GameObject Prefab
@@ -204,6 +214,29 @@ namespace BreakingPlates.Custom
                 {
                     _prefab = PrefabUtil.CreateRoot("Blue Rock Candy");
                     CrystalPile(_prefab.transform, "Candy", new Vector3(0f, 0.05f, 0f), 1f, 5);
+                }
+                return _prefab;
+            }
+        }
+    }
+
+    // 6) 99 % Reinheit: nur der schönste Kristall bleibt übrig.
+    public class PureBlueRockCandy : CustomItem
+    {
+        public override string UniqueNameID => "Blue Rock Candy - Pure";
+        public override ItemStorage ItemStorageFlags => ItemStorage.StackableFood;
+        public override ItemValue ItemValue => ItemValue.Large;
+        public override string ColourBlindTag => "99";
+
+        private GameObject _prefab;
+        public override GameObject Prefab
+        {
+            get
+            {
+                if (_prefab == null)
+                {
+                    _prefab = PrefabUtil.CreateRoot("Pure Blue Rock Candy");
+                    PureCrystal(_prefab.transform, "Crystal", new Vector3(0f, 0.12f, 0f), 1f);
                 }
                 return _prefab;
             }

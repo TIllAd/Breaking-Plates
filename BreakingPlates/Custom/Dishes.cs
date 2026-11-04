@@ -29,7 +29,8 @@ namespace BreakingPlates.Custom
 
         public override HashSet<Item> MinimumIngredients => new HashSet<Item>
         {
-            Ref(ItemReferences.Sugar), Ref(ItemReferences.Water), Ref(ItemReferences.Pot)
+            Ref(ItemReferences.Sugar), Ref(ItemReferences.Water), Ref(ItemReferences.Pot),
+            (Item)GDOUtils.GetCustomGameDataObject<EmptyBag>().GameDataObject
         };
         public override HashSet<Process> RequiredProcesses => new HashSet<Process>
         {
@@ -41,7 +42,7 @@ namespace BreakingPlates.Custom
         {
             new Dish.MenuItem
             {
-                Item = (Item)GDOUtils.GetCustomGameDataObject<BlueRockCandy>().GameDataObject,
+                Item = (Item)GDOUtils.GetCustomGameDataObject<CandyBag>().GameDataObject,
                 Phase = MenuPhase.Main, Weight = 1, DynamicMenuType = DynamicMenuType.Static
             }
         };
@@ -68,7 +69,7 @@ namespace BreakingPlates.Custom
 
         public override Dictionary<Locale, string> Recipe => new Dictionary<Locale, string>
         {
-            { Locale.English, "Cook sugar and water in a pot. Take the blue syrup off the heat and let it crystallise (a freezer speeds this up), then smash it by hand on a counter. Serve the candy as it is - no plate needed. Respect the chemistry." }
+            { Locale.English, "Cook sugar and water in a pot. Take the blue syrup off the heat and let it crystallise (a freezer speeds this up), then smash it by hand on a counter. Put a portion in a candy bag and serve - no plate needed. Respect the chemistry." }
         };
         public override List<(Locale, UnlockInfo)> InfoList => new List<(Locale, UnlockInfo)>
         {
@@ -77,6 +78,56 @@ namespace BreakingPlates.Custom
                 Name = "Blue Rock Candy",
                 Description = "Adds Blue Rock Candy as a main",
                 FlavourText = "It's just sugar. Probably."
+            })
+        };
+    }
+
+    // Variante: 99 % Reinheit (wie dünnes/dickes Steak).
+    public class PureCandyDish : CustomDish
+    {
+        public override string UniqueNameID => "Pure Blue Rock Candy Dish";
+        public override DishType Type => DishType.Main;
+        public override CardType CardType => CardType.Default;
+        public override UnlockGroup UnlockGroup => UnlockGroup.Dish;
+        public override int Difficulty => 2;
+        public override DishCustomerChange CustomerMultiplier => DishCustomerChange.SmallDecrease;
+        public override List<Unlock> HardcodedRequirements => new List<Unlock>
+        {
+            (Dish)GDOUtils.GetCustomGameDataObject<BlueRockCandyDish>().GameDataObject
+        };
+        public override HashSet<Process> RequiredProcesses => new HashSet<Process>
+        {
+            (Process)GDOUtils.GetExistingGDO(ProcessReferences.Chop)
+        };
+        public override List<Dish.MenuItem> ResultingMenuItems => new List<Dish.MenuItem>
+        {
+            new Dish.MenuItem
+            {
+                Item = (Item)GDOUtils.GetCustomGameDataObject<PureCandyBag>().GameDataObject,
+                Phase = MenuPhase.Main, Weight = 0.75f, DynamicMenuType = DynamicMenuType.Static
+            }
+        };
+
+        private GameObject _icon;
+        public override GameObject IconPrefab => _icon ??= MakePureIcon();
+        private static GameObject MakePureIcon()
+        {
+            var root = PrefabUtil.CreateRoot("Pure Candy - Icon");
+            PureCrystal(root.transform, "Crystal", new Vector3(0f, 0.12f, 0f), 1.3f);
+            return root;
+        }
+
+        public override Dictionary<Locale, string> Recipe => new Dictionary<Locale, string>
+        {
+            { Locale.English, "Chop a portion of candy to pick out the single purest crystal, then bag it." }
+        };
+        public override List<(Locale, UnlockInfo)> InfoList => new List<(Locale, UnlockInfo)>
+        {
+            (Locale.English, new UnlockInfo
+            {
+                Name = "99% Purity",
+                Description = "Some customers only accept the purest crystal",
+                FlavourText = "We are not making chili P."
             })
         };
     }

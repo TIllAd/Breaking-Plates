@@ -87,6 +87,26 @@ namespace BreakingPlates.Custom
             return root;
         }
 
+        // Tütchen: Form der Reste-Tüte, flacher und kleiner, mit Glas-Material (durchsichtig) und rotem Zipper.
+        public static GameObject Bag(Transform parent)
+        {
+            var glass = Ref(ItemReferences.ResearchFlask).Prefab.transform.Find("ResearchFlask/Cube.001").GetComponent<MeshRenderer>().sharedMaterial;
+            var bagMesh = Ref(ItemReferences.LeftoversBag).Prefab.transform.Find("TakeawayBag").gameObject;
+            var bag = PrefabUtil.CloneVisual(bagMesh, parent, "Bag", Vector3.zero);
+            bag.transform.localScale = Vector3.Scale(bag.transform.localScale, new Vector3(0.6f, 0.5f, 0.6f));
+            Materials.Apply(bag, glass);
+            return bag;
+        }
+
+        // Ein einzelner großer, besonders klarer Kristall (99 % Reinheit).
+        public static GameObject PureCrystal(Transform parent, string name, Vector3 pos, float scale)
+        {
+            var go = Crystal(parent, name, pos, 1.1f * scale, 30f);
+            go.transform.localRotation = Quaternion.Euler(0f, 30f, 45f);
+            Materials.Apply(go, Materials.PureCrystal);
+            return go;
+        }
+
         // Ein Häufchen Kristalle (für Portion, Topf, Icon).
         public static GameObject CrystalPile(Transform parent, string name, Vector3 pos, float scale, int count = 5)
         {

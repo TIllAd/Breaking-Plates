@@ -24,6 +24,7 @@ namespace BreakingPlates
         public static Material BlueSyrup => Flat("Blue Syrup", new Color(0.18f, 0.52f, 0.95f), 0.4f);
         public static Material BlueCrystal => Flat("Blue Crystal", new Color(0.45f, 0.8f, 1f), 0.9f);
 
+        public static Material PureCrystal => Flat("Pure Crystal", new Color(0.55f, 0.88f, 1f), 1f);
         public static Material Sugar => Flat("Sugar", new Color(0.97f, 0.95f, 0.9f), 0.3f);
 
         public static void Apply(GameObject go, Material material)

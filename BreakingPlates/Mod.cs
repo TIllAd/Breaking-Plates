@@ -32,12 +32,18 @@ namespace BreakingPlates
             Logger = InitLogger();
 
             // Reihenfolge: Ergebnisse vor den Dingen, die auf sie verweisen.
+            AddGameDataObject<BagProvider>();
+            AddGameDataObject<EmptyBag>();
+            AddGameDataObject<PureBlueRockCandy>();
             AddGameDataObject<BlueRockCandy>();
+            AddGameDataObject<CandyBag>();
+            AddGameDataObject<PureCandyBag>();
             AddGameDataObject<ShardsPot>();
             AddGameDataObject<CrystalPot>();
             AddGameDataObject<SyrupPot>();
             AddGameDataObject<SugarPot>();
             AddGameDataObject<BlueRockCandyDish>();
+            AddGameDataObject<PureCandyDish>();
 
             Events.BuildGameDataPreSetupEvent += (s, args) => PrefabUtil.FixMaterials();
 #if DEBUG
