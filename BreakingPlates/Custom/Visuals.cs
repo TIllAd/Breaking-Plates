@@ -94,29 +94,43 @@ namespace BreakingPlates.Custom
             var root = new GameObject("Bag");
             root.transform.SetParent(parent, false);
             ProcMesh.Create("Foil", root.transform, ProcMesh.Pouch(), Materials.Plastic, Vector3.zero);
-            ProcMesh.Create("Zip", root.transform, ProcMesh.Box(Vector3.one), Materials.ZipRed, Vector3.zero);
+            var zip = new GameObject("Zip");
+            zip.transform.SetParent(root.transform, false);
+            for (int i = 0; i < ZipSegments; i++)
+                ProcMesh.Create("Seg" + i, zip.transform, ProcMesh.Box(Vector3.one), Materials.ZipRed, Vector3.zero);
             ApplyBag(root);
             Tuning.Register(root, "bag", ApplyBag);
             return root;
         }
 
+        private const int ZipSegments = 8;
+
         private static void ApplyBag(GameObject root)
         {
             float w = Tuning.F("bag.width", 0.34f), h = Tuning.F("bag.height", 0.38f), b = Tuning.F("bag.bulge", 0.09f);
-            float tilt = Tuning.F("bag.tilt", 7f), skew = Tuning.F("bag.skew", 0.025f), wobble = Tuning.F("bag.wobble", 0.3f);
-            float lean = Tuning.F("bag.lean", 4f);
-            root.transform.localRotation = Quaternion.Euler(0f, Tuning.F("bag.turn", 12f), lean);
+            float tilt = Tuning.F("bag.tilt", 6f), skew = Tuning.F("bag.skew", 0.02f), wobble = Tuning.F("bag.wobble", 0.3f);
+            float pinch = Tuning.F("bag.pinch", 0.14f), sag = Tuning.F("bag.sag", 0.03f), bow = Tuning.F("bag.bow", 0.025f);
+            root.transform.localRotation = Quaternion.Euler(0f, Tuning.F("bag.turn", 12f), Tuning.F("bag.lean", 4f));
 
             var foil = root.transform.Find("Foil");
+            if (foil != null) foil.GetComponent<MeshFilter>().sharedMesh = ProcMesh.Pouch(w, h, b, 14, tilt, skew, wobble, pinch, sag, bow);
+
+            // Verschluss aus Segmenten, die dem Bogen der Oberkante folgen.
             var zip = root.transform.Find("Zip");
-            if (foil != null) foil.GetComponent<MeshFilter>().sharedMesh = ProcMesh.Pouch(w, h, b, 12, tilt, skew, wobble);
-            if (zip != null)
+            if (zip == null) return;
+            var zs = Tuning.V3("bag.zip.size", new Vector3(0.36f, 0.04f, 0.035f));
+            float segW = w / ZipSegments;
+            for (int i = 0; i < ZipSegments; i++)
             {
-                var zs = Tuning.V3("bag.zip.size", new Vector3(0.36f, 0.04f, 0.035f));
-                zip.localScale = zs;
-                zip.localRotation = Quaternion.Euler(0f, 0f, tilt);
-                // Mitte der schrägen Oberkante (inkl. seitlichem Versatz)
-                zip.localPosition = new Vector3(skew, h - zs.y / 2f, 0f);
+                var seg = zip.Find("Seg" + i);
+                if (seg == null) continue;
+                float x0 = -w / 2f + i * segW, x1 = x0 + segW, xm = (x0 + x1) / 2f;
+                float y0 = ProcMesh.TopEdge(x0, w, h, tilt, bow), y1 = ProcMesh.TopEdge(x1, w, h, tilt, bow);
+                float ym = (y0 + y1) / 2f - zs.y / 2f;
+                float angle = Mathf.Atan2(y1 - y0, segW) * Mathf.Rad2Deg;
+                seg.localPosition = new Vector3(xm + skew, ym, 0f);
+                seg.localRotation = Quaternion.Euler(0f, 0f, angle);
+                seg.localScale = new Vector3(segW * 1.08f * zs.x / 0.36f, zs.y, zs.z);
             }
         }
 
