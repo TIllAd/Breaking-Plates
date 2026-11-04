@@ -4,6 +4,7 @@ using KitchenLib.Event;
 using KitchenLib.Logging;
 using KitchenMods;
 using UnityEngine;
+using BreakingPlates.Custom;
 
 namespace BreakingPlates
 {
@@ -29,6 +30,14 @@ namespace BreakingPlates
         protected override void OnPostActivate(KitchenMods.Mod mod)
         {
             Logger = InitLogger();
+
+            // Reihenfolge: Ergebnisse vor den Dingen, die auf sie verweisen.
+            AddGameDataObject<BlueRockCandy>();
+            AddGameDataObject<ShardsPot>();
+            AddGameDataObject<CrystalPot>();
+            AddGameDataObject<SyrupPot>();
+            AddGameDataObject<SugarPot>();
+            AddGameDataObject<BlueRockCandyDish>();
 
             Events.BuildGameDataPreSetupEvent += (s, args) => PrefabUtil.FixMaterials();
 #if DEBUG
