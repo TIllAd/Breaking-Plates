@@ -44,9 +44,9 @@ namespace BreakingPlates.Custom
                 {
                     _prefab = PrefabUtil.CreateRoot("Sugar Pot");
                     Pot(_prefab.transform);
-                    _water = Liquid(_prefab.transform, "Water", 0.1f);
-                    var sugarMesh = Ref(ItemReferences.Sugar).Prefab.transform.Find("Sugar/Cube.001").gameObject;
-                    _sugar = PrefabUtil.CloneVisual(sugarMesh, _prefab.transform, "Sugar", new Vector3(0f, 0.22f, 0f), 1.1f);
+                    _water = Liquid(_prefab.transform, "Water", 0.12f);
+                    // Zuckerberg ragt aus dem Wasser heraus.
+                    _sugar = SugarHeap(_prefab.transform, "Sugar", new Vector3(0f, 0.17f, 0f));
                 }
                 return _prefab;
             }

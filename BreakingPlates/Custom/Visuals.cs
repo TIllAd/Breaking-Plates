@@ -34,6 +34,28 @@ namespace BreakingPlates.Custom
             return go;
         }
 
+        // Zuckerberg: viele kleine weiße Würfel, in der Mitte höher aufgehäuft.
+        public static GameObject SugarHeap(Transform parent, string name, Vector3 pos)
+        {
+            var heap = new GameObject(name);
+            heap.transform.SetParent(parent, false);
+            heap.transform.localPosition = pos;
+            var rnd = new System.Random(42);
+            for (int layer = 0; layer < 3; layer++)
+            {
+                int n = new[] { 10, 6, 3 }[layer];
+                float radius = new[] { 0.15f, 0.09f, 0.04f }[layer];
+                for (int i = 0; i < n; i++)
+                {
+                    float a = (i / (float)n) * Mathf.PI * 2f + layer;
+                    float r = radius * (0.6f + 0.4f * (float)rnd.NextDouble());
+                    var c = Crystal(heap.transform, $"Sugar {layer}-{i}", new Vector3(Mathf.Cos(a) * r, layer * 0.035f, Mathf.Sin(a) * r), 0.28f, (float)rnd.NextDouble() * 360f);
+                    Materials.Apply(c, Materials.Sugar);
+                }
+            }
+            return heap;
+        }
+
         // Ein Häufchen Kristalle (für Portion, Topf, Icon).
         public static GameObject CrystalPile(Transform parent, string name, Vector3 pos, float scale, int count = 5)
         {
