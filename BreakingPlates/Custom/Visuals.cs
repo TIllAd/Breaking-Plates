@@ -66,7 +66,7 @@ namespace BreakingPlates.Custom
             root.transform.localScale = Vector3.one * scale;
 
             var glass = Ref(ItemReferences.ResearchFlask).Prefab.transform.Find("ResearchFlask/Cube.001").GetComponent<MeshRenderer>().sharedMaterial;
-            var bowl = Ref(ItemReferences.MixingBowlEmpty).Prefab.GetComponentInChildren<MeshFilter>(true).gameObject;
+            var bowl = Ref(ItemReferences.MixingBowlEmpty).Prefab.transform.Find("MixingBowl").gameObject;
             var water = Ref(ItemReferences.Pot).Prefab.transform.Find("Water").gameObject;
 
             // Bauch: untere Hälfte + umgedrehte obere Hälfte
