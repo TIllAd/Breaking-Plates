@@ -17,6 +17,7 @@ namespace BreakingPlates.Custom
         protected virtual int BaseApplianceID => ApplianceReferences.LeftoversBagStation;
         // Kleines Modell des Inhalts oben auf der Quelle (null = keins).
         protected virtual void Decorate(Transform top) { }
+        protected virtual bool UseDecoration => false;
 
         private GameObject _prefab;
         public override GameObject Prefab => _prefab ??= MakePrefab();
@@ -32,7 +33,9 @@ namespace BreakingPlates.Custom
             void Place(GameObject t) => t.transform.localPosition = Tuning.V3("provider.top", new Vector3(0f, 0.95f, 0f));
             Place(top);
             Tuning.Register(top, "provider.top", Place);
-            Decorate(top.transform);
+            // Die Station zeigt die bereitgestellten Items schon selbst an (Stapel). Eigene Deko obendrauf
+            // passte beim Drehen nicht, daher vorerst aus.
+            if (UseDecoration) Decorate(top.transform);
             return go;
         }
 
