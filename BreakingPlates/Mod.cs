@@ -20,8 +20,16 @@ namespace BreakingPlates
 
         public Mod() : base(MOD_GUID, MOD_NAME, MOD_AUTHOR, MOD_VERSION, MOD_GAMEVERSION, Assembly.GetExecutingAssembly()) { }
 
+        private static HarmonyLib.Harmony _harmony;
+
         protected override void OnInitialise()
         {
+            if (_harmony == null)
+            {
+                _harmony = new HarmonyLib.Harmony(MOD_GUID);
+                try { _harmony.PatchAll(Assembly.GetExecutingAssembly()); }
+                catch (System.Exception e) { LogError("Harmony-Patches fehlgeschlagen: " + e); }
+            }
             Logger.LogWarning($"{MOD_GUID} v{MOD_VERSION} in use!");
         }
 
