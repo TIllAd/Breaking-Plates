@@ -112,33 +112,44 @@ namespace BreakingPlates.Custom
             if (knobs != null)
             {
                 var baseKnobs = knobs.localPosition;
-                void ApplyKnobs(GameObject t) => t.transform.localPosition = baseKnobs + Tuning.V3("reactor.knobs.offset", new Vector3(-0.12f, 0f, 0f));
+                void ApplyKnobs(GameObject t) => t.transform.localPosition = baseKnobs + Tuning.V3("reactor.knobs.offset", new Vector3(-0.13f, 0f, 0f));
                 ApplyKnobs(knobs.gameObject);
                 Tuning.Register(knobs.gameObject, "reactor.knobs", ApplyKnobs);
             }
 
             // Display rechts neben den Reglern (außen), orange Warnlampe oben.
-            var panel = Tuned(go.transform, "BP Panel", "reactor.panel", new Vector3(0.27f, 0.13f, -0.46f));
+            var panel = Tuned(go.transform, "BP Panel", "reactor.panel", new Vector3(0.3f, 0.3f, -0.46f));
             Part("Display", panel.transform, ProcMesh.Box(new Vector3(0.17f, 0.08f, 0.02f)), Materials.Black, Vector3.zero);
             DecoBase.MakeText(panel.transform, "Timer", "00:10", new Vector3(0f, 0f, -0.012f), 0.38f, new Color(0.35f, 1f, 0.45f));
 
             var lamp = Tuned(go.transform, "BP Lamp", "reactor.lamp", new Vector3(0.3f, 0.92f, 0.3f));
             Part("Lamp Base", lamp.transform, ProcMesh.Cylinder(0.04f, 0.02f, 12), Materials.DarkGrey, Vector3.zero);
-            Part("Lamp", lamp.transform, ProcMesh.Cylinder(0.03f, 0.06f, 12), Materials.Solid("Reactor Lamp", new Color(1f, 0.55f, 0.1f)), new Vector3(0f, 0.02f, 0f));
+            var bulb = Part("Lamp", lamp.transform, ProcMesh.Cylinder(0.03f, 0.06f, 12), Materials.Solid("Reactor Lamp Off", new Color(0.45f, 0.3f, 0.15f)), new Vector3(0f, 0.02f, 0f));
+            var status = go.AddComponent<ReactorStatus>();
+            status.Bulb = bulb.GetComponent<MeshRenderer>();
+            status.On = Materials.Solid("Reactor Lamp", new Color(1f, 0.6f, 0.1f));
+            status.Off = Materials.Solid("Reactor Lamp Off", new Color(0.45f, 0.3f, 0.15f));
 
-            // Gelber Warnstreifen unten rundherum (dezent, nur ein Band).
-            var stripe = Tuned(go.transform, "BP Stripe", "reactor.stripe", new Vector3(0f, 0.04f, 0f));
-            Part("Band", stripe.transform, ProcMesh.Box(new Vector3(0.82f, 0.05f, 0.92f)), Materials.Hazmat, Vector3.zero);
-
-            // Gefahren-Raute mit Kolben an der rechten Seite.
-            var sign = Tuned(go.transform, "BP Hazard", "reactor.hazard", new Vector3(0.415f, 0.42f, 0f));
-            Part("Diamond Border", sign.transform, ProcMesh.Box(new Vector3(0.01f, 0.2f, 0.2f)), Materials.Black, Vector3.zero, new Vector3(45f, 0f, 0f));
-            Part("Diamond", sign.transform, ProcMesh.Box(new Vector3(0.012f, 0.17f, 0.17f)), Materials.Hazmat, Vector3.zero, new Vector3(45f, 0f, 0f));
-            var icon = new GameObject("Flask Icon");
-            icon.transform.SetParent(sign.transform, false);
-            icon.transform.localPosition = new Vector3(0.012f, -0.05f, 0f);
-            icon.transform.localScale = new Vector3(0.05f, 0.28f, 0.28f);
-            ProcMesh.Create("Flask", icon.transform, ProcMesh.Lathe(ProcMesh.ErlenmeyerProfile, 16), Materials.Black, Vector3.zero);
+            // Warnschild an der Seite (oberer Teil, nicht im Knick): Flamme + Eiskristall = heizt und kühlt.
+            var sign = Tuned(go.transform, "BP Sign", "reactor.sign", new Vector3(0.415f, 0.62f, 0f));
+            Part("Border", sign.transform, ProcMesh.Box(new Vector3(0.01f, 0.18f, 0.34f)), Materials.Black, Vector3.zero);
+            Part("Plate", sign.transform, ProcMesh.Box(new Vector3(0.012f, 0.15f, 0.31f)), Materials.Hazmat, Vector3.zero);
+            // Flamme
+            var flame = new GameObject("Flame");
+            flame.transform.SetParent(sign.transform, false);
+            flame.transform.localPosition = new Vector3(0.012f, -0.055f, -0.075f);
+            flame.transform.localScale = new Vector3(0.02f, 0.11f, 0.11f);
+            var flameProfile = new[] { new Vector2(0f, 0f), new Vector2(0.35f, 0.08f), new Vector2(0.45f, 0.3f), new Vector2(0.32f, 0.62f), new Vector2(0.12f, 0.85f), new Vector2(0f, 1f) };
+            ProcMesh.Create("Outer", flame.transform, ProcMesh.Lathe(flameProfile, 16), Materials.ZipRed, Vector3.zero);
+            var inner = ProcMesh.Create("Inner", flame.transform, ProcMesh.Lathe(flameProfile, 16), Materials.Solid("Flame Inner", new Color(1f, 0.7f, 0.15f)), new Vector3(0.3f, 0.02f, 0f));
+            inner.transform.localScale = new Vector3(1f, 0.6f, 0.6f);
+            // Eiskristall
+            var snow = new GameObject("Snowflake");
+            snow.transform.SetParent(sign.transform, false);
+            snow.transform.localPosition = new Vector3(0.012f, 0f, 0.075f);
+            var ice = Materials.Solid("Snow Icon", new Color(0.25f, 0.55f, 0.95f));
+            for (int i = 0; i < 3; i++)
+                Part("Arm " + i, snow.transform, ProcMesh.Box(new Vector3(0.008f, 0.11f, 0.016f)), ice, Vector3.zero, new Vector3(i * 60f, 0f, 0f));
         }
     }
 
@@ -173,6 +184,34 @@ namespace BreakingPlates.Custom
             panel.transform.localPosition = new Vector3(0f, -0.12f, -0.47f);
             Part("Display", panel.transform, ProcMesh.Box(new Vector3(0.2f, 0.08f, 0.02f)), Materials.Black, Vector3.zero);
             DecoBase.MakeText(panel.transform, "Timer", "00:10", new Vector3(0f, 0f, -0.012f), 0.42f, new Color(0.35f, 1f, 0.45f));
+        }
+    }
+
+    // Lampe leuchtet und der Timer zählt runter, solange der Reactor arbeitet.
+    // Liest die Werte, die das Spiel ohnehin für die Ofen-Animation setzt.
+    public class ReactorStatus : MonoBehaviour
+    {
+        public MeshRenderer Bulb;
+        public Material On, Off;
+        private Animator _anim;
+        private TMPro.TextMeshPro _text;
+        private static readonly int ProcessHash = Animator.StringToHash("Process");
+        private static readonly int ProgressHash = Animator.StringToHash("Progress");
+        private int _lastShown = -2;
+
+        private void Update()
+        {
+            if (_anim == null) _anim = GetComponent<Animator>();
+            if (_text == null) _text = GetComponentInChildren<TMPro.TextMeshPro>(true);
+            if (_anim == null) return;
+            bool active = _anim.GetInteger(ProcessHash) != 0;
+            if (Bulb != null) Bulb.sharedMaterial = active ? On : Off;
+            int secs = active ? Mathf.CeilToInt((1f - Mathf.Clamp01(_anim.GetFloat(ProgressHash))) * ReactProcess.CookTime) : -1;
+            if (_text != null && secs != _lastShown)
+            {
+                _text.text = secs < 0 ? "--:--" : "00:" + secs.ToString("00");
+                _lastShown = secs;
+            }
         }
     }
 }
