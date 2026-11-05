@@ -61,7 +61,7 @@ namespace BreakingPlates.Custom
             new ItemGroupView.ColourBlindLabel { Item = ChiliP, Text = "P" }
         };
 
-        private GameObject _prefab, _content, _chili;
+        private GameObject _prefab, _slot, _content, _chili;
         public override GameObject Prefab
         {
             get
@@ -69,7 +69,11 @@ namespace BreakingPlates.Custom
                 if (_prefab == null)
                 {
                     _prefab = PrefabUtil.CreateRoot(PrefabName);
-                    _content = MakeContent(_prefab.transform);
+                    // "Candy Slot" wird nur eingeblendet, wenn Candy im Tütchen ist: Inhalt + Varianten-Aufkleber.
+                    // (Sonst zeigte z.B. leeres Tütchen + Chili schon das Stevia-Blatt.)
+                    _slot = new GameObject("Candy Slot");
+                    _slot.transform.SetParent(_prefab.transform, false);
+                    _content = MakeContent(_slot.transform);
                     // Inhalt flach drücken, damit er in der Folie bleibt. Live einstellbar: bag.content.pos/scale
                     var baseScale = _content.transform.localScale;
                     var basePos = _content.transform.localPosition;
@@ -83,7 +87,12 @@ namespace BreakingPlates.Custom
                     var bag = Bag(_prefab.transform, Zip);
                     // Chili P erkennt man am roten Chili-Aufkleber.
                     _chili = ChiliSticker(bag);
-                    Decorate(bag);
+                    // Aufkleber-Halter mit derselben Lage wie das Tütchen, aber unter "Candy Slot".
+                    var holder = new GameObject("Variant Sticker");
+                    holder.transform.SetParent(_slot.transform, false);
+                    holder.transform.localPosition = bag.transform.localPosition;
+                    holder.transform.localRotation = bag.transform.localRotation;
+                    Decorate(holder);
 
                 }
                 return _prefab;
@@ -94,7 +103,7 @@ namespace BreakingPlates.Custom
         {
             Prefab.GetComponent<ItemGroupView>().ComponentGroups = new List<ItemGroupView.ComponentGroup>
             {
-                new ItemGroupView.ComponentGroup { Item = Candy, GameObject = _content },
+                new ItemGroupView.ComponentGroup { Item = Candy, GameObject = _slot },
                 new ItemGroupView.ComponentGroup { Item = ChiliP, GameObject = _chili }
             };
         }
