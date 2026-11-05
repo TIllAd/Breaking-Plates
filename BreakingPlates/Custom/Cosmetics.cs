@@ -7,10 +7,10 @@ using UnityEngine;
 
 namespace BreakingPlates.Custom
 {
-    // Gelber Schutzanzug: Taucher-Outfit aus dem Spiel umgefärbt (blassgelb, blaue Handschuhe), Helm/Flaschen weg, Kapuze.
+    // Gelber Schutzanzug: Astronauten-Outfit aus dem Spiel umgefärbt (blassgelb, blaue Handschuhe), Helm weg. Gasmaske ist ein eigener Hut.
     public class HazmatSuit : CustomPlayerCosmetic
     {
-        private const int DiverChef = -950136670;
+        private const int AstronautChef = 20631900; // einteiliger Anzug ohne Gurte/Schnallen
         public override string UniqueNameID => "Hazmat Suit";
         public override CosmeticType CosmeticType => CosmeticType.Outfit;
 
@@ -19,16 +19,16 @@ namespace BreakingPlates.Custom
 
         private static GameObject Make()
         {
-            var src = ((PlayerCosmetic)GDOUtils.GetExistingGDO(DiverChef)).Visual;
+            var src = ((PlayerCosmetic)GDOUtils.GetExistingGDO(AstronautChef)).Visual;
             var go = Object.Instantiate(src, PrefabUtil.Holder, false);
             go.name = "BreakingPlates Hazmat Suit";
             var outfit = go.GetComponent<PlayerOutfitComponent>();
             foreach (var r in go.GetComponentsInChildren<SkinnedMeshRenderer>(true))
             {
                 var n = r.gameObject.name;
-                if (n.Contains("Helmet") || n.Contains("Tanks"))
+                if (n.Contains("Helmet") || n.Contains("Tanks") || n.Contains("Pack"))
                 {
-                    // Ganz entfernen: das Spiel blendet "Hüte" (der Taucherhelm) sonst wieder ein.
+                    // Ganz entfernen: das Spiel blendet "Hüte" (der Helm) sonst wieder ein.
                     if (outfit != null) { outfit.Renderers.Remove(r); outfit.Hats?.Remove(r); }
                     Object.DestroyImmediate(r.gameObject);
                     continue;
@@ -37,10 +37,6 @@ namespace BreakingPlates.Custom
                 else if (n.Contains("Gloves")) SetAll(r, Materials.GloveBlue);
                 else if (n.Contains("Boots")) SetAll(r, Materials.DarkGrey);
             }
-            var mask = new GameObject("BP Hood");
-            mask.transform.SetParent(go.transform, false);
-            BuildMask(mask.transform);
-            if (outfit != null) outfit.AttachToHeadBone = mask;
             return go;
         }
 
@@ -102,12 +98,8 @@ namespace BreakingPlates.Custom
             }
             Apply(model);
             Tuning.Register(model, "hat", Apply);
-            var brim = ProcMesh.Create("Brim", model.transform, ProcMesh.Cylinder(0.24f, 0.015f, 24), Materials.Black, Vector3.zero);
-            var crown = ProcMesh.Create("Crown", model.transform, ProcMesh.Lathe(new[]
-            {
-                new Vector2(0f, 0f), new Vector2(0.15f, 0f), new Vector2(0.15f, 0.1f), new Vector2(0.14f, 0.115f),
-                new Vector2(0.1f, 0.115f), new Vector2(0.1f, 0.105f), new Vector2(0f, 0.105f)
-            }, 24), Materials.Black, new Vector3(0f, 0.012f, 0f));
+            var brim = ProcMesh.Create("Brim", model.transform, ProcMesh.Cylinder(0.21f, 0.012f, 24), Materials.Black, Vector3.zero);
+            ProcMesh.Create("Crown", model.transform, ProcMesh.Cylinder(0.14f, 0.11f, 24), Materials.Black, new Vector3(0f, 0.012f, 0f));
             ProcMesh.Create("Band", model.transform, ProcMesh.Cylinder(0.153f, 0.025f, 24), Materials.DarkGrey, new Vector3(0f, 0.018f, 0f));
             outfit.AttachToHeadBone = hat;
             outfit.Renderers = new List<SkinnedMeshRenderer>();
@@ -140,20 +132,20 @@ namespace BreakingPlates.Custom
             m.transform.SetParent(head.transform, false);
             void Apply(GameObject t)
             {
-                t.transform.localPosition = Tuning.V3("mask.pos", new Vector3(0f, 0.03f, -0.21f));
+                t.transform.localPosition = Tuning.V3("mask.pos", new Vector3(0f, 0.03f, 0.21f));
                 t.transform.localRotation = Quaternion.Euler(Tuning.V3("mask.rot", Vector3.zero));
                 t.transform.localScale = Vector3.one * Tuning.F("mask.scale", 1f);
             }
             Apply(m);
             Tuning.Register(m, "mask", Apply);
             ProcMesh.Create("Face", m.transform, ProcMesh.Box(new Vector3(0.16f, 0.11f, 0.06f)), Materials.DarkGrey, Vector3.zero);
-            ProcMesh.Create("Valve", m.transform, ProcMesh.Box(new Vector3(0.06f, 0.05f, 0.04f)), Materials.Black, new Vector3(0f, -0.02f, -0.04f));
+            ProcMesh.Create("Valve", m.transform, ProcMesh.Box(new Vector3(0.06f, 0.05f, 0.04f)), Materials.Black, new Vector3(0f, -0.02f, 0.04f));
             foreach (var x in new[] { -1f, 1f })
             {
-                var f = ProcMesh.Create("Filter", m.transform, ProcMesh.Cylinder(0.05f, 0.045f, 14), Materials.FilterPink, new Vector3(x * 0.1f, 0f, -0.01f));
+                var f = ProcMesh.Create("Filter", m.transform, ProcMesh.Cylinder(0.05f, 0.045f, 14), Materials.FilterPink, new Vector3(x * 0.1f, 0f, 0.01f));
                 f.transform.localRotation = Quaternion.Euler(0f, 0f, x * 90f) * Quaternion.Euler(0f, 0f, 0f);
             }
-            ProcMesh.Create("Strap", m.transform, ProcMesh.Box(new Vector3(0.36f, 0.025f, 0.02f)), Materials.Black, new Vector3(0f, 0.05f, 0.12f));
+            ProcMesh.Create("Strap", m.transform, ProcMesh.Box(new Vector3(0.36f, 0.025f, 0.02f)), Materials.Black, new Vector3(0f, 0.05f, -0.12f));
             outfit.AttachToHeadBone = head;
             outfit.Renderers = new List<SkinnedMeshRenderer>();
             outfit.Hats = new List<Renderer>();
