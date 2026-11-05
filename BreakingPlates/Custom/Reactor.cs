@@ -49,20 +49,28 @@ namespace BreakingPlates.Custom
                 }
                 if (changed) r.sharedMaterials = mats;
             }
-            // Display mit Timer + Warnlampe an der hohen Rückwand (Vorderseite = -z).
+            // Drehregler etwas nach links, rechts daneben (außen, nicht im heißen Ofen) Display + Warnlampe.
+            var knobs = go.transform.Find("Oven/Circle");
+            if (knobs != null)
+            {
+                var baseKnobs = knobs.localPosition;
+                void ApplyKnobs(GameObject t) => t.transform.localPosition = baseKnobs + Tuning.V3("reactor.knobs.offset", new Vector3(-0.12f, 0f, 0f));
+                ApplyKnobs(knobs.gameObject);
+                Tuning.Register(knobs.gameObject, "reactor.knobs", ApplyKnobs);
+            }
             var panel = new GameObject("BP Reactor");
             panel.transform.SetParent(go.transform, false);
             void Apply(GameObject t)
             {
-                t.transform.localPosition = Tuning.V3("reactor.panel.pos", new Vector3(0f, 0.72f, 0.09f));
+                t.transform.localPosition = Tuning.V3("reactor.panel.pos", new Vector3(0.27f, 0.13f, -0.46f));
                 t.transform.localScale = Vector3.one * Tuning.F("reactor.panel.scale", 1f);
             }
             Apply(panel);
             Tuning.Register(panel, "reactor.panel", Apply);
-            ProcMesh.Create("Display", panel.transform, ProcMesh.Box(new Vector3(0.3f, 0.11f, 0.02f)), Materials.Black, Vector3.zero);
-            DecoBase.MakeText(panel.transform, "Timer", "00:10", new Vector3(0f, 0f, -0.012f), 0.55f, new Color(0.35f, 1f, 0.45f));
-            ProcMesh.Create("Lamp Base", panel.transform, ProcMesh.Cylinder(0.035f, 0.02f, 12), Materials.DarkGrey, new Vector3(0.28f, 0.1f, 0.05f));
-            ProcMesh.Create("Lamp", panel.transform, ProcMesh.Cylinder(0.028f, 0.05f, 12), Materials.Solid("Reactor Lamp", new Color(1f, 0.55f, 0.1f)), new Vector3(0.28f, 0.12f, 0.05f));
+            ProcMesh.Create("Display", panel.transform, ProcMesh.Box(new Vector3(0.17f, 0.08f, 0.02f)), Materials.Black, Vector3.zero);
+            DecoBase.MakeText(panel.transform, "Timer", "00:10", new Vector3(0f, 0f, -0.012f), 0.38f, new Color(0.35f, 1f, 0.45f));
+            ProcMesh.Create("Lamp Base", panel.transform, ProcMesh.Cylinder(0.035f, 0.02f, 12), Materials.DarkGrey, new Vector3(0f, 0.6f, 0.4f));
+            ProcMesh.Create("Lamp", panel.transform, ProcMesh.Cylinder(0.028f, 0.05f, 12), Materials.Solid("Reactor Lamp", new Color(1f, 0.55f, 0.1f)), new Vector3(0f, 0.62f, 0.4f));
             return go;
         }
 
