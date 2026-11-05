@@ -100,9 +100,9 @@ namespace BreakingPlates
             AddGameDataObject<PeriodicPoster>();
             AddGameDataObject<YellowBarrels>();
             AddGameDataObject<LosPollitosSign>();
-            AddGameDataObject<HazmatSuit>();
-            AddGameDataObject<HeisenbergHat>();
-            AddGameDataObject<GasMask>();
+            // AddGameDataObject<HazmatSuit>(); // Kostüme vorerst raus (macht Till später selbst)
+            // AddGameDataObject<HeisenbergHat>(); // Kostüme vorerst raus (macht Till später selbst)
+            // AddGameDataObject<GasMask>(); // Kostüme vorerst raus (macht Till später selbst)
 
             Events.BuildGameDataPreSetupEvent += (s, args) => PrefabUtil.FixMaterials();
             Events.BuildGameDataEvent += (s, args) =>
