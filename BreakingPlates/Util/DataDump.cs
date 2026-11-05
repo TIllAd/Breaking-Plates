@@ -83,6 +83,8 @@ namespace BreakingPlates
             }
             if (gdo is Item item && item.Prefab != null)
                 sb.AppendLine("   Prefab-Hierarchie:\n" + Hierarchy(item.Prefab.transform, "      "));
+            if (gdo is Appliance app && app.Prefab != null && (gdo.name.Contains("BreakingPlates") || gdo.name.Contains("Leftovers") || gdo.name == "Freezer"))
+                sb.AppendLine("   Prefab-Hierarchie:\n" + Hierarchy(app.Prefab.transform, "      "));
         }
 
         private static string Fmt(object v, int depth)

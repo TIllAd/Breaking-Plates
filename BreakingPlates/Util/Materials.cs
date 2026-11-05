@@ -24,7 +24,7 @@ namespace BreakingPlates
         public static Material BlueSyrup => Flat("Blue Syrup", Tuning.C("color.syrup", new Color(0.18f, 0.52f, 0.95f)), 0.4f);
         public static Material BlueCrystal => Flat("Blue Crystal", Tuning.C("color.crystal", new Color(0.45f, 0.8f, 1f)), 0.9f);
 
-        public static Material PureCrystal => Flat("Pure Crystal", Tuning.C("color.pure", new Color(0.55f, 0.88f, 1f)), 1f);
+        public static Material PureCrystal => Flat("Pure Crystal", Tuning.C("color.pure", new Color(0.9f, 0.98f, 1f)), 1f);
         public static Material Water => Flat("Water", Tuning.C("color.water", new Color(0.7f, 0.86f, 0.96f)), 0.6f);
         public static Material Sugar => Flat("Sugar", new Color(0.97f, 0.95f, 0.9f), 0.3f);
 
@@ -81,7 +81,7 @@ namespace BreakingPlates
             }
             Set("Blue Syrup", "color.syrup", new Color(0.18f, 0.52f, 0.95f));
             Set("Blue Crystal", "color.crystal", new Color(0.45f, 0.8f, 1f));
-            Set("Pure Crystal", "color.pure", new Color(0.55f, 0.88f, 1f));
+            Set("Pure Crystal", "color.pure", new Color(0.9f, 0.98f, 1f));
             Set("Zip Red", "color.zip.chili", new Color(0.85f, 0.15f, 0.15f));
             Set("Zip Blue", "color.zip", new Color(0.2f, 0.45f, 0.9f));
             Set("Zip Green", "color.zip.stevia", new Color(0.25f, 0.75f, 0.3f));

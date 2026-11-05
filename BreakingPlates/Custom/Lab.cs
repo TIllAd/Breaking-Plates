@@ -28,14 +28,28 @@ namespace BreakingPlates.Custom
                 ?? ((Appliance)GDOUtils.GetExistingGDO(ApplianceReferences.LeftoversBagStation)).Prefab;
             var go = Object.Instantiate(src, PrefabUtil.Holder, false);
             go.name = "BreakingPlates " + Title;
-            var top = new GameObject("BP Top");
-            top.transform.SetParent(go.transform, false);
-            void Place(GameObject t) => t.transform.localPosition = Tuning.V3("provider.top", new Vector3(0f, 0.95f, 0f));
-            Place(top);
-            Tuning.Register(top, "provider.top", Place);
-            // Die Station zeigt die bereitgestellten Items schon selbst an (Stapel). Eigene Deko obendrauf
-            // passte beim Drehen nicht, daher vorerst aus.
-            if (UseDecoration) Decorate(top.transform);
+            // "Snapshot" (große Spiel-Tüte vorne oben) leeren: stand bei Kolben sichtbar über.
+            // Das Item-Prefab gibt es zu diesem Zeitpunkt nur über das eigene Custom-Objekt (Spiel-Daten noch im Aufbau).
+            var itemPrefab = (GDOUtils.GetCustomGameDataObject(Provided.ID) as CustomItem)?.Prefab ?? Provided.Prefab;
+            // Ablageplätze (im Spiel "Takeaway Bag") ebenfalls mit dem eigenen Item füllen, damit auch Vorschaubilder stimmen.
+            foreach (Transform slot in go.transform)
+            {
+                if (!slot.name.StartsWith("Takeaway Bag") || itemPrefab == null) continue;
+                for (int i = slot.childCount - 1; i >= 0; i--) Object.DestroyImmediate(slot.GetChild(i).gameObject);
+                PrefabUtil.CloneVisual(itemPrefab, slot, "Item", Vector3.zero);
+            }
+            var snap = go.transform.Find("Snapshot");
+            if (snap != null)
+            {
+                for (int i = snap.childCount - 1; i >= 0; i--) Object.DestroyImmediate(snap.GetChild(i).gameObject);
+            }
+            if (UseDecoration)
+            {
+                var top = new GameObject("BP Top");
+                top.transform.SetParent(go.transform, false);
+                top.transform.localPosition = new Vector3(0f, 0.95f, 0f);
+                Decorate(top.transform);
+            }
             return go;
         }
 
@@ -57,6 +71,15 @@ namespace BreakingPlates.Custom
             (Locale.English, LocalisationUtils.CreateApplianceInfo(Title, Desc, new List<Appliance.Section>(), new List<string>()))
         };
 #pragma warning restore CS0618
+    }
+
+    // --- Tütchen ---
+    public class BagProvider : ProviderBase
+    {
+        public override string UniqueNameID => "Candy Bag Provider";
+        protected override Item Provided => (Item)GDOUtils.GetCustomGameDataObject<EmptyBag>().GameDataObject;
+        protected override string Title => "Candy Bags";
+        protected override string Desc => "Provides small bags. Strictly for candy.";
     }
 
     // --- Erlenmeyerkolben (ersetzt den Topf) ---

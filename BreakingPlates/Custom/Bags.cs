@@ -27,25 +27,6 @@ namespace BreakingPlates.Custom
         }
     }
 
-    // Quelle für Tütchen (Optik der Reste-Tüten-Station aus dem Spiel), unbegrenzt.
-    public class BagProvider : CustomAppliance
-    {
-        public override string UniqueNameID => "Candy Bag Provider";
-        public override GameObject Prefab => ((Appliance)GDOUtils.GetExistingGDO(ApplianceReferences.LeftoversBagStation)).Prefab;
-        public override List<IApplianceProperty> Properties => new List<IApplianceProperty>
-        {
-            KitchenPropertiesUtils.GetUnlimitedCItemProvider(GDOUtils.GetCustomGameDataObject<EmptyBag>().GameDataObject.ID)
-        };
-        public override bool IsPurchasable => true;
-        public override bool SellOnlyAsDuplicate => true;
-        public override PriceTier PriceTier => PriceTier.Cheap;
-        public override ShoppingTags ShoppingTags => ShoppingTags.Cooking | ShoppingTags.Misc;
-        public override List<(Locale, ApplianceInfo)> InfoList => new List<(Locale, ApplianceInfo)>
-        {
-            (Locale.English, LocalisationUtils.CreateApplianceInfo("Candy Bags", "Provides small bags. Strictly for candy.", new List<Appliance.Section>(), new List<string>()))
-        };
-    }
-
     // Gefülltes Tütchen = das, was serviert wird.
     public abstract class FilledBagBase : CustomItemGroup
     {
