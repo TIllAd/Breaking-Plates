@@ -50,12 +50,11 @@ namespace BreakingPlates
 
             // Reihenfolge: Ergebnisse vor den Dingen, die auf sie verweisen.
             // Laborbedarf
-            AddGameDataObject<CrystalPurifier>();
+            // AddGameDataObject<CrystalPurifier>(); // ersetzt durch Umkristallisieren
             AddGameDataObject<LabReactor>();
             // AddGameDataObject<GlassReactor>(); // Vergleichsvariante, Ofen-Reactor gewählt
             AddGameDataObject<ReactProcess>();
             AddGameDataObject<ReactCoolProcess>();
-            AddGameDataObject<PurifyProcess>();
             AddGameDataObject<FlaskProvider>();
             AddGameDataObject<LabFlask>();
             // AddGameDataObject<BigFlaskProvider>(); // Superlab vorerst raus (verwirrte eher)
@@ -83,6 +82,8 @@ namespace BreakingPlates
             AddGameDataObject<PureShardsPot>();
             AddGameDataObject<CrystalPot>();
             AddGameDataObject<PureCrystalPot>();
+            AddGameDataObject<PureSyrupPot>();
+            AddGameDataObject<RecrystallisePot>();
             AddGameDataObject<SyrupPot>();
             AddGameDataObject<SugarPot>();
             // AddGameDataObject<BigShardsPot>(); // Superlab vorerst raus (verwirrte eher)

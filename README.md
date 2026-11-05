@@ -24,7 +24,7 @@ Every candy bag looks the same: clear foil, blue zip. Toppings and variants are 
 | Card | Type | ★ | Customers | Order pays | What it adds | Quote |
 |---|---|---|---|---|---|---|
 | **Blue Rock Candy** | Main (base) | 3 | small decrease | 5 | The dish above | *"Say my name."* |
-| **99.1% Purity** | Main | 2 | small decrease | 6 | Adds the **Crystal Purifier**: crystals inside turn pure (white, `99`) | *"A higher purity means a greater yield."* |
+| **99.1% Purity** | Main | 2 | small decrease | 6 | **Recrystallise**: smashed candy + water back into the flask, cook and cool again → pure (white, `99`). Pure candy also counts for normal orders | *"A higher purity means a greater yield."* |
 | **Chili P** | Topping | 1 | small decrease | +1 | Chopped jalapeño in the bag → **chili clipped to the zip** | *"Chili P is my signature!"* |
 | **Sugar-Free** | Main | 2 | small decrease | 5 | Cook with **stevia** instead of sugar → bag with a **stevia sprig** | *"I'll need more stevia."* |
 | **On a Stick** | Main | 2 | small decrease | 5 | **Candy stick** into the hot syrup → 5 lollis straight from the flask | *"Yeah, science!"* |

@@ -113,15 +113,15 @@ namespace BreakingPlates.Custom
         public override int Difficulty => 2;
         public override HashSet<Process> RequiredProcesses => new HashSet<Process>
         {
-            G.P(ProcessReferences.Knead), (Process)GDOUtils.GetCustomGameDataObject<PurifyProcess>().GameDataObject
+            G.P(ProcessReferences.Cook), G.P(ProcessReferences.Knead)
         };
         public override List<Dish.MenuItem> ResultingMenuItems => new List<Dish.MenuItem> { Menu(G.I<PureCandyBag>(), 0.75f) };
         private GameObject _icon;
         public override GameObject IconPrefab => _icon ??= Icon("Pure Candy - Icon", t => PureCrystal(t, "Crystal", new Vector3(0f, 0.12f, 0f), 1.3f));
         protected override string CardName => "99.1% Purity";
-        protected override string CardDescription => "Some customers only accept the purest batch. Adds the Crystal Purifier.";
+        protected override string CardDescription => "Some customers only accept the purest batch: recrystallise your candy for 99.1%.";
         protected override string Quote => "A higher purity means a greater yield.";
-        protected override string RecipeText => "Put a flask of set crystals into the Crystal Purifier until they turn pure (99). Smash and bag as usual. Pure candy can be chopped back into a normal portion.";
+        protected override string RecipeText => "Recrystallise: add water to a flask of smashed candy, cook it again and let it cool. The crystals come out pure (99). Smash and bag as usual. Pure candy also works for normal orders.";
     }
 
     // Chili P: Jalapeño schneiden und ins Tütchen -> roter Verschluss.

@@ -91,6 +91,7 @@ namespace BreakingPlates.Custom
     public abstract class SyrupBase : CustomItem
     {
         protected virtual bool MarkStevia => false;
+        protected virtual Material SyrupMaterial => Materials.BlueSyrup;
         protected abstract Item Container { get; }
         protected abstract Item Crystallised { get; }
         protected virtual float CoolTime => 12f;
@@ -115,7 +116,7 @@ namespace BreakingPlates.Custom
                 if (_prefab == null)
                 {
                     _prefab = PrefabUtil.CreateRoot(UniqueNameID);
-                    var flask = Flask(_prefab.transform, "Flask", Vector3.zero, FlaskScale, Materials.BlueSyrup);
+                    var flask = Flask(_prefab.transform, "Flask", Vector3.zero, FlaskScale, SyrupMaterial);
                     if (MarkStevia) G.SteviaMark(flask);
                 }
                 return _prefab;
@@ -130,7 +131,6 @@ namespace BreakingPlates.Custom
         protected abstract Item Container { get; }
         protected abstract Item Smashed { get; }
         protected virtual Item OverCooled => null;
-        protected virtual float PurifyTime => 6f;
         protected virtual float FlaskScale => 1f;
         protected virtual bool Pure => false;
 
@@ -139,14 +139,7 @@ namespace BreakingPlates.Custom
         public override string ColourBlindTag => Pure ? "99" : "Cr";
 
         private Item.ItemProcess Knead => new Item.ItemProcess { Process = G.P(ProcessReferences.Knead), Duration = 2.5f, Result = Smashed };
-        // Reinigen nur im Crystal Purifier (gibt es nur mit der Karte 99.1% Purity).
-        private Item.ItemProcess Purify => new Item.ItemProcess
-        {
-            Process = (Process)GDOUtils.GetCustomGameDataObject<PurifyProcess>().GameDataObject, Duration = PurifyTime, Result = OverCooled
-        };
-        public override List<Item.ItemProcess> Processes => OverCooled != null
-            ? new List<Item.ItemProcess> { Knead, Purify }
-            : new List<Item.ItemProcess> { Knead };
+        public override List<Item.ItemProcess> Processes => new List<Item.ItemProcess> { Knead };
 
         private GameObject _prefab;
         public override GameObject Prefab
@@ -236,7 +229,6 @@ namespace BreakingPlates.Custom
         public override string UniqueNameID => "Crystal Pot";
         protected override Item Container => G.I<LabFlask>();
         protected override Item Smashed => G.I<ShardsPot>();
-        protected override Item OverCooled => G.I<PureCrystalPot>();
     }
 
     public class PureCrystalPot : CrystalBase
@@ -260,6 +252,67 @@ namespace BreakingPlates.Custom
         protected override Item Container => G.I<LabFlask>();
         protected override Item Portion => G.I<PureBlueRockCandy>();
         protected override bool Pure => true;
+    }
+
+    // ---------- 99,1 %: Umkristallisieren ----------
+    // Zerschlagene Kristalle + Wasser zurück in den Kolben -> nochmal kochen -> abkühlen -> reine Kristalle.
+
+    public class RecrystallisePot : CustomItemGroup
+    {
+        public override string UniqueNameID => "Recrystallise Pot";
+        public override ItemStorage ItemStorageFlags => ItemStorage.None;
+        public override Item DisposesTo => G.I<LabFlask>();
+        public override string ColourBlindTag => "Re";
+
+        public override List<ItemGroup.ItemSet> Sets => new List<ItemGroup.ItemSet>
+        {
+            new ItemGroup.ItemSet { Min = 1, Max = 1, IsMandatory = true, Items = new List<Item> { G.I<ShardsPot>() } },
+            new ItemGroup.ItemSet { Min = 1, Max = 1, Items = new List<Item> { Ref(ItemReferences.Water) } },
+        };
+
+        public override List<Item.ItemProcess> Processes => new List<Item.ItemProcess>
+        {
+            new Item.ItemProcess { Process = G.P(ProcessReferences.Cook), Duration = 8f, Result = G.I<PureSyrupPot>() }
+        };
+
+        public override List<ItemGroupView.ColourBlindLabel> Labels => new List<ItemGroupView.ColourBlindLabel>
+        {
+            new ItemGroupView.ColourBlindLabel { Item = Ref(ItemReferences.Water), Text = "W" },
+        };
+
+        private GameObject _prefab, _water;
+        public override GameObject Prefab
+        {
+            get
+            {
+                if (_prefab == null)
+                {
+                    _prefab = PrefabUtil.CreateRoot(UniqueNameID);
+                    var flask = Flask(_prefab.transform, "Flask", Vector3.zero);
+                    FlaskCrystals(flask.transform, "Shards", 0.06f, 8);
+                    _water = FlaskLiquid(flask.transform, "Water", Materials.Water);
+                }
+                return _prefab;
+            }
+        }
+
+        public override void OnRegister(ItemGroup gdo)
+        {
+            Prefab.GetComponent<ItemGroupView>().ComponentGroups = new List<ItemGroupView.ComponentGroup>
+            {
+                new ItemGroupView.ComponentGroup { Item = Ref(ItemReferences.Water), GameObject = _water },
+            };
+        }
+    }
+
+    // Klarer, heller Sirup: wird beim Abkühlen zu reinen Kristallen.
+    public class PureSyrupPot : SyrupBase
+    {
+        public override string UniqueNameID => "Blue Syrup Pot - Pure";
+        protected override Item Container => G.I<LabFlask>();
+        protected override Item Crystallised => G.I<PureCrystalPot>();
+        protected override Material SyrupMaterial => Materials.Solid("Pure Syrup", new Color(0.6f, 0.85f, 1f));
+        public override string ColourBlindTag => "99";
     }
 
     // Das Produkt.
