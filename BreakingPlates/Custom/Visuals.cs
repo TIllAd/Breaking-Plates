@@ -99,12 +99,37 @@ namespace BreakingPlates.Custom
             return zip;
         }
 
-        // Roter Verschluss für Chili-P-Tütchen: liegt minimal größer über dem blauen und wird nur bei Chili eingeblendet.
-        public static GameObject ChiliZip(GameObject bag)
+        // Aufkleber vorne auf dem Tütchen (Chili P = rote Chili, Sugar-Free = grünes Blatt). Verschluss bleibt immer blau.
+        // Lage per F8: bag.sticker.chili / bag.sticker.stevia
+        public static GameObject ChiliSticker(GameObject bag)
         {
-            var zip = MakeZip(bag.transform, "ZipChili", Materials.ZipRed);
-            ApplyBag(bag);
-            return zip;
+            var st = Sticker(bag, "Chili Sticker", "bag.sticker.chili", new Vector3(0.02f, 0.12f, -0.1f));
+            var body = ProcMesh.Create("Chili", st.transform, ProcMesh.Box(new Vector3(0.2f, 0.07f, 0.012f)), Materials.ZipRed, Vector3.zero);
+            body.transform.localRotation = Quaternion.Euler(0f, 0f, 25f);
+            var stem = ProcMesh.Create("Stem", st.transform, ProcMesh.Box(new Vector3(0.05f, 0.03f, 0.014f)), Materials.Green, new Vector3(0.1f, 0.05f, 0f));
+            stem.transform.localRotation = Quaternion.Euler(0f, 0f, 25f);
+            return st;
+        }
+
+        public static GameObject SteviaSticker(GameObject bag)
+        {
+            var st = Sticker(bag, "Stevia Sticker", "bag.sticker.stevia", new Vector3(0.08f, 0.27f, -0.1f));
+            var leaf = Materials.Solid("Stevia Sticker", new Color(0.3f, 0.75f, 0.3f));
+            var a = ProcMesh.Create("Leaf A", st.transform, ProcMesh.Box(new Vector3(0.1f, 0.05f, 0.012f)), leaf, new Vector3(-0.025f, 0f, 0f));
+            a.transform.localRotation = Quaternion.Euler(0f, 0f, 30f);
+            var b = ProcMesh.Create("Leaf B", st.transform, ProcMesh.Box(new Vector3(0.1f, 0.05f, 0.012f)), leaf, new Vector3(0.025f, 0f, 0f));
+            b.transform.localRotation = Quaternion.Euler(0f, 0f, -30f);
+            return st;
+        }
+
+        private static GameObject Sticker(GameObject bag, string name, string key, Vector3 def)
+        {
+            var st = new GameObject(name);
+            st.transform.SetParent(bag.transform, false);
+            void Apply(GameObject t) => t.transform.localPosition = Tuning.V3(key, def);
+            Apply(st);
+            Tuning.Register(st, key, Apply);
+            return st;
         }
 
         private static void ApplyBag(GameObject root)
@@ -118,11 +143,11 @@ namespace BreakingPlates.Custom
             if (foil != null) foil.GetComponent<MeshFilter>().sharedMesh = ProcMesh.Pouch(w, h, b, 14, tilt, skew, wobble, pinch, sag, bow);
 
             // Verschluss aus Segmenten, die dem Bogen der Oberkante folgen (blau; roter Chili-Verschluss etwas größer darüber).
-            foreach (var zipName in new[] { "Zip", "ZipChili" })
+            foreach (var zipName in new[] { "Zip" })
             {
             var zip = root.transform.Find(zipName);
             if (zip == null) continue;
-            float grow = zipName == "ZipChili" ? 1.12f : 1f;
+            float grow = 1f;
             var zs = Tuning.V3("bag.zip.size", new Vector3(0.43f, 0.045f, 0.04f));
             float segW = w / ZipSegments;
             for (int i = 0; i < ZipSegments; i++)

@@ -93,7 +93,7 @@ namespace BreakingPlates
             AddGameDataObject<PlatterDish>();
             // AddGameDataObject<SuperlabDish>(); // Superlab vorerst raus (verwirrte eher)
             AddGameDataObject<SchraderDish>();
-            AddGameDataObject<PizzaRoofDish>();
+            // AddGameDataObject<PizzaRoofDish>(); // Pizza vorerst raus (später evtl.)
             AddGameDataObject<BreakingEvenCard>();
 
             // Deko und Kostüm

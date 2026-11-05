@@ -181,6 +181,10 @@ namespace BreakingPlates.Custom
         public override List<Item> SplitDepletedItems => new List<Item> { Container };
         public override Item DisposesTo => Container;
         public override string ColourBlindTag => Pure ? "99" : "Sh";
+        // Karte "Mass Production": der volle Kolben geht an eine ganze Gruppe, danach bleibt der leere Kolben stehen.
+        protected virtual bool WholeBatch => true;
+        public override int MaxOrderSharers => WholeBatch ? 4 : 0;
+        public override Item DirtiesTo => WholeBatch ? Container : null;
 
         private GameObject _prefab;
         public override GameObject Prefab
@@ -244,9 +248,6 @@ namespace BreakingPlates.Custom
         public override string UniqueNameID => "Crystal Shards Pot";
         protected override Item Container => G.I<LabFlask>();
         protected override Item Portion => G.I<BlueRockCandy>();
-        // Karte "Ganze Platte": der volle Kolben wird an eine ganze Gruppe serviert, danach bleibt der leere Kolben stehen.
-        public override int MaxOrderSharers => 4;
-        public override Item DirtiesTo => G.I<LabFlask>();
     }
 
     public class PureShardsPot : ShardsBase
@@ -443,6 +444,7 @@ namespace BreakingPlates.Custom
     public class LolliPot : ShardsBase
     {
         public override string UniqueNameID => "Crystal Lolli Pot";
+        protected override bool WholeBatch => false;
         protected override Item Container => G.I<LabFlask>();
         protected override Item Portion => G.I<RockCandyLolli>();
         public override string ColourBlindTag => "St";

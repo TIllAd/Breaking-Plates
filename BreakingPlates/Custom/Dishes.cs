@@ -199,10 +199,10 @@ namespace BreakingPlates.Custom
             Flask(t, "Flask", Vector3.zero, 1f);
             FlaskCrystals(t.Find("Flask"), "Shards", 0.06f, 8);
         });
-        protected override string CardName => "The Whole Batch";
-        protected override string CardDescription => "Groups may order a whole flask of smashed candy to share";
-        protected override string Quote => "Tread lightly.";
-        protected override string RecipeText => "Serve a full flask of smashed candy (all 5 portions) to the table. The group shares it and leaves the empty flask behind.";
+        protected override string CardName => "Mass Production";
+        protected override string CardDescription => "Groups may order a whole flask of smashed candy to share - in every variant you sell";
+        protected override string Quote => "I'm in the empire business.";
+        protected override string RecipeText => "Serve a full flask of smashed candy (all 5 portions) to the table. Works for every variant you have (99.1%, sugar-free). The group shares it and leaves the empty flask behind.";
     }
 
     // Superlab: großer Kolben, 10 Portionen, längere Kochzeit, mehr Bestellungen.
