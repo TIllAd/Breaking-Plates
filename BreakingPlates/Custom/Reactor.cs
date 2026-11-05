@@ -7,8 +7,9 @@ using UnityEngine;
 
 namespace BreakingPlates.Custom
 {
-    // Lab Reactor: kocht UND kühlt automatisch (Kolben rein -> Kristalle raus). Eigenes Gerät, kein Upgrade,
-    // und ein eigener Prozess, damit er nur Kolben verarbeitet und nicht jedes Essen kocht/einfriert.
+    // Reactor: kocht UND kühlt automatisch (Kolben rein -> Kristalle raus). Eigenes Gerät, kein Upgrade,
+    // eigener Prozess, damit er nur Kolben verarbeitet. Zum Vergleich gibt es gerade zwei Optiken:
+    // A = umgebauter Ofen (Lab Reactor), B = Glas-Reaktor auf Arbeitsfläche (Glass Reactor).
     public class ReactProcess : CustomProcess
     {
         public override string UniqueNameID => "React";
@@ -24,53 +25,20 @@ namespace BreakingPlates.Custom
         public const float CoolTime = 5f;
     }
 
-    public class LabReactor : CustomAppliance
+    public abstract class ReactorBase : CustomAppliance
     {
-        public override string UniqueNameID => "Lab Reactor";
-        // Vorlage: Ofen (großes Gerät mit Klappe, Inhalt beim Arbeiten verdeckt).
-        private static Appliance Oven => (Appliance)GDOUtils.GetExistingGDO(ApplianceReferences.Oven);
+        protected abstract Appliance Template { get; }
+        protected abstract string Title { get; }
+        protected abstract string Desc { get; }
+        protected abstract void Build(GameObject go);
 
         private GameObject _prefab;
         public override GameObject Prefab => _prefab ??= Make();
-        private static GameObject Make()
+        private GameObject Make()
         {
-            var go = Object.Instantiate(Oven.Prefab, PrefabUtil.Holder, false);
-            go.name = "BreakingPlates Lab Reactor";
-            // Nur den roten Lack gelb färben; Schwarz, Metall und Glas bleiben. Drehregler schwarz.
-            foreach (var r in go.GetComponentsInChildren<MeshRenderer>(true))
-            {
-                var mats = r.sharedMaterials;
-                bool changed = false;
-                for (int i = 0; i < mats.Length; i++)
-                {
-                    if (mats[i] == null) continue;
-                    if (mats[i].name.Contains("Deep Red")) { mats[i] = Materials.Hazmat; changed = true; }
-                    else if (r.gameObject.name == "Circle") { mats[i] = Materials.Black; changed = true; }
-                }
-                if (changed) r.sharedMaterials = mats;
-            }
-            // Drehregler etwas nach links, rechts daneben (außen, nicht im heißen Ofen) Display + Warnlampe.
-            var knobs = go.transform.Find("Oven/Circle");
-            if (knobs != null)
-            {
-                var baseKnobs = knobs.localPosition;
-                void ApplyKnobs(GameObject t) => t.transform.localPosition = baseKnobs + Tuning.V3("reactor.knobs.offset", new Vector3(-0.12f, 0f, 0f));
-                ApplyKnobs(knobs.gameObject);
-                Tuning.Register(knobs.gameObject, "reactor.knobs", ApplyKnobs);
-            }
-            var panel = new GameObject("BP Reactor");
-            panel.transform.SetParent(go.transform, false);
-            void Apply(GameObject t)
-            {
-                t.transform.localPosition = Tuning.V3("reactor.panel.pos", new Vector3(0.27f, 0.13f, -0.46f));
-                t.transform.localScale = Vector3.one * Tuning.F("reactor.panel.scale", 1f);
-            }
-            Apply(panel);
-            Tuning.Register(panel, "reactor.panel", Apply);
-            ProcMesh.Create("Display", panel.transform, ProcMesh.Box(new Vector3(0.17f, 0.08f, 0.02f)), Materials.Black, Vector3.zero);
-            DecoBase.MakeText(panel.transform, "Timer", "00:10", new Vector3(0f, 0f, -0.012f), 0.38f, new Color(0.35f, 1f, 0.45f));
-            ProcMesh.Create("Lamp Base", panel.transform, ProcMesh.Cylinder(0.035f, 0.02f, 12), Materials.DarkGrey, new Vector3(0f, 0.6f, 0.4f));
-            ProcMesh.Create("Lamp", panel.transform, ProcMesh.Cylinder(0.028f, 0.05f, 12), Materials.Solid("Reactor Lamp", new Color(1f, 0.55f, 0.1f)), new Vector3(0f, 0.62f, 0.4f));
+            var go = Object.Instantiate(Template.Prefab, PrefabUtil.Holder, false);
+            go.name = "BreakingPlates " + Title;
+            Build(go);
             return go;
         }
 
@@ -78,7 +46,7 @@ namespace BreakingPlates.Custom
         {
             new Appliance.ApplianceProcesses { Process = ReactProcess.P, IsAutomatic = true, Speed = 1f }
         };
-        public override List<IApplianceProperty> Properties => Oven.Properties;
+        public override List<IApplianceProperty> Properties => Template.Properties;
         public override bool IsPurchasable => true;
         public override PriceTier PriceTier => PriceTier.Expensive;
         public override RarityTier RarityTier => RarityTier.Rare;
@@ -88,10 +56,123 @@ namespace BreakingPlates.Custom
 #pragma warning disable CS0618
         public override List<(Locale, ApplianceInfo)> InfoList => new List<(Locale, ApplianceInfo)>
         {
-            (Locale.English, LocalisationUtils.CreateApplianceInfo("Lab Reactor", "Cooks and cools in one go. Industrial chemistry.",
+            (Locale.English, LocalisationUtils.CreateApplianceInfo(Title, Desc,
                 new List<Appliance.Section> { new Appliance.Section { Title = "Automatic", Description = "Turns a flask of sugar and water straight into crystals" } },
                 new List<string>()))
         };
 #pragma warning restore CS0618
+
+        protected static GameObject Part(string name, Transform parent, Mesh mesh, Material m, Vector3 pos, Vector3? rot = null)
+        {
+            var go = ProcMesh.Create(name, parent, mesh, m, pos);
+            if (rot.HasValue) go.transform.localRotation = Quaternion.Euler(rot.Value);
+            return go;
+        }
+
+        protected static GameObject Tuned(Transform parent, string name, string key, Vector3 pos)
+        {
+            var go = new GameObject(name);
+            go.transform.SetParent(parent, false);
+            void Apply(GameObject t)
+            {
+                t.transform.localPosition = Tuning.V3(key + ".pos", pos);
+                t.transform.localScale = Vector3.one * Tuning.F(key + ".scale", 1f);
+            }
+            Apply(go);
+            Tuning.Register(go, key, Apply);
+            return go;
+        }
+    }
+
+    // A: Ofen aus dem Spiel, Edelstahl statt Rot, gelber Warnstreifen, schwarze Regler, Display, Gefahren-Raute an der Seite.
+    public class LabReactor : ReactorBase
+    {
+        public override string UniqueNameID => "Lab Reactor";
+        protected override Appliance Template => (Appliance)GDOUtils.GetExistingGDO(ApplianceReferences.Oven);
+        protected override string Title => "Lab Reactor";
+        protected override string Desc => "Cooks and cools in one go. Industrial chemistry.";
+
+        protected override void Build(GameObject go)
+        {
+            var steel = Materials.Solid("Reactor Steel", Tuning.C("color.reactor", new Color(0.72f, 0.74f, 0.76f)));
+            foreach (var r in go.GetComponentsInChildren<MeshRenderer>(true))
+            {
+                var mats = r.sharedMaterials;
+                bool changed = false;
+                for (int i = 0; i < mats.Length; i++)
+                {
+                    if (mats[i] == null) continue;
+                    if (mats[i].name.Contains("Deep Red")) { mats[i] = steel; changed = true; }
+                    else if (r.gameObject.name == "Circle") { mats[i] = Materials.Black; changed = true; }
+                }
+                if (changed) r.sharedMaterials = mats;
+            }
+
+            var knobs = go.transform.Find("Oven/Circle");
+            if (knobs != null)
+            {
+                var baseKnobs = knobs.localPosition;
+                void ApplyKnobs(GameObject t) => t.transform.localPosition = baseKnobs + Tuning.V3("reactor.knobs.offset", new Vector3(-0.12f, 0f, 0f));
+                ApplyKnobs(knobs.gameObject);
+                Tuning.Register(knobs.gameObject, "reactor.knobs", ApplyKnobs);
+            }
+
+            // Display rechts neben den Reglern (außen), orange Warnlampe oben.
+            var panel = Tuned(go.transform, "BP Panel", "reactor.panel", new Vector3(0.27f, 0.13f, -0.46f));
+            Part("Display", panel.transform, ProcMesh.Box(new Vector3(0.17f, 0.08f, 0.02f)), Materials.Black, Vector3.zero);
+            DecoBase.MakeText(panel.transform, "Timer", "00:10", new Vector3(0f, 0f, -0.012f), 0.38f, new Color(0.35f, 1f, 0.45f));
+
+            var lamp = Tuned(go.transform, "BP Lamp", "reactor.lamp", new Vector3(0.3f, 0.92f, 0.3f));
+            Part("Lamp Base", lamp.transform, ProcMesh.Cylinder(0.04f, 0.02f, 12), Materials.DarkGrey, Vector3.zero);
+            Part("Lamp", lamp.transform, ProcMesh.Cylinder(0.03f, 0.06f, 12), Materials.Solid("Reactor Lamp", new Color(1f, 0.55f, 0.1f)), new Vector3(0f, 0.02f, 0f));
+
+            // Gelber Warnstreifen unten rundherum (dezent, nur ein Band).
+            var stripe = Tuned(go.transform, "BP Stripe", "reactor.stripe", new Vector3(0f, 0.04f, 0f));
+            Part("Band", stripe.transform, ProcMesh.Box(new Vector3(0.82f, 0.05f, 0.92f)), Materials.Hazmat, Vector3.zero);
+
+            // Gefahren-Raute mit Kolben an der rechten Seite.
+            var sign = Tuned(go.transform, "BP Hazard", "reactor.hazard", new Vector3(0.415f, 0.42f, 0f));
+            Part("Diamond Border", sign.transform, ProcMesh.Box(new Vector3(0.01f, 0.2f, 0.2f)), Materials.Black, Vector3.zero, new Vector3(45f, 0f, 0f));
+            Part("Diamond", sign.transform, ProcMesh.Box(new Vector3(0.012f, 0.17f, 0.17f)), Materials.Hazmat, Vector3.zero, new Vector3(45f, 0f, 0f));
+            var icon = new GameObject("Flask Icon");
+            icon.transform.SetParent(sign.transform, false);
+            icon.transform.localPosition = new Vector3(0.012f, -0.05f, 0f);
+            icon.transform.localScale = new Vector3(0.05f, 0.28f, 0.28f);
+            ProcMesh.Create("Flask", icon.transform, ProcMesh.Lathe(ProcMesh.ErlenmeyerProfile, 16), Materials.Black, Vector3.zero);
+        }
+    }
+
+    // B: Arbeitsfläche aus dem Spiel mit Glaskammer; der Kolben steht sichtbar darin. Rote Heizspirale unten, blaue Kühlspirale oben.
+    public class GlassReactor : ReactorBase
+    {
+        public override string UniqueNameID => "Glass Reactor";
+        protected override Appliance Template => (Appliance)GDOUtils.GetExistingGDO(ApplianceReferences.Countertop);
+        protected override string Title => "Glass Reactor";
+        protected override string Desc => "Watch it boil, watch it freeze. Science.";
+
+        private static Mesh Ring(float r, float thick = 0.018f) => ProcMesh.Lathe(new[]
+        {
+            new Vector2(r - thick, 0f), new Vector2(r + thick, 0f), new Vector2(r + thick, thick * 2f), new Vector2(r - thick, thick * 2f), new Vector2(r - thick, 0f)
+        }, 24);
+
+        protected override void Build(GameObject go)
+        {
+            var root = Tuned(go.transform, "BP Glass Reactor", "glassreactor", new Vector3(0f, 0.5f, 0f));
+            Part("Base Plate", root.transform, ProcMesh.Cylinder(0.36f, 0.04f, 24), Materials.DarkGrey, Vector3.zero);
+            Part("Chamber", root.transform, ProcMesh.Mug(0.33f, 0.56f, 0.01f), Materials.Glass, new Vector3(0f, 0.04f, 0f));
+            var heat = Materials.Solid("Heater Coil", new Color(0.95f, 0.35f, 0.12f));
+            var cool = Materials.Solid("Cooler Coil", new Color(0.3f, 0.6f, 0.95f));
+            Part("Heat 1", root.transform, Ring(0.3f), heat, new Vector3(0f, 0.07f, 0f));
+            Part("Heat 2", root.transform, Ring(0.3f), heat, new Vector3(0f, 0.12f, 0f));
+            Part("Cool 1", root.transform, Ring(0.3f), cool, new Vector3(0f, 0.46f, 0f));
+            Part("Cool 2", root.transform, Ring(0.3f), cool, new Vector3(0f, 0.51f, 0f));
+            Part("Lid", root.transform, ProcMesh.Cylinder(0.35f, 0.035f, 24), Materials.DarkGrey, new Vector3(0f, 0.6f, 0f));
+            Part("Vent", root.transform, ProcMesh.Cylinder(0.05f, 0.08f, 12), Materials.Black, new Vector3(0.18f, 0.635f, 0.1f));
+            var panel = new GameObject("Panel");
+            panel.transform.SetParent(root.transform, false);
+            panel.transform.localPosition = new Vector3(0f, -0.12f, -0.47f);
+            Part("Display", panel.transform, ProcMesh.Box(new Vector3(0.2f, 0.08f, 0.02f)), Materials.Black, Vector3.zero);
+            DecoBase.MakeText(panel.transform, "Timer", "00:10", new Vector3(0f, 0f, -0.012f), 0.42f, new Color(0.35f, 1f, 0.45f));
+        }
     }
 }
