@@ -19,6 +19,8 @@ namespace BreakingPlates.Custom
         // Kleines Modell des Inhalts oben auf der Quelle (null = keins).
         protected virtual void Decorate(Transform top) { }
         protected virtual bool UseDecoration => false;
+        // Für Anpassungen an der Spiel-Optik (z.B. Farben der Vorlage).
+        protected virtual void Customize(GameObject go) { }
         // false = feste Optik (Decorate) statt der einzelnen Items auf den vier Plätzen.
         protected virtual bool ShowItemsInSlots => true;
 
@@ -69,6 +71,7 @@ namespace BreakingPlates.Custom
                 top.transform.localPosition = new Vector3(0f, 0.95f, 0f);
                 Decorate(top.transform);
             }
+            Customize(go);
             return go;
         }
 
@@ -215,8 +218,32 @@ namespace BreakingPlates.Custom
         protected override Item Provided => (Item)GDOUtils.GetCustomGameDataObject<Stevia>().GameDataObject;
         protected override string Title => "Stevia";
         protected override string Desc => "Sugar-free. Lydia insists.";
-        // Topfpflanze aus dem Spiel als Quelle: sieht klar anders aus als der Zucker.
+        // Topfpflanze aus dem Spiel als Quelle, aber eigene Farben + Schild, damit sie nicht wie die Deko-Pflanze aussieht.
         protected override int BaseApplianceID => ApplianceReferences.Plant;
+        protected override void Customize(GameObject go)
+        {
+            var leaf = Materials.Solid("Stevia Plant", new Color(0.55f, 0.85f, 0.35f));
+            var pot = Materials.Solid("Stevia Pot", new Color(0.95f, 0.95f, 0.92f));
+            foreach (var r in go.GetComponentsInChildren<Renderer>(true))
+            {
+                var mats = r.sharedMaterials;
+                for (int i = 0; i < mats.Length; i++)
+                {
+                    if (r is SkinnedMeshRenderer) mats[i] = leaf;
+                    else if (mats[i] != null && mats[i].name.StartsWith("Wood")) mats[i] = pot;
+                }
+                r.sharedMaterials = mats;
+            }
+            // Pflanzschild "Stevia"
+            var tag = new GameObject("Stevia Tag");
+            tag.transform.SetParent(go.transform, false);
+            void Apply(GameObject t) => t.transform.localPosition = Tuning.V3("stevia.tag.pos", new Vector3(-0.12f, 0.42f, -0.14f));
+            Apply(tag);
+            Tuning.Register(tag, "stevia.tag", Apply);
+            ProcMesh.Create("Stake", tag.transform, ProcMesh.Box(new Vector3(0.015f, 0.2f, 0.01f)), Materials.Wood, new Vector3(0f, -0.08f, 0f));
+            ProcMesh.Create("Board", tag.transform, ProcMesh.Box(new Vector3(0.2f, 0.08f, 0.012f)), Materials.Paper, new Vector3(0f, 0.04f, 0f));
+            DecoBase.MakeText(tag.transform, "Label", "STEVIA", new Vector3(0f, 0.04f, -0.008f), 0.4f, new Color(0.15f, 0.5f, 0.2f));
+        }
     }
 
     // --- Schraderbräu (Beilage) ---

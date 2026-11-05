@@ -17,7 +17,7 @@ namespace BreakingPlates.Custom
         public override bool CanObfuscateProgress => true;
         public override List<(Locale, ProcessInfo)> InfoList => new List<(Locale, ProcessInfo)>
         {
-            (Locale.English, new ProcessInfo { Name = "React", Icon = "<sprite name=\"cook\">" })
+            (Locale.English, new ProcessInfo { Name = "Cook", Icon = "<sprite name=\"cook\">" })
         };
 
         public static Process P => (Process)GDOUtils.GetCustomGameDataObject<ReactProcess>().GameDataObject;
@@ -143,6 +143,7 @@ namespace BreakingPlates.Custom
             status.Bulb = bulb.GetComponent<MeshRenderer>();
             status.On = Materials.Solid("Reactor Lamp", new Color(1f, 0.6f, 0.1f));
             status.Off = Materials.Solid("Reactor Lamp Off", new Color(0.45f, 0.3f, 0.15f));
+            status.Done = Materials.Solid("Reactor Lamp Done", new Color(0.3f, 0.95f, 0.35f));
 
             // Warnschild an der Seite (oberer Teil, nicht im Knick): Flamme + Eiskristall = heizt und kühlt.
             var sign = Tuned(go.transform, "BP Sign", "reactor.sign", new Vector3(0.415f, 0.62f, 0f));
@@ -206,7 +207,7 @@ namespace BreakingPlates.Custom
     public class ReactorStatus : MonoBehaviour
     {
         public MeshRenderer Bulb;
-        public Material On, Off;
+        public Material On, Off, Done;
         private Animator _anim;
         private TMPro.TextMeshPro _text;
         private static readonly int ProcessHash = Animator.StringToHash("Process");
@@ -219,13 +220,32 @@ namespace BreakingPlates.Custom
             if (_text == null) _text = GetComponentInChildren<TMPro.TextMeshPro>(true);
             if (_anim == null) return;
             bool active = _anim.GetInteger(ProcessHash) != 0;
-            if (Bulb != null) Bulb.sharedMaterial = active ? On : Off;
+            _done = !active && HasItem();
+            if (Bulb != null) Bulb.sharedMaterial = active ? On : _done ? Done : Off;
             int secs = active ? Mathf.CeilToInt((1f - Mathf.Clamp01(_anim.GetFloat(ProgressHash))) * ReactProcess.CookTime) : -1;
+            if (_done) secs = -3;
             if (_text != null && secs != _lastShown)
             {
-                _text.text = secs < 0 ? "--:--" : "00:" + secs.ToString("00");
+                _text.text = secs == -3 ? "DONE" : secs < 0 ? "--:--" : "00:" + secs.ToString("00");
                 _lastShown = secs;
             }
+        }
+
+        // Fertig (nichts läuft mehr, Kolben drin): Klappe öffnen, damit man es sieht.
+        // Die Ofen-Animation hält die Klappe zu, solange "IsActive" gesetzt ist; nach dem Spiel-Update überschreiben.
+        private bool _done;
+        private Transform _hold;
+        private static readonly int IsActiveHash = Animator.StringToHash("IsActive");
+        private bool HasItem()
+        {
+            if (_hold == null) _hold = transform.Find("HoldPoint");
+            if (_hold == null) return false;
+            for (int i = 0; i < _hold.childCount; i++) if (_hold.GetChild(i).gameObject.activeInHierarchy) return true;
+            return false;
+        }
+        private void LateUpdate()
+        {
+            if (_anim != null && _done && Tuning.F("reactor.opendone", 1f) > 0.5f) _anim.SetBool(IsActiveHash, false);
         }
     }
 }
