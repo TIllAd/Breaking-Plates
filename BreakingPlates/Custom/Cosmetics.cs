@@ -22,14 +22,20 @@ namespace BreakingPlates.Custom
             var src = ((PlayerCosmetic)GDOUtils.GetExistingGDO(DiverChef)).Visual;
             var go = Object.Instantiate(src, PrefabUtil.Holder, false);
             go.name = "BreakingPlates Hazmat Suit";
+            var outfit = go.GetComponent<PlayerOutfitComponent>();
             foreach (var r in go.GetComponentsInChildren<SkinnedMeshRenderer>(true))
             {
                 var n = r.gameObject.name;
-                if (n.Contains("Helmet") || n.Contains("Tanks")) { r.gameObject.SetActive(false); continue; }
+                if (n.Contains("Helmet") || n.Contains("Tanks"))
+                {
+                    // Ganz entfernen: das Spiel blendet "Hüte" (der Taucherhelm) sonst wieder ein.
+                    if (outfit != null) { outfit.Renderers.Remove(r); outfit.Hats?.Remove(r); }
+                    Object.DestroyImmediate(r.gameObject);
+                    continue;
+                }
                 if (n.Contains("Suit")) SetAll(r, Materials.Hazmat);
                 else if (n.Contains("Gloves") || n.Contains("Boots")) SetAll(r, Materials.Black);
             }
-            var outfit = go.GetComponent<PlayerOutfitComponent>();
             var mask = new GameObject("BP Mask");
             mask.transform.SetParent(go.transform, false);
             BuildMask(mask.transform);
@@ -51,7 +57,7 @@ namespace BreakingPlates.Custom
             m.transform.SetParent(head, false);
             void Apply(GameObject t)
             {
-                t.transform.localPosition = Tuning.V3("suit.mask.pos", new Vector3(0f, 0.12f, 0.16f));
+                t.transform.localPosition = Tuning.V3("suit.mask.pos", new Vector3(0f, 0.1f, 0.2f));
                 t.transform.localRotation = Quaternion.Euler(Tuning.V3("suit.mask.rot", Vector3.zero));
                 t.transform.localScale = Vector3.one * Tuning.F("suit.mask.scale", 1f);
             }
@@ -63,6 +69,21 @@ namespace BreakingPlates.Custom
                 var f = ProcMesh.Create("Filter", m.transform, ProcMesh.Cylinder(0.035f, 0.04f, 12), Materials.DarkGrey, new Vector3(x, -0.02f, 0.02f));
                 f.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
             }
+            // Gelbe Kapuze um den Kopf (statt Taucherhelm).
+            var hood = new GameObject("Hood");
+            hood.transform.SetParent(head, false);
+            void ApplyHood(GameObject t)
+            {
+                t.transform.localPosition = Tuning.V3("suit.hood.pos", new Vector3(0f, 0.02f, 0f));
+                t.transform.localScale = Tuning.V3("suit.hood.scale", new Vector3(1f, 1f, 1f));
+            }
+            ApplyHood(hood);
+            Tuning.Register(hood, "suit.hood", ApplyHood);
+            ProcMesh.Create("Dome", hood.transform, ProcMesh.Lathe(new[]
+            {
+                new Vector2(0.23f, 0.12f), new Vector2(0.22f, 0.22f),
+                new Vector2(0.17f, 0.31f), new Vector2(0.09f, 0.36f), new Vector2(0f, 0.37f)
+            }, 20, doubleSided: true), Materials.Hazmat, Vector3.zero);
             ProcMesh.Create("Goggles", m.transform, ProcMesh.Box(new Vector3(0.2f, 0.05f, 0.03f)), Materials.Glass, new Vector3(0f, 0.09f, -0.01f));
         }
 

@@ -104,20 +104,23 @@ namespace BreakingPlates.Custom
         };
     }
 
-    // 99,1 %: lange abkühlen lassen (Luft ~30 s, Freezer ~6 s) -> reine Kristalle.
+    // 99,1 %: Kristalle im Crystal Purifier reinigen -> reine Kristalle.
     public class PureCandyDish : CandyCardBase
     {
         public override string UniqueNameID => "Pure Blue Rock Candy Dish";
         public override DishType Type => DishType.Main;
         public override int Difficulty => 2;
-        public override HashSet<Process> RequiredProcesses => new HashSet<Process> { G.P(ProcessReferences.Knead) };
+        public override HashSet<Process> RequiredProcesses => new HashSet<Process>
+        {
+            G.P(ProcessReferences.Knead), (Process)GDOUtils.GetCustomGameDataObject<PurifyProcess>().GameDataObject
+        };
         public override List<Dish.MenuItem> ResultingMenuItems => new List<Dish.MenuItem> { Menu(G.I<PureCandyBag>(), 0.75f) };
         private GameObject _icon;
         public override GameObject IconPrefab => _icon ??= Icon("Pure Candy - Icon", t => PureCrystal(t, "Crystal", new Vector3(0f, 0.12f, 0f), 1.3f));
         protected override string CardName => "99.1% Purity";
-        protected override string CardDescription => "Some customers only accept the purest batch. Let the crystals cool much longer (a freezer helps).";
+        protected override string CardDescription => "Some customers only accept the purest batch. Adds the Crystal Purifier.";
         protected override string Quote => "I am the one who knocks.";
-        protected override string RecipeText => "After the syrup has crystallised, leave it to cool even longer (about 30 seconds in total, or 6 in a freezer) until the crystals turn pure. Smash and bag as usual. Pure candy can be chopped back into a normal portion.";
+        protected override string RecipeText => "Put a flask of set crystals into the Crystal Purifier until they turn pure (99). Smash and bag as usual. Pure candy can be chopped back into a normal portion.";
     }
 
     // Chili P: Jalapeño schneiden und ins Tütchen -> roter Verschluss.

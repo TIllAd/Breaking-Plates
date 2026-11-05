@@ -114,14 +114,13 @@ namespace BreakingPlates.Custom
         }
     }
 
-    // Auskristallisiert: zerschlagen (Kneten). Optional: bei sehr langem Abkühlen -> reine Kristalle.
+    // Auskristallisiert: zerschlagen (Kneten). Optional: im Crystal Purifier -> reine Kristalle.
     public abstract class CrystalBase : CustomItem
     {
         protected abstract Item Container { get; }
         protected abstract Item Smashed { get; }
         protected virtual Item OverCooled => null;
-        protected virtual float OverCoolTime => 18f;   // zusammen mit 12 s Sirup = 30 s an der Luft
-        protected virtual float OverFreezeTime => 2f;  // zusammen mit 4 s Sirup = 6 s im Freezer
+        protected virtual float PurifyTime => 6f;
         protected virtual float FlaskScale => 1f;
         protected virtual bool Pure => false;
 
@@ -130,12 +129,13 @@ namespace BreakingPlates.Custom
         public override string ColourBlindTag => Pure ? "99" : "Cr";
 
         private Item.ItemProcess Knead => new Item.ItemProcess { Process = G.P(ProcessReferences.Knead), Duration = 2.5f, Result = Smashed };
-        private Item.ItemProcess CoolOn => new Item.ItemProcess { Process = G.P(ProcessReferences.CoolOff), Duration = OverCoolTime, Result = OverCooled };
-        private Item.ItemProcess FreezeOn => new Item.ItemProcess { Process = G.P(ProcessReferences.Freeze), Duration = OverFreezeTime, Result = OverCooled };
-
-        public override Item.ItemProcess AutomaticItemProcess => OverCooled != null ? CoolOn : default;
+        // Reinigen nur im Crystal Purifier (gibt es nur mit der Karte 99.1% Purity).
+        private Item.ItemProcess Purify => new Item.ItemProcess
+        {
+            Process = (Process)GDOUtils.GetCustomGameDataObject<PurifyProcess>().GameDataObject, Duration = PurifyTime, Result = OverCooled
+        };
         public override List<Item.ItemProcess> Processes => OverCooled != null
-            ? new List<Item.ItemProcess> { Knead, CoolOn, FreezeOn }
+            ? new List<Item.ItemProcess> { Knead, Purify }
             : new List<Item.ItemProcess> { Knead };
 
         private GameObject _prefab;
