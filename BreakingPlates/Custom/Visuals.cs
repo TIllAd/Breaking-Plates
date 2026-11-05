@@ -101,24 +101,51 @@ namespace BreakingPlates.Custom
 
         // Aufkleber vorne auf dem Tütchen (Chili P = rote Chili, Sugar-Free = grünes Blatt). Verschluss bleibt immer blau.
         // Lage per F8: bag.sticker.chili / bag.sticker.stevia
+        // Chili P: rote Chilischote, mit einer Klammer oben am Verschluss festgeklemmt (hängt vorne herunter).
+        private static readonly Vector2[] ChiliProfile =
+        {
+            new Vector2(0f, 0f), new Vector2(0.012f, 0.012f), new Vector2(0.024f, 0.045f), new Vector2(0.03f, 0.09f),
+            new Vector2(0.028f, 0.13f), new Vector2(0.02f, 0.16f), new Vector2(0f, 0.17f)
+        };
+        private static readonly Vector2[] LeafProfile =
+        {
+            new Vector2(0f, 0f), new Vector2(0.35f, 0.08f), new Vector2(0.5f, 0.3f), new Vector2(0.45f, 0.6f),
+            new Vector2(0.25f, 0.85f), new Vector2(0f, 1f)
+        };
+
         public static GameObject ChiliSticker(GameObject bag)
         {
-            var st = Sticker(bag, "Chili Sticker", "bag.sticker.chili", new Vector3(0.02f, 0.12f, -0.1f));
-            var body = ProcMesh.Create("Chili", st.transform, ProcMesh.Box(new Vector3(0.2f, 0.07f, 0.012f)), Materials.ZipRed, Vector3.zero);
-            body.transform.localRotation = Quaternion.Euler(0f, 0f, 25f);
-            var stem = ProcMesh.Create("Stem", st.transform, ProcMesh.Box(new Vector3(0.05f, 0.03f, 0.014f)), Materials.Green, new Vector3(0.1f, 0.05f, 0f));
-            stem.transform.localRotation = Quaternion.Euler(0f, 0f, 25f);
+            var st = Sticker(bag, "Chili Clip", "bag.sticker.chili", new Vector3(0.12f, 0.43f, -0.05f));
+            // Klammer über dem Verschluss
+            ProcMesh.Create("Clip", st.transform, ProcMesh.Box(new Vector3(0.05f, 0.06f, 0.1f)), Materials.DarkGrey, new Vector3(0f, 0.01f, 0.04f));
+            // Schote hängt nach unten, Spitze unten
+            var pod = ProcMesh.Create("Pod", st.transform, ProcMesh.Lathe(ChiliProfile, 12), Materials.ZipRed, new Vector3(0f, -0.02f, -0.01f));
+            pod.transform.localRotation = Quaternion.Euler(0f, 0f, 168f);
+            ProcMesh.Create("Stem", st.transform, ProcMesh.Cylinder(0.008f, 0.04f, 6), Materials.Green, new Vector3(0f, -0.03f, -0.01f));
+            ProcMesh.Create("Cap", st.transform, ProcMesh.Cylinder(0.022f, 0.012f, 10), Materials.Green, new Vector3(0f, -0.035f, -0.01f));
             return st;
         }
 
+        // Sugar-Free: Stevia-Zweig als Aufkleber (drei echte Blattformen mit Mittelrippe).
         public static GameObject SteviaSticker(GameObject bag)
         {
-            var st = Sticker(bag, "Stevia Sticker", "bag.sticker.stevia", new Vector3(0.08f, 0.27f, -0.1f));
-            var leaf = Materials.Solid("Stevia Sticker", new Color(0.3f, 0.75f, 0.3f));
-            var a = ProcMesh.Create("Leaf A", st.transform, ProcMesh.Box(new Vector3(0.1f, 0.05f, 0.012f)), leaf, new Vector3(-0.025f, 0f, 0f));
-            a.transform.localRotation = Quaternion.Euler(0f, 0f, 30f);
-            var b = ProcMesh.Create("Leaf B", st.transform, ProcMesh.Box(new Vector3(0.1f, 0.05f, 0.012f)), leaf, new Vector3(0.025f, 0f, 0f));
-            b.transform.localRotation = Quaternion.Euler(0f, 0f, -30f);
+            var st = Sticker(bag, "Stevia Sticker", "bag.sticker.stevia", new Vector3(-0.02f, 0.17f, -0.1f));
+            st.transform.localScale = Vector3.one * 1.7f;
+            var leafMat = Materials.Solid("Stevia Sticker", new Color(0.3f, 0.75f, 0.3f));
+            var leafMesh = ProcMesh.Lathe(LeafProfile, 16, doubleSided: true);
+            float[] angles = { -35f, 0f, 35f };
+            foreach (var ang in angles)
+            {
+                var holder = new GameObject("Leaf");
+                holder.transform.SetParent(st.transform, false);
+                holder.transform.localRotation = Quaternion.Euler(0f, 0f, ang);
+                var l = ProcMesh.Create("Blade", holder.transform, leafMesh, leafMat, Vector3.zero);
+                float len = ang == 0f ? 0.12f : 0.09f;
+                l.transform.localScale = new Vector3(len * 0.45f, len, 0.012f);
+                ProcMesh.Create("Rib", holder.transform, ProcMesh.Box(new Vector3(0.004f, len * 0.9f, 0.014f)), Materials.Green,
+                    new Vector3(0f, len * 0.45f, -0.002f));
+            }
+            ProcMesh.Create("Stalk", st.transform, ProcMesh.Box(new Vector3(0.006f, 0.05f, 0.014f)), Materials.Green, new Vector3(0f, -0.025f, 0f));
             return st;
         }
 
