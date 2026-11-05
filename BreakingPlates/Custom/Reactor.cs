@@ -27,15 +27,16 @@ namespace BreakingPlates.Custom
     public class LabReactor : CustomAppliance
     {
         public override string UniqueNameID => "Lab Reactor";
-        private static Appliance Freezer => (Appliance)GDOUtils.GetExistingGDO(ApplianceReferences.Freezer);
+        // Vorlage: Ofen (großes Gerät mit Klappe, Inhalt beim Arbeiten verdeckt).
+        private static Appliance Oven => (Appliance)GDOUtils.GetExistingGDO(ApplianceReferences.Oven);
 
         private GameObject _prefab;
         public override GameObject Prefab => _prefab ??= Make();
         private static GameObject Make()
         {
-            var go = Object.Instantiate(Freezer.Prefab, PrefabUtil.Holder, false);
+            var go = Object.Instantiate(Oven.Prefab, PrefabUtil.Holder, false);
             go.name = "BreakingPlates Lab Reactor";
-            // Freezer-Optik gelb einfärben (Industriemaschine) + Tank und Leitungen obendrauf.
+            // Ofen gelb einfärben (Industriemaschine) + Tank und Leitungen obendrauf.
             PrefabUtil.Tint(go, Tuning.C("color.reactor", new Color(0.95f, 0.8f, 0.2f)));
             var deco = new GameObject("BP Reactor");
             deco.transform.SetParent(go.transform, false);
@@ -58,7 +59,7 @@ namespace BreakingPlates.Custom
         {
             new Appliance.ApplianceProcesses { Process = ReactProcess.P, IsAutomatic = true, Speed = 1f }
         };
-        public override List<IApplianceProperty> Properties => Freezer.Properties;
+        public override List<IApplianceProperty> Properties => Oven.Properties;
         public override bool IsPurchasable => true;
         public override PriceTier PriceTier => PriceTier.Expensive;
         public override RarityTier RarityTier => RarityTier.Rare;
