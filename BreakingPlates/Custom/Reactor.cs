@@ -104,7 +104,7 @@ namespace BreakingPlates.Custom
     {
         public override string UniqueNameID => "Lab Reactor";
         protected override Appliance Template => (Appliance)GDOUtils.GetExistingGDO(ApplianceReferences.Oven);
-        protected override string Title => "Lab Reactor";
+        protected override string Title => "Superlab";
         protected override string Desc => "Cooks and cools in one go. Industrial chemistry.";
 
         protected override void Build(GameObject go)
