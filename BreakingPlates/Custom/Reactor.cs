@@ -112,7 +112,7 @@ namespace BreakingPlates.Custom
             if (knobs != null)
             {
                 var baseKnobs = knobs.localPosition;
-                void ApplyKnobs(GameObject t) => t.transform.localPosition = baseKnobs + Tuning.V3("reactor.knobs.offset", new Vector3(-0.13f, 0f, 0f));
+                void ApplyKnobs(GameObject t) => t.transform.localPosition = baseKnobs + Tuning.V3("reactor.knobs.offset", new Vector3(0.14f, 0f, 0f));
                 ApplyKnobs(knobs.gameObject);
                 Tuning.Register(knobs.gameObject, "reactor.knobs", ApplyKnobs);
             }
