@@ -279,9 +279,10 @@ namespace BreakingPlates.Custom
         {
             (Dish)GDOUtils.GetCustomGameDataObject<BlueRockCandyDish>().GameDataObject
         };
+        // Kundenabnahme über den normalen Karten-Mechanismus (zeigt den pinken Kunden-Tag auf der Karte).
+        public override DishCustomerChange CustomerMultiplier => DishCustomerChange.LargeDecrease;
         public override List<UnlockEffect> Effects => new List<UnlockEffect>
         {
-            new ParameterEffect { Parameters = new KitchenParameters { CustomersPerHourReduction = 2f } },
             new StatusEffect { Status = RestaurantStatus.HeatLessMoney },
         };
         public override List<(Locale, UnlockInfo)> InfoList => new List<(Locale, UnlockInfo)>
@@ -289,7 +290,7 @@ namespace BreakingPlates.Custom
             (Locale.English, new UnlockInfo
             {
                 Name = "Breaking Even",
-                Description = "About 30% fewer customers, but you lose 25% of the day's earnings",
+                Description = "Fewer customers, but you lose 25% of the day's earnings",
                 FlavourText = "Better call Saul!"
             })
         };

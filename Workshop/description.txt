@@ -1,0 +1,43 @@
+[h1]Breaking Plates[/h1]
+A [i]Breaking Bad[/i] parody for PlateUp! Cook [b]Blue Rock Candy[/b] in lab flasks, smash it up and serve it in little bags.
+It's just sugar. Probably.
+
+[h2]How to cook[/h2]
+[list]
+[*]Take a [b]lab flask[/b] (only 4 – put them back!) and add [b]sugar[/b] and [b]water[/b]
+[*][b]Cook[/b] it → blue syrup
+[*]Let it [b]cool[/b] off the heat – a [b]freezer[/b] is much faster → crystals
+[*][b]Smash[/b] the crystals by hand on a counter → 5 portions
+[*]Bag a portion and serve – no plates needed
+[/list]
+
+[h2]Cards[/h2]
+[list]
+[*][b]Blue Rock Candy[/b] – "Say my name."
+[*][b]99.1% Purity[/b] – the Crystal Purifier makes pure, white crystals. "I am the one who knocks."
+[*][b]Chili P[/b] – a chopped jalapeño in the bag, marked with a chili clip. "Chili P is my signature!"
+[*][b]Sugar-Free[/b] – cook with stevia, marked with a stevia sprig. "Stevia."
+[*][b]On a Stick[/b] – rock candy lollis straight from the flask. "Yeah, science!"
+[*][b]Mass Production[/b] – groups order a whole flask, in every variant you sell. "I'm in the empire business."
+[*][b]Schraderbräu[/b] – home-brewed beer as a side. "Jesus, Marie!"
+[*][b]Breaking Even[/b] – fewer customers, but 25% less money each day. "Better call Saul!"
+[/list]
+
+[h2]Decorations[/h2]
+Periodic table poster, yellow barrels (just decoration, honest) and a Los Pollitos Hermanos sign.
+
+[h2]Colourblind support[/h2]
+Every flask stage and bag variant has a colourblind label (Su, W, Sy, Cr, Sh, 99, SF, St, P).
+
+[h2]Easter egg[/h2]
+Got [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3833762071]Chicken & Rice[/url] installed too? Its cards will show up more often. The family business.
+
+[h2]Requirements[/h2]
+[list]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=2898069883]KitchenLib[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=2913877103]IngredientLib[/url]
+[/list]
+
+Source: [url=https://github.com/TIllAd/Breaking-Plates]github.com/TIllAd/Breaking-Plates[/url]
+
+[i]Fan-made parody. Not affiliated with AMC, Sony Pictures Television or the makers of PlateUp!.[/i]
