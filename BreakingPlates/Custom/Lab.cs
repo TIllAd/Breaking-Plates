@@ -294,6 +294,39 @@ namespace BreakingPlates.Custom
         protected override string Desc => "Home brewed by a DEA agent.";
         // Der (im Spiel ungenutzte) Bierzapfhahn als Optik, falls vorhanden.
         protected override int BaseApplianceID => ApplianceReferences.BeerTap;
+
+        // Etwas mehr Leben: Logo-Schild vorne, Abtropfschale, ein Krug und Hanks "Minerals" in der Ecke (Easter Egg).
+        protected override void Customize(GameObject go)
+        {
+            var root = new GameObject("BP Schrader");
+            root.transform.SetParent(go.transform, false);
+            void Apply(GameObject t) => t.transform.localPosition = Tuning.V3("schrader.pos", Vector3.zero);
+            Apply(root);
+            Tuning.Register(root, "schrader", Apply);
+
+            var sign = new GameObject("Sign");
+            sign.transform.SetParent(root.transform, false);
+            sign.transform.localPosition = new Vector3(0f, 0.3f, -0.51f);
+            ProcMesh.Create("Border", sign.transform, ProcMesh.Box(new Vector3(0.66f, 0.2f, 0.01f)), Materials.Solid("Schrader Gold", new Color(0.85f, 0.7f, 0.3f)), Vector3.zero);
+            ProcMesh.Create("Plate", sign.transform, ProcMesh.Box(new Vector3(0.62f, 0.16f, 0.012f)), Materials.Solid("Schrader Green", new Color(0.12f, 0.35f, 0.18f)), Vector3.zero);
+            DecoBase.MakeText(sign.transform, "Logo", "SCHRADERBRÄU", new Vector3(0f, 0f, -0.01f), 0.75f, new Color(0.98f, 0.92f, 0.7f));
+
+            ProcMesh.Create("Drip Tray", root.transform, ProcMesh.Box(new Vector3(0.22f, 0.02f, 0.14f)), Materials.DarkGrey, new Vector3(0f, 0.56f, -0.3f));
+            BeerMug(root.transform, "Mug", new Vector3(-0.3f, 0.55f, 0.25f), 0.55f);
+
+            // "They're minerals, Marie!"
+            var minerals = new GameObject("Minerals");
+            minerals.transform.SetParent(root.transform, false);
+            minerals.transform.localPosition = new Vector3(0.3f, 0.55f, 0.28f);
+            var purple = Materials.Solid("Mineral Purple", new Color(0.55f, 0.35f, 0.75f));
+            var amber = Materials.Solid("Mineral Amber", new Color(0.85f, 0.6f, 0.25f));
+            var m1 = ProcMesh.Create("Amethyst", minerals.transform, ProcMesh.Box(new Vector3(0.07f, 0.11f, 0.07f)), purple, new Vector3(0f, 0.05f, 0f));
+            m1.transform.localRotation = Quaternion.Euler(10f, 30f, 12f);
+            var m2 = ProcMesh.Create("Amethyst 2", minerals.transform, ProcMesh.Box(new Vector3(0.05f, 0.08f, 0.05f)), purple, new Vector3(0.06f, 0.035f, -0.04f));
+            m2.transform.localRotation = Quaternion.Euler(-15f, 10f, -20f);
+            var m3 = ProcMesh.Create("Citrine", minerals.transform, ProcMesh.Box(new Vector3(0.05f, 0.06f, 0.05f)), amber, new Vector3(-0.05f, 0.03f, 0.04f));
+            m3.transform.localRotation = Quaternion.Euler(20f, 45f, 5f);
+        }
         protected override void Decorate(Transform top)
         {
             BeerMug(top, "Mug A", new Vector3(-0.13f, 0f, 0f), 0.7f);

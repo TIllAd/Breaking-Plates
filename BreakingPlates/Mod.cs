@@ -52,7 +52,7 @@ namespace BreakingPlates
             // Laborbedarf
             AddGameDataObject<CrystalPurifier>();
             AddGameDataObject<LabReactor>();
-            AddGameDataObject<GlassReactor>();
+            // AddGameDataObject<GlassReactor>(); // Vergleichsvariante, Ofen-Reactor gewählt
             AddGameDataObject<ReactProcess>();
             AddGameDataObject<ReactCoolProcess>();
             AddGameDataObject<PurifyProcess>();
