@@ -295,7 +295,7 @@ namespace BreakingPlates.Custom
         // Der (im Spiel ungenutzte) Bierzapfhahn als Optik, falls vorhanden.
         protected override int BaseApplianceID => ApplianceReferences.BeerTap;
 
-        // Etwas mehr Leben: Logo-Schild vorne, Abtropfschale, ein Krug und Hanks "Minerals" in der Ecke (Easter Egg).
+        // Etwas mehr Leben: Logo-Schild vorne, Abtropfschale, ein Krug und Hanks DEA-Cap in der Ecke (Easter Egg).
         protected override void Customize(GameObject go)
         {
             var root = new GameObject("BP Schrader");
@@ -314,19 +314,31 @@ namespace BreakingPlates.Custom
             ProcMesh.Create("Drip Tray", root.transform, ProcMesh.Box(new Vector3(0.22f, 0.02f, 0.14f)), Materials.DarkGrey, new Vector3(0f, 0.56f, -0.3f));
             BeerMug(root.transform, "Mug", new Vector3(-0.3f, 0.55f, 0.25f), 0.55f);
 
-            // "They're minerals, Marie!"
-            var minerals = new GameObject("Minerals");
-            minerals.transform.SetParent(root.transform, false);
-            minerals.transform.localPosition = new Vector3(0.3f, 0.55f, 0.28f);
-            var purple = Materials.Solid("Mineral Purple", new Color(0.55f, 0.35f, 0.75f));
-            var amber = Materials.Solid("Mineral Amber", new Color(0.85f, 0.6f, 0.25f));
-            var m1 = ProcMesh.Create("Amethyst", minerals.transform, ProcMesh.Box(new Vector3(0.07f, 0.11f, 0.07f)), purple, new Vector3(0f, 0.05f, 0f));
-            m1.transform.localRotation = Quaternion.Euler(10f, 30f, 12f);
-            var m2 = ProcMesh.Create("Amethyst 2", minerals.transform, ProcMesh.Box(new Vector3(0.05f, 0.08f, 0.05f)), purple, new Vector3(0.06f, 0.035f, -0.04f));
-            m2.transform.localRotation = Quaternion.Euler(-15f, 10f, -20f);
-            var m3 = ProcMesh.Create("Citrine", minerals.transform, ProcMesh.Box(new Vector3(0.05f, 0.06f, 0.05f)), amber, new Vector3(-0.05f, 0.03f, 0.04f));
-            m3.transform.localRotation = Quaternion.Euler(20f, 45f, 5f);
+            // Easter Egg: Hanks DEA-Cap liegt auf der Theke.
+            var cap = new GameObject("DEA Cap");
+            cap.transform.SetParent(root.transform, false);
+            void ApplyCap(GameObject t)
+            {
+                t.transform.localPosition = Tuning.V3("schrader.cap.pos", new Vector3(0.28f, 0.55f, 0.2f));
+                t.transform.localRotation = Quaternion.Euler(0f, Tuning.F("schrader.cap.yrot", -25f), 0f);
+            }
+            ApplyCap(cap);
+            Tuning.Register(cap, "schrader.cap", ApplyCap);
+            var navy = Materials.Solid("DEA Navy", new Color(0.08f, 0.11f, 0.22f));
+            var dome = ProcMesh.Create("Crown", cap.transform, ProcMesh.Lathe(CapProfile, 20, capTop: true), navy, Vector3.zero);
+            dome.transform.localScale = new Vector3(1f, 0.8f, 1f);
+            var brim = ProcMesh.Create("Brim", cap.transform, ProcMesh.Cylinder(0.085f, 0.01f, 16), navy, new Vector3(0f, 0.002f, -0.1f));
+            brim.transform.localScale = new Vector3(1f, 1f, 0.75f);
+            ProcMesh.Create("Button", cap.transform, ProcMesh.Cylinder(0.012f, 0.008f, 8), navy, new Vector3(0f, 0.078f, 0f));
+            var label = DecoBase.MakeText(cap.transform, "DEA", "DEA", new Vector3(0f, 0.042f, -0.098f), 0.5f, new Color(1f, 0.85f, 0.15f));
+            label.transform.localRotation = Quaternion.Euler(35f, 0f, 0f);
         }
+        // Kuppel der Cap (Viertelkreis, Radius 0.1).
+        static readonly Vector2[] CapProfile =
+        {
+            new Vector2(0.1f, 0f), new Vector2(0.097f, 0.026f), new Vector2(0.087f, 0.05f), new Vector2(0.071f, 0.071f),
+            new Vector2(0.05f, 0.087f), new Vector2(0.026f, 0.097f), new Vector2(0f, 0.1f)
+        };
         protected override void Decorate(Transform top)
         {
             BeerMug(top, "Mug A", new Vector3(-0.13f, 0f, 0f), 0.7f);
