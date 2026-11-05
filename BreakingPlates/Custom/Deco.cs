@@ -55,7 +55,9 @@ namespace BreakingPlates.Custom
         protected virtual Vector3 DefaultPos => Vector3.zero;
         protected virtual Vector3 DefaultRot => Vector3.zero;
 
-        public override List<IApplianceProperty> Properties => Vanilla.Properties ?? new List<IApplianceProperty>();
+        // Ohne "unbeweglich", damit man sie verschieben und per Stuff on Demand (F3) holen kann.
+        public override List<IApplianceProperty> Properties =>
+            (Vanilla.Properties ?? new List<IApplianceProperty>()).Where(p => p != null && !(p is Kitchen.CImmovable)).ToList();
         public override OccupancyLayer Layer => Vanilla.Layer;
         public override bool IsNonInteractive => Vanilla.IsNonInteractive;
         public override bool IsPurchasable => true;

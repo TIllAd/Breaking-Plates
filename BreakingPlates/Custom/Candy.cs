@@ -54,13 +54,22 @@ namespace BreakingPlates.Custom
                     _prefab = PrefabUtil.CreateRoot(UniqueNameID);
                     var flask = Flask(_prefab.transform, "Flask", Vector3.zero, FlaskScale);
                     _water = FlaskLiquid(flask.transform, "Water", Materials.Water);
-                    _sweet = IsStevia ? SteviaHeap(flask.transform, "Sweetener", new Vector3(0f, 0.04f, 0f))
-                                      : SugarHeap(flask.transform, "Sweetener", new Vector3(0f, 0.04f, 0f));
-                    _sweet.transform.localScale = Vector3.one * 0.75f;
+                    // Zuckerberg ragt deutlich über das Wasser, damit man "nur Wasser" und "Zucker + Wasser" unterscheiden kann.
+                    var heapPos = new Vector3(0f, 0.08f, 0f);
+                    _sweet = IsStevia ? SteviaHeap(flask.transform, "Sweetener", heapPos)
+                                      : SugarHeap(flask.transform, "Sweetener", heapPos);
+                    _sweet.transform.localScale = new Vector3(0.85f, 1.4f, 0.85f);
                 }
                 return _prefab;
             }
         }
+
+        // Farbenblind-Beschriftung: zeigt, was schon im Kolben ist.
+        public override List<ItemGroupView.ColourBlindLabel> Labels => new List<ItemGroupView.ColourBlindLabel>
+        {
+            new ItemGroupView.ColourBlindLabel { Item = Sweetener, Text = IsStevia ? "Stv" : "Su" },
+            new ItemGroupView.ColourBlindLabel { Item = Ref(ItemReferences.Water), Text = "W" },
+        };
 
         public override void OnRegister(ItemGroup gdo)
         {

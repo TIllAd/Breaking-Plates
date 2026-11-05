@@ -39,9 +39,13 @@ namespace BreakingPlates.Custom
             return go;
         }
 
+        // 0 = unbegrenzt. Sonst: so viele liegen bereit, zurücklegen erlaubt, jeden Tag wieder aufgefüllt.
+        protected virtual int Limit => 0;
         public override List<IApplianceProperty> Properties => new List<IApplianceProperty>
         {
-            KitchenPropertiesUtils.GetUnlimitedCItemProvider(Provided.ID)
+            Limit > 0
+                ? KitchenPropertiesUtils.GetCItemProvider(Provided.ID, Limit, Limit, false, false, false, false, false, false, true)
+                : KitchenPropertiesUtils.GetUnlimitedCItemProvider(Provided.ID)
         };
         public override bool IsPurchasable => true;
         public override bool SellOnlyAsDuplicate => true;
@@ -78,7 +82,8 @@ namespace BreakingPlates.Custom
         public override string UniqueNameID => "Lab Flask Provider";
         protected override Item Provided => (Item)GDOUtils.GetCustomGameDataObject<LabFlask>().GameDataObject;
         protected override string Title => "Lab Flasks";
-        protected override string Desc => "Borosilicate. Very professional.";
+        protected override string Desc => "Borosilicate. Very professional. Only 4 - put them back when you're done.";
+        protected override int Limit => 4;
         protected override void Decorate(Transform top)
         {
             Flask(top, "Flask A", new Vector3(-0.15f, 0f, 0f), 0.7f);
@@ -103,7 +108,8 @@ namespace BreakingPlates.Custom
         public override string UniqueNameID => "Big Lab Flask Provider";
         protected override Item Provided => (Item)GDOUtils.GetCustomGameDataObject<BigLabFlask>().GameDataObject;
         protected override string Title => "Superlab Flasks";
-        protected override string Desc => "Bigger batches, longer cooks.";
+        protected override string Desc => "Bigger batches, longer cooks. Only 2.";
+        protected override int Limit => 2;
         protected override void Decorate(Transform top) => Flask(top, "Flask", Vector3.zero, 0.9f);
     }
 
