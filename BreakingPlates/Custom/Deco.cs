@@ -74,20 +74,27 @@ namespace BreakingPlates.Custom
             => ProcMesh.Create(name, parent, ProcMesh.Box(size), m, pos);
 
         private static TMP_FontAsset _font;
+        // TextMeshPro braucht ein aktives Objekt zum Initialisieren: erst außerhalb aufbauen, dann einhängen.
+        // Klappt das nicht, gibt es einfach keinen Text (kein Ladefehler).
         protected static GameObject Text(Transform parent, string name, string text, Vector3 pos, float size, Color color)
         {
             var go = new GameObject(name);
+            try
+            {
+                var tmp = go.AddComponent<TextMeshPro>();
+                if (_font == null) _font = Resources.FindObjectsOfTypeAll<TMP_FontAsset>().FirstOrDefault();
+                if (_font != null) tmp.font = _font;
+                tmp.text = text;
+                tmp.fontSize = size;
+                tmp.color = color;
+                tmp.alignment = TextAlignmentOptions.Center;
+                tmp.enableWordWrapping = false;
+                tmp.rectTransform.sizeDelta = new Vector2(2f, 0.5f);
+                tmp.ForceMeshUpdate();
+            }
+            catch (System.Exception e) { Mod.LogWarning("Text '" + text + "' fehlgeschlagen: " + e.Message); }
             go.transform.SetParent(parent, false);
             go.transform.localPosition = pos;
-            var tmp = go.AddComponent<TextMeshPro>();
-            if (_font == null) _font = Resources.FindObjectsOfTypeAll<TMP_FontAsset>().FirstOrDefault();
-            if (_font != null) tmp.font = _font;
-            tmp.text = text;
-            tmp.fontSize = size;
-            tmp.color = color;
-            tmp.alignment = TextAlignmentOptions.Center;
-            tmp.enableWordWrapping = false;
-            tmp.rectTransform.sizeDelta = new Vector2(2f, 0.5f);
             return go;
         }
     }
