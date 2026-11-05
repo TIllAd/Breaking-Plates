@@ -52,6 +52,7 @@ namespace BreakingPlates.Custom
         protected abstract Item Candy { get; }
         protected abstract string PrefabName { get; }
         protected abstract GameObject MakeContent(Transform parent);
+        protected virtual Material Zip => null;
 
         public override ItemStorage ItemStorageFlags => ItemStorage.None;
         public override ItemValue ItemValue => ItemValue.Medium;
@@ -96,7 +97,7 @@ namespace BreakingPlates.Custom
                     }
                     ApplyContent(_content);
                     Tuning.Register(_content, "bag.content." + PrefabName, ApplyContent);
-                    var bag = Bag(_prefab.transform);
+                    var bag = Bag(_prefab.transform, Zip);
                     // Chili P erkennt man am roten Verschluss.
                     _chili = ChiliZip(bag);
 
@@ -132,6 +133,21 @@ namespace BreakingPlates.Custom
         public override List<ItemGroupView.ColourBlindLabel> Labels => new List<ItemGroupView.ColourBlindLabel>
         {
             new ItemGroupView.ColourBlindLabel { Item = Candy, Text = "99" },
+            new ItemGroupView.ColourBlindLabel { Item = ChiliP, Text = "P" }
+        };
+    }
+
+    // Sugar-Free: grüner Verschluss.
+    public class SugarFreeBag : FilledBagBase
+    {
+        public override string UniqueNameID => "Candy Bag - Sugar-Free";
+        protected override string PrefabName => "Sugar-Free Candy Bag";
+        protected override Item Candy => (Item)GDOUtils.GetCustomGameDataObject<SugarFreeCandy>().GameDataObject;
+        protected override Material Zip => Materials.ZipGreen;
+        protected override GameObject MakeContent(Transform parent) => CrystalPile(parent, "Candy", new Vector3(0f, 0.06f, 0f), 0.75f, 5);
+        public override List<ItemGroupView.ColourBlindLabel> Labels => new List<ItemGroupView.ColourBlindLabel>
+        {
+            new ItemGroupView.ColourBlindLabel { Item = Candy, Text = "SF" },
             new ItemGroupView.ColourBlindLabel { Item = ChiliP, Text = "P" }
         };
     }

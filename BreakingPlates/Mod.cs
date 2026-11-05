@@ -12,7 +12,7 @@ namespace BreakingPlates
     {
         public const string MOD_GUID = "TillAd.PlateUp.BreakingPlates";
         public const string MOD_NAME = "Breaking Plates";
-        public const string MOD_VERSION = "0.1.0";
+        public const string MOD_VERSION = "0.2.0";
         public const string MOD_AUTHOR = "Till";
         public const string MOD_GAMEVERSION = ">=1.1.4";
 
@@ -41,21 +41,72 @@ namespace BreakingPlates
 #endif
 
             // Reihenfolge: Ergebnisse vor den Dingen, die auf sie verweisen.
+            // Laborbedarf
+            AddGameDataObject<FlaskProvider>();
+            AddGameDataObject<LabFlask>();
+            AddGameDataObject<BigFlaskProvider>();
+            AddGameDataObject<BigLabFlask>();
+            AddGameDataObject<StickProvider>();
+            AddGameDataObject<CandyStick>();
+            AddGameDataObject<SteviaProvider>();
+            AddGameDataObject<Stevia>();
+            AddGameDataObject<SchraderTap>();
+            AddGameDataObject<Schraderbraeu>();
             AddGameDataObject<BagProvider>();
             AddGameDataObject<EmptyBag>();
-            AddGameDataObject<PureBlueRockCandy>();
+
+            // Produkte
             AddGameDataObject<BlueRockCandy>();
+            AddGameDataObject<PureBlueRockCandy>();
+            AddGameDataObject<SugarFreeCandy>();
+            AddGameDataObject<RockCandyLolli>();
             AddGameDataObject<CandyBag>();
             AddGameDataObject<PureCandyBag>();
+            AddGameDataObject<SugarFreeBag>();
+
+            // Kochkette
             AddGameDataObject<ShardsPot>();
+            AddGameDataObject<PureShardsPot>();
             AddGameDataObject<CrystalPot>();
+            AddGameDataObject<PureCrystalPot>();
             AddGameDataObject<SyrupPot>();
             AddGameDataObject<SugarPot>();
+            AddGameDataObject<BigShardsPot>();
+            AddGameDataObject<BigCrystalPot>();
+            AddGameDataObject<BigSyrupPot>();
+            AddGameDataObject<BigSugarPot>();
+            AddGameDataObject<SteviaShardsPot>();
+            AddGameDataObject<SteviaCrystalPot>();
+            AddGameDataObject<SteviaSyrupPot>();
+            AddGameDataObject<SteviaPot>();
+            AddGameDataObject<LolliPot>();
+            AddGameDataObject<StickSyrupPot>();
+
+            // Karten
             AddGameDataObject<BlueRockCandyDish>();
             AddGameDataObject<PureCandyDish>();
             AddGameDataObject<ChiliPDish>();
+            AddGameDataObject<SugarFreeDish>();
+            AddGameDataObject<LolliDish>();
+            AddGameDataObject<PlatterDish>();
+            AddGameDataObject<SuperlabDish>();
+            AddGameDataObject<SchraderDish>();
+            AddGameDataObject<PizzaRoofDish>();
+            AddGameDataObject<BreakingEvenCard>();
+
+            // Deko und Kostüm
+            AddGameDataObject<PeriodicPoster>();
+            AddGameDataObject<YellowBarrels>();
+            AddGameDataObject<LosPollitosSign>();
+            AddGameDataObject<HazmatSuit>();
+            AddGameDataObject<HeisenbergHat>();
 
             Events.BuildGameDataPreSetupEvent += (s, args) => PrefabUtil.FixMaterials();
+            Events.BuildGameDataEvent += (s, args) =>
+            {
+                try { EasterEgg.Apply(args.gamedata); }
+                catch (System.Exception e) { LogWarning("Easter Egg: " + e.Message); }
+            };
 #if DEBUG
             // Nach dem Aufbau aller Prefabs: Datei mit allen Schlüsseln anlegen, falls noch keine da ist.
             Events.BuildGameDataEvent += (s, args) => Tuning.WriteDefaultsIfMissing();

@@ -77,12 +77,12 @@ namespace BreakingPlates.Custom
 
         // Folien-Tütchen (im Code erzeugt): durchsichtige, aufgeblähte Folie + roter Druckverschluss oben.
         // Live einstellbar (F8): bag.width, bag.height, bag.bulge, bag.zip.size
-        public static GameObject Bag(Transform parent)
+        public static GameObject Bag(Transform parent, Material zipMaterial = null)
         {
             var root = new GameObject("Bag");
             root.transform.SetParent(parent, false);
             ProcMesh.Create("Foil", root.transform, ProcMesh.Pouch(), Materials.Plastic, Vector3.zero);
-            MakeZip(root.transform, "Zip", Materials.ZipBlue);
+            MakeZip(root.transform, "Zip", zipMaterial ?? Materials.ZipBlue);
             ApplyBag(root);
             Tuning.Register(root, "bag", ApplyBag);
             return root;
@@ -139,6 +139,73 @@ namespace BreakingPlates.Custom
             }
             }
         }
+
+        // Holzstiel (für Kristall-Lollis). Steht senkrecht, Unterkante bei y = 0.
+        public static GameObject Stick(Transform parent, string name, Vector3 pos, float length = 0.42f)
+            => ProcMesh.Create(name, parent, ProcMesh.Cylinder(0.012f, length, 8), Materials.Wood, pos);
+
+        // Kristall-Lolli: Stiel mit Kristalltraube oben.
+        public static GameObject Lolli(Transform parent, string name, Vector3 pos, float scale = 1f)
+        {
+            var root = new GameObject(name);
+            root.transform.SetParent(parent, false);
+            root.transform.localPosition = pos;
+            root.transform.localScale = Vector3.one * scale;
+            Stick(root.transform, "Stick", Vector3.zero, 0.42f);
+            var cluster = new GameObject("Crystals");
+            cluster.transform.SetParent(root.transform, false);
+            cluster.transform.localPosition = new Vector3(0f, 0.3f, 0f);
+            for (int i = 0; i < 6; i++)
+            {
+                float a = i * 60f * Mathf.Deg2Rad;
+                Crystal(cluster.transform, "Crystal " + i, new Vector3(Mathf.Cos(a) * 0.03f, (i % 3) * 0.04f, Mathf.Sin(a) * 0.03f), 0.45f, i * 53f);
+            }
+            return root;
+        }
+
+        // Mehrere Stiele, die oben aus dem Kolben ragen.
+        public static GameObject FlaskSticks(Transform parent, string name, int count = 3)
+        {
+            var root = new GameObject(name);
+            root.transform.SetParent(parent, false);
+            for (int i = 0; i < count; i++)
+            {
+                float a = i * (360f / count) * Mathf.Deg2Rad;
+                var st = Stick(root.transform, "Stick " + i, new Vector3(Mathf.Cos(a) * 0.012f, 0.03f, Mathf.Sin(a) * 0.012f), 0.48f);
+                st.transform.localRotation = Quaternion.Euler(Mathf.Sin(a) * 4f, 0f, Mathf.Cos(a) * 4f);
+            }
+            return root;
+        }
+
+        // Stevia: grünlich-weißes Pulverhäufchen.
+        public static GameObject SteviaHeap(Transform parent, string name, Vector3 pos)
+        {
+            var heap = SugarHeap(parent, name, pos);
+            Materials.Apply(heap, Materials.Stevia);
+            return heap;
+        }
+
+        // Bierkrug "Schraderbräu": Glaskrug, Bier, Schaumkrone, Henkel, Etikett.
+        public static GameObject BeerMug(Transform parent, string name, Vector3 pos, float scale = 1f)
+        {
+            var root = new GameObject(name);
+            root.transform.SetParent(parent, false);
+            root.transform.localPosition = pos;
+            root.transform.localScale = Vector3.one * scale;
+            ProcMesh.Create("Beer", root.transform, ProcMesh.Cylinder(0.085f, 0.24f, 16), Materials.Beer, new Vector3(0f, 0.01f, 0f));
+            ProcMesh.Create("Foam", root.transform, ProcMesh.Cylinder(0.092f, 0.05f, 16), Materials.Foam, new Vector3(0f, 0.25f, 0f));
+            ProcMesh.Create("Glass", root.transform, ProcMesh.Mug(0.095f, 0.27f), Materials.Glass, Vector3.zero);
+            ProcMesh.Create("Handle Top", root.transform, ProcMesh.Box(new Vector3(0.07f, 0.025f, 0.03f)), Materials.Glass, new Vector3(0.12f, 0.21f, 0f));
+            ProcMesh.Create("Handle Bottom", root.transform, ProcMesh.Box(new Vector3(0.07f, 0.025f, 0.03f)), Materials.Glass, new Vector3(0.12f, 0.06f, 0f));
+            ProcMesh.Create("Handle Side", root.transform, ProcMesh.Box(new Vector3(0.025f, 0.17f, 0.03f)), Materials.Glass, new Vector3(0.155f, 0.135f, 0f));
+            // Etikett: weißes Schild mit grünem Streifen.
+            ProcMesh.Create("Label", root.transform, ProcMesh.Box(new Vector3(0.09f, 0.08f, 0.01f)), Materials.Paper, new Vector3(0f, 0.12f, -0.096f));
+            ProcMesh.Create("Label Stripe", root.transform, ProcMesh.Box(new Vector3(0.092f, 0.02f, 0.012f)), Materials.Green, new Vector3(0f, 0.12f, -0.097f));
+            return root;
+        }
+
+        // Großer Kolben fürs Superlab.
+        public const float BigFlaskScale = 1.35f;
 
         // Ein einzelner großer, besonders klarer Kristall (99 % Reinheit).
         public static GameObject PureCrystal(Transform parent, string name, Vector3 pos, float scale)

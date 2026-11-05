@@ -53,6 +53,21 @@ namespace BreakingPlates
                 return m;
             }
         }
+        public static Material ZipGreen => Flat("Zip Green", Tuning.C("color.zip.stevia", new Color(0.25f, 0.75f, 0.3f)), 0.3f);
+        public static Material Stevia => Flat("Stevia", new Color(0.82f, 0.95f, 0.78f), 0.3f);
+        public static Material Wood => Flat("Stick Wood", new Color(0.93f, 0.85f, 0.65f), 0.1f);
+        public static Material Black => Flat("Black", new Color(0.08f, 0.08f, 0.09f), 0.4f);
+        public static Material DarkGrey => Flat("Dark Grey", new Color(0.25f, 0.25f, 0.27f), 0.3f);
+        public static Material Hazmat => Flat("Hazmat Yellow", Tuning.C("color.hazmat", new Color(0.98f, 0.82f, 0.1f)), 0.3f);
+        public static Material Beer => Flat("Beer", new Color(0.93f, 0.6f, 0.12f), 0.6f);
+        public static Material Foam => Flat("Foam", new Color(0.99f, 0.97f, 0.9f), 0.1f);
+        public static Material Red => Flat("Red", new Color(0.82f, 0.16f, 0.12f), 0.2f);
+        public static Material Green => Flat("Green", new Color(0.18f, 0.55f, 0.22f), 0.2f);
+        public static Material Paper => Flat("Paper", new Color(0.96f, 0.94f, 0.86f), 0f);
+        public static Material Wall => Flat("Board", new Color(0.35f, 0.24f, 0.16f), 0.1f);
+        public static Material PizzaYellow => Flat("Sign Yellow", new Color(0.99f, 0.78f, 0.18f), 0.2f);
+        public static Material Solid(string name, Color c) => Flat(name, c, 0.2f);
+
         public static Material LabelWhite => Flat("Label White", new Color(0.97f, 0.97f, 0.95f));
 
         // Bei F8: Farben der vorhandenen Materialien aktualisieren.
@@ -67,6 +82,8 @@ namespace BreakingPlates
             Set("Pure Crystal", "color.pure", new Color(0.55f, 0.88f, 1f));
             Set("Zip Red", "color.zip.chili", new Color(0.85f, 0.15f, 0.15f));
             Set("Zip Blue", "color.zip", new Color(0.2f, 0.45f, 0.9f));
+            Set("Zip Green", "color.zip.stevia", new Color(0.25f, 0.75f, 0.3f));
+            Set("Hazmat Yellow", "color.hazmat", new Color(0.98f, 0.82f, 0.1f));
             Set("Glass", "color.glass", new Color(0.85f, 0.95f, 1f, 0.3f), "_Color");
             Set("Plastic", "color.plastic", new Color(0.92f, 0.96f, 1f, 0.35f), "_Color");
         }

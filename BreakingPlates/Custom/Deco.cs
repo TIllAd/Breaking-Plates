@@ -1,0 +1,166 @@
+using System.Collections.Generic;
+using System.Linq;
+using KitchenData;
+using KitchenLib.Customs;
+using KitchenLib.References;
+using KitchenLib.Utils;
+using TMPro;
+using UnityEngine;
+
+namespace BreakingPlates.Custom
+{
+    // Deko im Breaking-Bad-Stil. Verhalten (Wand/Boden, Deko-Werte) wird von einem Spiel-Deko-Objekt übernommen,
+    // dessen Optik ausgeblendet und durch eigene Teile ersetzt.
+    public abstract class DecoBase : CustomAppliance
+    {
+        protected abstract int VanillaID { get; }
+        protected abstract string Title { get; }
+        protected abstract string Desc { get; }
+        protected abstract void Build(Transform root);
+        protected Appliance Vanilla => (Appliance)GDOUtils.GetExistingGDO(VanillaID);
+
+        private GameObject _prefab;
+        public override GameObject Prefab => _prefab ??= MakePrefab();
+        private GameObject MakePrefab()
+        {
+            var go = Object.Instantiate(Vanilla.Prefab, PrefabUtil.Holder, false);
+            go.name = "BreakingPlates " + Title;
+            foreach (var r in go.GetComponentsInChildren<Renderer>(true)) r.enabled = false;
+            var root = new GameObject("BP Deco");
+            root.transform.SetParent(go.transform, false);
+            string key = "deco." + UniqueNameID.ToLower().Replace(" ", "");
+            void Apply(GameObject t)
+            {
+                t.transform.localPosition = Tuning.V3(key + ".pos", DefaultPos);
+                t.transform.localRotation = Quaternion.Euler(Tuning.V3(key + ".rot", DefaultRot));
+                t.transform.localScale = Vector3.one * Tuning.F(key + ".scale", 1f);
+            }
+            Apply(root);
+            Tuning.Register(root, key, Apply);
+            Build(root.transform);
+            return go;
+        }
+        protected virtual Vector3 DefaultPos => Vector3.zero;
+        protected virtual Vector3 DefaultRot => Vector3.zero;
+
+        public override List<IApplianceProperty> Properties => Vanilla.Properties;
+        public override OccupancyLayer Layer => Vanilla.Layer;
+        public override bool IsNonInteractive => Vanilla.IsNonInteractive;
+        public override bool IsPurchasable => true;
+        public override ShoppingTags ShoppingTags => Vanilla.ShoppingTags;
+        public override RarityTier RarityTier => Vanilla.RarityTier;
+        public override PriceTier PriceTier => Vanilla.PriceTier;
+        public override DecorationType ThemeRequired => Vanilla.ThemeRequired;
+#pragma warning disable CS0618
+        public override List<(Locale, ApplianceInfo)> InfoList => new List<(Locale, ApplianceInfo)>
+        {
+            (Locale.English, LocalisationUtils.CreateApplianceInfo(Title, Desc, new List<Appliance.Section>(), new List<string>()))
+        };
+#pragma warning restore CS0618
+
+        protected static GameObject Box(Transform parent, string name, Vector3 size, Vector3 pos, Material m)
+            => ProcMesh.Create(name, parent, ProcMesh.Box(size), m, pos);
+
+        private static TMP_FontAsset _font;
+        protected static GameObject Text(Transform parent, string name, string text, Vector3 pos, float size, Color color)
+        {
+            var go = new GameObject(name);
+            go.transform.SetParent(parent, false);
+            go.transform.localPosition = pos;
+            var tmp = go.AddComponent<TextMeshPro>();
+            if (_font == null) _font = Resources.FindObjectsOfTypeAll<TMP_FontAsset>().FirstOrDefault();
+            if (_font != null) tmp.font = _font;
+            tmp.text = text;
+            tmp.fontSize = size;
+            tmp.color = color;
+            tmp.alignment = TextAlignmentOptions.Center;
+            tmp.enableWordWrapping = false;
+            tmp.rectTransform.sizeDelta = new Vector2(2f, 0.5f);
+            return go;
+        }
+    }
+
+    // Periodensystem-Poster (Br und Ba grün hervorgehoben).
+    public class PeriodicPoster : DecoBase
+    {
+        public override string UniqueNameID => "Periodic Table Poster";
+        protected override int VanillaID => ApplianceReferences.Painting;
+        protected override string Title => "Periodic Table";
+        protected override string Desc => "Br + Ba. Respect the chemistry.";
+        protected override Vector3 DefaultPos => new Vector3(0f, 1.4f, 0.45f);
+
+        protected override void Build(Transform root)
+        {
+            const float cell = 0.05f, gap = 0.006f;
+            const int cols = 18, rows = 7;
+            float w = cols * (cell + gap), h = rows * (cell + gap) + 0.12f;
+            Box(root, "Paper", new Vector3(w + 0.06f, h + 0.06f, 0.01f), new Vector3(0f, 0f, 0.005f), Materials.Paper);
+            var colors = new[]
+            {
+                Materials.Solid("PT Alkali", new Color(0.95f, 0.55f, 0.45f)), Materials.Solid("PT Earth", new Color(0.98f, 0.8f, 0.45f)),
+                Materials.Solid("PT Transition", new Color(0.6f, 0.75f, 0.95f)), Materials.Solid("PT Other", new Color(0.75f, 0.9f, 0.7f)),
+                Materials.Solid("PT Nonmetal", new Color(0.85f, 0.7f, 0.95f)), Materials.Solid("PT Noble", new Color(0.65f, 0.9f, 0.95f)),
+            };
+            for (int r = 0; r < rows; r++)
+            for (int c = 0; c < cols; c++)
+            {
+                bool present = r == 0 ? (c == 0 || c == 17) : r < 3 ? (c < 2 || c >= 12) : true;
+                if (!present) continue;
+                bool highlight = (r == 3 && c == 16) || (r == 5 && c == 1); // Br, Ba
+                var mat = highlight ? Materials.Green
+                    : c == 17 ? colors[5] : c == 0 ? colors[0] : c == 1 ? colors[1] : c < 12 ? colors[2] : c < 15 ? colors[3] : colors[4];
+                float x = -w / 2f + (c + 0.5f) * (cell + gap);
+                float y = h / 2f - 0.12f - (r + 0.5f) * (cell + gap);
+                Box(root, $"Cell {r}-{c}", new Vector3(cell, cell, 0.012f), new Vector3(x, y, 0f), mat);
+                if (highlight) Text(root, highlight && r == 3 ? "Br" : "Ba", r == 3 ? "Br" : "Ba", new Vector3(x, y, -0.008f), 0.35f, Color.white);
+            }
+            Text(root, "Title", "PERIODIC TABLE", new Vector3(0f, h / 2f - 0.05f, -0.008f), 0.6f, new Color(0.15f, 0.15f, 0.15f));
+        }
+    }
+
+    // Gelbe Fässer (nur Deko).
+    public class YellowBarrels : DecoBase
+    {
+        public override string UniqueNameID => "Yellow Barrels";
+        protected override int VanillaID => ApplianceReferences.CosyBarrel;
+        protected override string Title => "Yellow Barrels";
+        protected override string Desc => "Nothing to see here. Definitely just decoration.";
+
+        protected override void Build(Transform root)
+        {
+            Barrel(root, new Vector3(-0.2f, 0f, 0.05f), 0f);
+            Barrel(root, new Vector3(0.2f, 0f, -0.05f), 30f);
+        }
+
+        private static void Barrel(Transform root, Vector3 pos, float rot)
+        {
+            var b = new GameObject("Barrel");
+            b.transform.SetParent(root, false);
+            b.transform.localPosition = pos;
+            b.transform.localRotation = Quaternion.Euler(0f, rot, 0f);
+            ProcMesh.Create("Body", b.transform, ProcMesh.Cylinder(0.18f, 0.6f, 20), Materials.Hazmat, Vector3.zero);
+            foreach (var y in new[] { 0.15f, 0.45f })
+                ProcMesh.Create("Ring", b.transform, ProcMesh.Cylinder(0.185f, 0.025f, 20), Materials.DarkGrey, new Vector3(0f, y, 0f));
+            ProcMesh.Create("Lid", b.transform, ProcMesh.Cylinder(0.17f, 0.012f, 20), Materials.DarkGrey, new Vector3(0f, 0.6f, 0f));
+            ProcMesh.Create("Cap", b.transform, ProcMesh.Cylinder(0.03f, 0.02f, 10), Materials.Black, new Vector3(0.08f, 0.61f, 0f));
+        }
+    }
+
+    // Los-Pollitos-Schild (Wand).
+    public class LosPollitosSign : DecoBase
+    {
+        public override string UniqueNameID => "Los Pollitos Sign";
+        protected override int VanillaID => ApplianceReferences.Painting;
+        protected override string Title => "Los Pollitos Hermanos";
+        protected override string Desc => "Taste the family. Totally unrelated to any other business.";
+        protected override Vector3 DefaultPos => new Vector3(0f, 1.4f, 0.45f);
+
+        protected override void Build(Transform root)
+        {
+            Box(root, "Board", new Vector3(0.9f, 0.32f, 0.03f), new Vector3(0f, 0f, 0.015f), Materials.PizzaYellow);
+            Box(root, "Border", new Vector3(0.94f, 0.36f, 0.02f), new Vector3(0f, 0f, 0.03f), Materials.Red);
+            Text(root, "Name", "LOS POLLITOS", new Vector3(0f, 0.05f, -0.005f), 1.1f, new Color(0.75f, 0.1f, 0.08f));
+            Text(root, "Sub", "HERMANOS", new Vector3(0f, -0.08f, -0.005f), 0.7f, new Color(0.75f, 0.1f, 0.08f));
+        }
+    }
+}

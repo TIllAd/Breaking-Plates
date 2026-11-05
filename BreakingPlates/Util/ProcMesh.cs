@@ -138,6 +138,27 @@ namespace BreakingPlates
             return mesh;
         }
 
+        // Zylinder (z.B. Stiel, Krug, Fass), Boden auf y = 0.
+        public static Mesh Cylinder(float radius, float height, int segments = 16)
+        {
+            string key = $"cyl{radius:0.####}_{height:0.####}_{segments}";
+            if (Cache.TryGetValue(key, out var cached)) return cached;
+            var m = Lathe(new[] { new Vector2(0f, 0f), new Vector2(radius, 0f), new Vector2(radius, height), new Vector2(0f, height) }, segments);
+            Cache[key] = m;
+            return m;
+        }
+
+        // Hohler Becher mit Wand (Bierkrug): außen + innen, oben offen.
+        public static Mesh Mug(float radius, float height, float wall = 0.012f)
+        {
+            string key = $"mug{radius:0.####}_{height:0.####}";
+            if (Cache.TryGetValue(key, out var cached)) return cached;
+            var m = Lathe(new[] { new Vector2(0f, 0f), new Vector2(radius, 0f), new Vector2(radius, height),
+                new Vector2(radius - wall, height), new Vector2(radius - wall, wall), new Vector2(0f, wall) }, 20, doubleSided: true);
+            Cache[key] = m;
+            return m;
+        }
+
         public static GameObject Create(string name, Transform parent, Mesh mesh, Material material, Vector3 pos)
         {
             var go = new GameObject(name);
