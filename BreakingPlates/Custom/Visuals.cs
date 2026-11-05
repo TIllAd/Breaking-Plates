@@ -177,12 +177,23 @@ namespace BreakingPlates.Custom
             return root;
         }
 
-        // Stevia: grünlich-weißes Pulverhäufchen.
+        // Stevia: kleiner Zweig mit grünen Blättern (Pflanze statt Pulver, damit man es nicht mit Zucker verwechselt).
         public static GameObject SteviaHeap(Transform parent, string name, Vector3 pos)
         {
-            var heap = SugarHeap(parent, name, pos);
-            Materials.Apply(heap, Materials.Stevia);
-            return heap;
+            var root = new GameObject(name);
+            root.transform.SetParent(parent, false);
+            root.transform.localPosition = pos;
+            var stem = ProcMesh.Create("Stem", root.transform, ProcMesh.Cylinder(0.008f, 0.16f, 6), Materials.Green, Vector3.zero);
+            var leaf = Materials.Solid("Stevia Leaf", new Color(0.35f, 0.75f, 0.3f));
+            for (int i = 0; i < 6; i++)
+            {
+                float a = i * 137f;
+                var l = ProcMesh.Create("Leaf " + i, root.transform, ProcMesh.Box(new Vector3(0.09f, 0.008f, 0.045f)), leaf,
+                    new Vector3(0f, 0.04f + i * 0.022f, 0f));
+                l.transform.localRotation = Quaternion.Euler(0f, a, 25f);
+                l.transform.localPosition += l.transform.right * 0.045f;
+            }
+            return root;
         }
 
         // Bierkrug "Schraderbräu": Glaskrug, Bier, Schaumkrone, Henkel, Etikett.

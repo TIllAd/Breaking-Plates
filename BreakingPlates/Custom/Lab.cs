@@ -169,8 +169,8 @@ namespace BreakingPlates.Custom
         protected override Item Provided => (Item)GDOUtils.GetCustomGameDataObject<Stevia>().GameDataObject;
         protected override string Title => "Stevia";
         protected override string Desc => "Sugar-free. Lydia insists.";
-        protected override int BaseApplianceID => ApplianceReferences.SourceSugar;
-        protected override void Decorate(Transform top) => SteviaHeap(top, "Stevia", Vector3.zero);
+        // Topfpflanze aus dem Spiel als Quelle: sieht klar anders aus als der Zucker.
+        protected override int BaseApplianceID => ApplianceReferences.Plant;
     }
 
     // --- Schraderbräu (Beilage) ---
