@@ -47,8 +47,7 @@ namespace BreakingPlates.Custom
 
         public override List<Item.ItemProcess> Processes => new List<Item.ItemProcess>
         {
-            new Item.ItemProcess { Process = G.P(ProcessReferences.Cook), Duration = CookTime, Result = CookResult },
-            new Item.ItemProcess { Process = ReactProcess.P, Duration = ReactProcess.CookTime, Result = CookResult }
+            new Item.ItemProcess { Process = G.P(ProcessReferences.Cook), Duration = CookTime, Result = CookResult }
         };
 
         private GameObject _prefab, _sweet, _water;

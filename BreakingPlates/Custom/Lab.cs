@@ -223,16 +223,38 @@ namespace BreakingPlates.Custom
         protected override void Customize(GameObject go)
         {
             var leaf = Materials.Solid("Stevia Plant", new Color(0.55f, 0.85f, 0.35f));
-            var pot = Materials.Solid("Stevia Pot", new Color(0.95f, 0.95f, 0.92f));
-            foreach (var r in go.GetComponentsInChildren<Renderer>(true))
+            foreach (var r in go.GetComponentsInChildren<SkinnedMeshRenderer>(true))
             {
                 var mats = r.sharedMaterials;
-                for (int i = 0; i < mats.Length; i++)
-                {
-                    if (r is SkinnedMeshRenderer) mats[i] = leaf;
-                    else if (mats[i] != null && mats[i].name.StartsWith("Wood")) mats[i] = pot;
-                }
+                for (int i = 0; i < mats.Length; i++) mats[i] = leaf;
                 r.sharedMaterials = mats;
+            }
+            // Kleine weiße Blüten mit gelber Mitte (Stevia blüht weiß).
+            var flowers = new GameObject("Stevia Flowers");
+            flowers.transform.SetParent(go.transform, false);
+            void ApplyF(GameObject t) => t.transform.localPosition = Tuning.V3("stevia.flowers.pos", Vector3.zero);
+            ApplyF(flowers);
+            Tuning.Register(flowers, "stevia.flowers", ApplyF);
+            var white = Materials.Solid("Stevia Flower", new Color(0.98f, 0.98f, 0.95f));
+            var yellow = Materials.Solid("Stevia Flower Centre", new Color(1f, 0.85f, 0.2f));
+            Vector3[] spots =
+            {
+                new Vector3(0.16f, 0.6f, -0.14f), new Vector3(0.08f, 0.82f, -0.06f), new Vector3(-0.16f, 0.55f, 0.02f),
+                new Vector3(-0.08f, 0.72f, 0.1f), new Vector3(0.18f, 0.5f, 0.14f), new Vector3(0.0f, 0.95f, 0.0f),
+                new Vector3(-0.18f, 0.45f, -0.1f), new Vector3(0.22f, 0.68f, 0.02f),
+            };
+            for (int i = 0; i < spots.Length; i++)
+            {
+                var f = new GameObject("Flower " + i);
+                f.transform.SetParent(flowers.transform, false);
+                f.transform.localPosition = spots[i];
+                f.transform.localRotation = Quaternion.Euler(i * 23f, i * 47f, 0f);
+                for (int p = 0; p < 5; p++)
+                {
+                    float a = p * 72f * Mathf.Deg2Rad;
+                    ProcMesh.Create("Petal", f.transform, ProcMesh.Box(new Vector3(0.045f, 0.012f, 0.045f)), white, new Vector3(Mathf.Cos(a) * 0.036f, 0f, Mathf.Sin(a) * 0.036f));
+                }
+                ProcMesh.Create("Centre", f.transform, ProcMesh.Box(new Vector3(0.032f, 0.018f, 0.032f)), yellow, Vector3.zero);
             }
             // Pflanzschild "Stevia"
             var tag = new GameObject("Stevia Tag");
