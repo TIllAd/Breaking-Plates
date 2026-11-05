@@ -92,6 +92,8 @@ namespace BreakingPlates.Custom
         private static TMP_FontAsset _font;
         // TextMeshPro braucht ein aktives Objekt zum Initialisieren: erst außerhalb aufbauen, dann einhängen.
         // Klappt das nicht, gibt es einfach keinen Text (kein Ladefehler).
+        public static GameObject MakeText(Transform parent, string name, string text, Vector3 pos, float size, Color color)
+            => Text(parent, name, text, pos, size, color);
         protected static GameObject Text(Transform parent, string name, string text, Vector3 pos, float size, Color color)
         {
             var go = new GameObject(name);

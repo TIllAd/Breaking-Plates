@@ -36,22 +36,33 @@ namespace BreakingPlates.Custom
         {
             var go = Object.Instantiate(Oven.Prefab, PrefabUtil.Holder, false);
             go.name = "BreakingPlates Lab Reactor";
-            // Ofen gelb einfärben (Industriemaschine) + Tank und Leitungen obendrauf.
-            PrefabUtil.Tint(go, Tuning.C("color.reactor", new Color(0.95f, 0.8f, 0.2f)));
-            var deco = new GameObject("BP Reactor");
-            deco.transform.SetParent(go.transform, false);
+            // Nur den roten Lack gelb färben; Schwarz, Metall und Glas bleiben. Drehregler schwarz.
+            foreach (var r in go.GetComponentsInChildren<MeshRenderer>(true))
+            {
+                var mats = r.sharedMaterials;
+                bool changed = false;
+                for (int i = 0; i < mats.Length; i++)
+                {
+                    if (mats[i] == null) continue;
+                    if (mats[i].name.Contains("Deep Red")) { mats[i] = Materials.Hazmat; changed = true; }
+                    else if (r.gameObject.name == "Circle") { mats[i] = Materials.Black; changed = true; }
+                }
+                if (changed) r.sharedMaterials = mats;
+            }
+            // Display mit Timer + Warnlampe an der hohen Rückwand (Vorderseite = -z).
+            var panel = new GameObject("BP Reactor");
+            panel.transform.SetParent(go.transform, false);
             void Apply(GameObject t)
             {
-                t.transform.localPosition = Tuning.V3("reactor.pos", new Vector3(0.25f, 1.0f, 0.25f));
-                t.transform.localScale = Vector3.one * Tuning.F("reactor.scale", 1f);
+                t.transform.localPosition = Tuning.V3("reactor.panel.pos", new Vector3(0f, 0.72f, 0.09f));
+                t.transform.localScale = Vector3.one * Tuning.F("reactor.panel.scale", 1f);
             }
-            Apply(deco);
-            Tuning.Register(deco, "reactor", Apply);
-            ProcMesh.Create("Tank", deco.transform, ProcMesh.Cylinder(0.1f, 0.3f, 16), Materials.DarkGrey, Vector3.zero);
-            ProcMesh.Create("Tank Top", deco.transform, ProcMesh.Cylinder(0.11f, 0.03f, 16), Materials.Black, new Vector3(0f, 0.3f, 0f));
-            var pipe = ProcMesh.Create("Pipe", deco.transform, ProcMesh.Cylinder(0.02f, 0.3f, 8), Materials.DarkGrey, new Vector3(-0.05f, 0.24f, 0f));
-            pipe.transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
-            ProcMesh.Create("Light", deco.transform, ProcMesh.Cylinder(0.035f, 0.05f, 10), Materials.ZipRed, new Vector3(0f, 0.33f, 0f));
+            Apply(panel);
+            Tuning.Register(panel, "reactor.panel", Apply);
+            ProcMesh.Create("Display", panel.transform, ProcMesh.Box(new Vector3(0.3f, 0.11f, 0.02f)), Materials.Black, Vector3.zero);
+            DecoBase.MakeText(panel.transform, "Timer", "00:10", new Vector3(0f, 0f, -0.012f), 0.55f, new Color(0.35f, 1f, 0.45f));
+            ProcMesh.Create("Lamp Base", panel.transform, ProcMesh.Cylinder(0.035f, 0.02f, 12), Materials.DarkGrey, new Vector3(0.28f, 0.1f, 0.05f));
+            ProcMesh.Create("Lamp", panel.transform, ProcMesh.Cylinder(0.028f, 0.05f, 12), Materials.Solid("Reactor Lamp", new Color(1f, 0.55f, 0.1f)), new Vector3(0.28f, 0.12f, 0.05f));
             return go;
         }
 
