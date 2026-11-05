@@ -54,6 +54,7 @@ namespace BreakingPlates
             AddGameDataObject<LabReactor>();
             AddGameDataObject<GlassReactor>();
             AddGameDataObject<ReactProcess>();
+            AddGameDataObject<ReactCoolProcess>();
             AddGameDataObject<PurifyProcess>();
             AddGameDataObject<FlaskProvider>();
             AddGameDataObject<LabFlask>();

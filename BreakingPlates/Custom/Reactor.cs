@@ -25,6 +25,19 @@ namespace BreakingPlates.Custom
         public const float CoolTime = 5f;
     }
 
+    // Zweiter Schritt im Reactor: Abkühlen (eigenes Symbol, Eiskristall).
+    public class ReactCoolProcess : CustomProcess
+    {
+        public override string UniqueNameID => "React Cool";
+        public override GameDataObject BasicEnablingAppliance => GDOUtils.GetCustomGameDataObject<LabReactor>().GameDataObject;
+        public override bool CanObfuscateProgress => true;
+        public override List<(Locale, ProcessInfo)> InfoList => new List<(Locale, ProcessInfo)>
+        {
+            (Locale.English, new ProcessInfo { Name = "Cool", Icon = "<sprite name=\"snow\">" })
+        };
+        public static Process P => (Process)GDOUtils.GetCustomGameDataObject<ReactCoolProcess>().GameDataObject;
+    }
+
     public abstract class ReactorBase : CustomAppliance
     {
         protected abstract Appliance Template { get; }
@@ -44,7 +57,8 @@ namespace BreakingPlates.Custom
 
         public override List<Appliance.ApplianceProcesses> Processes => new List<Appliance.ApplianceProcesses>
         {
-            new Appliance.ApplianceProcesses { Process = ReactProcess.P, IsAutomatic = true, Speed = 1f }
+            new Appliance.ApplianceProcesses { Process = ReactProcess.P, IsAutomatic = true, Speed = 1f },
+            new Appliance.ApplianceProcesses { Process = ReactCoolProcess.P, IsAutomatic = true, Speed = 1f }
         };
         public override List<IApplianceProperty> Properties => Template.Properties;
         public override bool IsPurchasable => true;
