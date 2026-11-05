@@ -133,9 +133,9 @@ namespace BreakingPlates.Custom
             }
 
             // Display rechts neben den Reglern (außen), orange Warnlampe oben.
-            var panel = Tuned(go.transform, "BP Panel", "reactor.panel", new Vector3(0.3f, 0.3f, -0.46f));
-            Part("Display", panel.transform, ProcMesh.Box(new Vector3(0.17f, 0.08f, 0.02f)), Materials.Black, Vector3.zero);
-            DecoBase.MakeText(panel.transform, "Timer", "00:10", new Vector3(0f, 0f, -0.012f), 0.38f, new Color(0.35f, 1f, 0.45f));
+            var panel = Tuned(go.transform, "BP Panel", "reactor.panel", new Vector3(0.3f, 0.3f, -0.44f));
+            Part("Display", panel.transform, ProcMesh.Box(new Vector3(0.17f, 0.08f, 0.012f)), Materials.Black, Vector3.zero);
+            DecoBase.MakeText(panel.transform, "Timer", "00:10", new Vector3(0f, 0f, -0.007f), 0.38f, new Color(0.35f, 1f, 0.45f));
 
             var lamp = Tuned(go.transform, "BP Lamp", "reactor.lamp", new Vector3(0.3f, 0.92f, 0.3f));
             Part("Lamp Base", lamp.transform, ProcMesh.Cylinder(0.04f, 0.02f, 12), Materials.DarkGrey, Vector3.zero);
@@ -232,21 +232,15 @@ namespace BreakingPlates.Custom
             }
         }
 
-        // Fertig (nichts läuft mehr, Kolben drin): Klappe öffnen, damit man es sieht.
-        // Die Ofen-Animation hält die Klappe zu, solange "IsActive" gesetzt ist; nach dem Spiel-Update überschreiben.
+        // Fertig = nichts läuft mehr, aber etwas liegt drin (grüne Lampe, "DONE"). Klappe bleibt wie beim Ofen.
         private bool _done;
         private Transform _hold;
-        private static readonly int IsActiveHash = Animator.StringToHash("IsActive");
         private bool HasItem()
         {
             if (_hold == null) _hold = transform.Find("HoldPoint");
             if (_hold == null) return false;
             for (int i = 0; i < _hold.childCount; i++) if (_hold.GetChild(i).gameObject.activeInHierarchy) return true;
             return false;
-        }
-        private void LateUpdate()
-        {
-            if (_anim != null && _done && Tuning.F("reactor.opendone", 1f) > 0.5f) _anim.SetBool(IsActiveHash, false);
         }
     }
 }

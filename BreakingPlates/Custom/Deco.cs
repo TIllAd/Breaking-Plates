@@ -163,12 +163,27 @@ namespace BreakingPlates.Custom
         protected override DecorationType Theme => DecorationType.Affordable;
         protected override int[] VanillaIDs => new[] { ApplianceReferences.CosyBarrel };
         protected override string Title => "Yellow Barrels";
-        protected override string Desc => "Nothing to see here. Definitely just decoration.";
+        protected override string Desc => "Why does a kitchen produce so much chemical waste?";
 
         protected override void Build(Transform root)
         {
             Barrel(root, new Vector3(-0.2f, 0f, 0.05f), 0f);
             Barrel(root, new Vector3(0.2f, 0f, -0.05f), 30f);
+
+            // Läuft leicht aus: grün leuchtende Spur am rechten Fass und eine Pfütze davor, dazu ein schwaches grünes Licht.
+            var goo = Materials.Solid("Toxic Goo", new Color(0.55f, 1f, 0.2f));
+            ProcMesh.Create("Drip", root, ProcMesh.Box(new Vector3(0.05f, 0.3f, 0.01f)), goo, new Vector3(0.2f, 0.18f, -0.232f));
+            var puddle = ProcMesh.Create("Puddle", root, ProcMesh.Cylinder(0.16f, 0.006f, 16), goo, new Vector3(0.18f, 0.002f, -0.33f));
+            puddle.transform.localScale = new Vector3(1.3f, 1f, 0.7f);
+            ProcMesh.Create("Puddle Drop", root, ProcMesh.Cylinder(0.05f, 0.006f, 10), goo, new Vector3(-0.02f, 0.002f, -0.4f));
+            var glow = new GameObject("Glow");
+            glow.transform.SetParent(root, false);
+            glow.transform.localPosition = new Vector3(0.1f, 0.35f, -0.35f);
+            var light = glow.AddComponent<Light>();
+            light.type = LightType.Point;
+            light.color = new Color(0.5f, 1f, 0.25f);
+            light.range = Tuning.F("deco.barrels.glow.range", 1.2f);
+            light.intensity = Tuning.F("deco.barrels.glow.intensity", 1.5f);
         }
 
         private static void Barrel(Transform root, Vector3 pos, float rot)
@@ -193,7 +208,7 @@ namespace BreakingPlates.Custom
         protected override int[] VanillaIDs => new[] { ApplianceReferences.FancyPainting, ApplianceReferences.Painting, ApplianceReferences.FriendsPoster, ApplianceReferences.BunnyPoster, ApplianceReferences.AffordableNeonSign1 };
         protected override string Title => "Los Pollitos Hermanos";
         protected override string Desc => "Taste the family. Totally unrelated to any other business.";
-        protected override Vector3 DefaultPos => new Vector3(0f, 0.85f, 0.45f);
+        protected override Vector3 DefaultPos => new Vector3(0f, 0.5f, 0.45f);
 
         protected override void Build(Transform root)
         {

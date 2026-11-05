@@ -57,7 +57,7 @@ namespace BreakingPlates.Custom
         {
             "Say My Name", "Breaking Plates", "Blue Sky Sweets", "The One Who Cooks",
             "Better Call Sugar", "Los Pollitos Hermanos", "99.1% Sugar", "Tread Lightly",
-            "Gray Matter Candy Co.", "Yeah, Science!", "Sweet Chemistry", "The Crystal Ship",
+            "Gray Matter Candy Co.", "Yeah, Science!", "Sweet Chemistry", "The Crystal Ship", "Secret Lab", "Underground Kitchen", "Underground Lab", "Just a Laundry",
             "Respect The Chemistry", "Cook Responsibly", "Blue Magic", "Sugar Rush Labs"
         };
 
@@ -100,7 +100,7 @@ namespace BreakingPlates.Custom
         };
         public override List<(Locale, UnlockInfo)> InfoList => new List<(Locale, UnlockInfo)>
         {
-            (Locale.English, new UnlockInfo { Name = "Blue Rock Candy", Description = "Adds Blue Rock Candy as a main", FlavourText = "Say my name." })
+            (Locale.English, new UnlockInfo { Name = "Blue Rock Candy", Description = "Adds Blue Rock Candy as a main", FlavourText = "We need to cook." })
         };
     }
 
@@ -293,7 +293,7 @@ namespace BreakingPlates.Custom
             (Locale.English, new UnlockInfo
             {
                 Name = "Breaking Even",
-                Description = "Fewer customers, but you lose 25% of the day's earnings",
+                Description = "Fewer customers. At the end of each day, 25% of that day's earnings are taken away",
                 FlavourText = "Better call Saul!"
             })
         };

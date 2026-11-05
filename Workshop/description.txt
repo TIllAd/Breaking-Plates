@@ -13,14 +13,14 @@ It's just sugar. Probably.
 
 [h2]Cards[/h2]
 [list]
-[*][b]Blue Rock Candy[/b] – "Say my name."
+[*][b]Blue Rock Candy[/b] – "We need to cook."
 [*][b]99.1% Purity[/b] – recrystallise your candy (water in, cook and cool again) for pure, white crystals. "A higher purity means a greater yield."
 [*][b]Chili P[/b] – a chopped jalapeño in the bag, marked with a chili clip. "Chili P is my signature!"
 [*][b]Sugar-Free[/b] – cook with stevia, marked with a stevia sprig. "I'll need more stevia."
 [*][b]On a Stick[/b] – rock candy lollis straight from the flask. "Yeah, science!"
 [*][b]Mass Production[/b] – groups order a whole flask, in every variant you sell. "I'm in the empire business."
 [*][b]Schraderbräu[/b] – home-brewed beer as a side. "Jesus, Marie!"
-[*][b]Breaking Even[/b] – fewer customers, but 25% less money each day. "Better call Saul!"
+[*][b]Breaking Even[/b] – fewer customers, but 25% of each day's earnings are taken away at the end of the day. "Better call Saul!"
 [/list]
 
 [h2]Decorations[/h2]

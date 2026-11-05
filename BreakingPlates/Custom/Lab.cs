@@ -243,19 +243,26 @@ namespace BreakingPlates.Custom
                 new Vector3(-0.08f, 0.72f, 0.1f), new Vector3(0.18f, 0.5f, 0.14f), new Vector3(0.0f, 0.95f, 0.0f),
                 new Vector3(-0.18f, 0.45f, -0.1f), new Vector3(0.22f, 0.68f, 0.02f),
             };
-            for (int i = 0; i < spots.Length; i++)
+            // Blüten an die Stängel-Enden (Knochen der Pflanze) hängen, damit sie mitwippen statt in der Luft zu stehen.
+            var tips = new List<Transform>();
+            foreach (var r in go.GetComponentsInChildren<SkinnedMeshRenderer>(true))
+                foreach (var bone in r.bones ?? new Transform[0])
+                    if (bone != null && bone.childCount == 0 && !tips.Contains(bone)) tips.Add(bone);
+            int made = 0;
+            if (tips.Count > 0 && Tuning.F("stevia.flowers.onbones", 1f) > 0.5f)
             {
-                var f = new GameObject("Flower " + i);
-                f.transform.SetParent(flowers.transform, false);
-                f.transform.localPosition = spots[i];
-                f.transform.localRotation = Quaternion.Euler(i * 23f, i * 47f, 0f);
-                for (int p = 0; p < 5; p++)
+                foreach (var tip in tips)
                 {
-                    float a = p * 72f * Mathf.Deg2Rad;
-                    ProcMesh.Create("Petal", f.transform, ProcMesh.Box(new Vector3(0.045f, 0.012f, 0.045f)), white, new Vector3(Mathf.Cos(a) * 0.036f, 0f, Mathf.Sin(a) * 0.036f));
+                    var f = Flower(tip, "Flower " + made, white, yellow, made);
+                    var ls = tip.lossyScale;
+                    f.transform.localScale = new Vector3(1f / Mathf.Max(0.001f, ls.x), 1f / Mathf.Max(0.001f, ls.y), 1f / Mathf.Max(0.001f, ls.z));
+                    made++;
                 }
-                ProcMesh.Create("Centre", f.transform, ProcMesh.Box(new Vector3(0.032f, 0.018f, 0.032f)), yellow, Vector3.zero);
+                Mod.LogInfo("Stevia: " + made + " Blüten an Stängel-Enden");
             }
+            if (made == 0)
+                for (int i = 0; i < spots.Length; i++)
+                    Flower(flowers.transform, "Flower " + i, white, yellow, i).transform.localPosition = spots[i];
             // Pflanzschild "Stevia"
             var tag = new GameObject("Stevia Tag");
             tag.transform.SetParent(go.transform, false);
@@ -265,6 +272,20 @@ namespace BreakingPlates.Custom
             ProcMesh.Create("Stake", tag.transform, ProcMesh.Box(new Vector3(0.015f, 0.2f, 0.01f)), Materials.Wood, new Vector3(0f, -0.08f, 0f));
             ProcMesh.Create("Board", tag.transform, ProcMesh.Box(new Vector3(0.2f, 0.08f, 0.012f)), Materials.Paper, new Vector3(0f, 0.04f, 0f));
             DecoBase.MakeText(tag.transform, "Label", "STEVIA", new Vector3(0f, 0.04f, -0.008f), 0.4f, new Color(0.15f, 0.5f, 0.2f));
+        }
+
+        private static GameObject Flower(Transform parent, string name, Material white, Material yellow, int i)
+        {
+            var f = new GameObject(name);
+            f.transform.SetParent(parent, false);
+            f.transform.localRotation = Quaternion.Euler(i * 23f, i * 47f, 0f);
+            for (int p = 0; p < 5; p++)
+            {
+                float a = p * 72f * Mathf.Deg2Rad;
+                ProcMesh.Create("Petal", f.transform, ProcMesh.Box(new Vector3(0.045f, 0.012f, 0.045f)), white, new Vector3(Mathf.Cos(a) * 0.036f, 0f, Mathf.Sin(a) * 0.036f));
+            }
+            ProcMesh.Create("Centre", f.transform, ProcMesh.Box(new Vector3(0.032f, 0.018f, 0.032f)), yellow, Vector3.zero);
+            return f;
         }
     }
 
