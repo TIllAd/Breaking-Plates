@@ -13,11 +13,23 @@ namespace BreakingPlates.Custom
     // dessen Optik ausgeblendet und durch eigene Teile ersetzt.
     public abstract class DecoBase : CustomAppliance
     {
-        protected abstract int VanillaID { get; }
+        // Erste vorhandene Vorlage aus der Liste (manche Deko-Objekte gibt es nicht in jeder Spielversion).
+        protected abstract int[] VanillaIDs { get; }
         protected abstract string Title { get; }
         protected abstract string Desc { get; }
         protected abstract void Build(Transform root);
-        protected Appliance Vanilla => (Appliance)GDOUtils.GetExistingGDO(VanillaID);
+        private Appliance _vanilla;
+        protected Appliance Vanilla
+        {
+            get
+            {
+                if (_vanilla != null) return _vanilla;
+                foreach (var id in VanillaIDs)
+                    if (GDOUtils.GetExistingGDO(id) is Appliance a && a.Prefab != null) return _vanilla = a;
+                Mod.LogWarning(UniqueNameID + ": keine Deko-Vorlage gefunden, nehme das Fass.");
+                return _vanilla = (Appliance)GDOUtils.GetExistingGDO(ApplianceReferences.CosyBarrel);
+            }
+        }
 
         private GameObject _prefab;
         public override GameObject Prefab => _prefab ??= MakePrefab();
@@ -43,7 +55,7 @@ namespace BreakingPlates.Custom
         protected virtual Vector3 DefaultPos => Vector3.zero;
         protected virtual Vector3 DefaultRot => Vector3.zero;
 
-        public override List<IApplianceProperty> Properties => Vanilla.Properties;
+        public override List<IApplianceProperty> Properties => Vanilla.Properties ?? new List<IApplianceProperty>();
         public override OccupancyLayer Layer => Vanilla.Layer;
         public override bool IsNonInteractive => Vanilla.IsNonInteractive;
         public override bool IsPurchasable => true;
@@ -84,7 +96,7 @@ namespace BreakingPlates.Custom
     public class PeriodicPoster : DecoBase
     {
         public override string UniqueNameID => "Periodic Table Poster";
-        protected override int VanillaID => ApplianceReferences.Painting;
+        protected override int[] VanillaIDs => new[] { ApplianceReferences.FancyPainting, ApplianceReferences.Painting, ApplianceReferences.FriendsPoster, ApplianceReferences.BunnyPoster, ApplianceReferences.AffordableNeonSign1 };
         protected override string Title => "Periodic Table";
         protected override string Desc => "Br + Ba. Respect the chemistry.";
         protected override Vector3 DefaultPos => new Vector3(0f, 1.4f, 0.45f);
@@ -122,7 +134,7 @@ namespace BreakingPlates.Custom
     public class YellowBarrels : DecoBase
     {
         public override string UniqueNameID => "Yellow Barrels";
-        protected override int VanillaID => ApplianceReferences.CosyBarrel;
+        protected override int[] VanillaIDs => new[] { ApplianceReferences.CosyBarrel };
         protected override string Title => "Yellow Barrels";
         protected override string Desc => "Nothing to see here. Definitely just decoration.";
 
@@ -150,7 +162,7 @@ namespace BreakingPlates.Custom
     public class LosPollitosSign : DecoBase
     {
         public override string UniqueNameID => "Los Pollitos Sign";
-        protected override int VanillaID => ApplianceReferences.Painting;
+        protected override int[] VanillaIDs => new[] { ApplianceReferences.FancyPainting, ApplianceReferences.Painting, ApplianceReferences.FriendsPoster, ApplianceReferences.BunnyPoster, ApplianceReferences.AffordableNeonSign1 };
         protected override string Title => "Los Pollitos Hermanos";
         protected override string Desc => "Taste the family. Totally unrelated to any other business.";
         protected override Vector3 DefaultPos => new Vector3(0f, 1.4f, 0.45f);
