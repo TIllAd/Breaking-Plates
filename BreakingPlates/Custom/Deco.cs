@@ -77,6 +77,8 @@ namespace BreakingPlates.Custom
         public override RarityTier RarityTier => Vanilla.RarityTier;
         public override PriceTier PriceTier => Vanilla.PriceTier;
         public override DecorationType ThemeRequired => Theme;
+        // Fester Platz im Shop, solange man sie noch nicht hat (sobald das passende Thema gewählt ist).
+        public override bool StapleWhenMissing => true;
 #pragma warning disable CS0618
         public override List<(Locale, ApplianceInfo)> InfoList => new List<(Locale, ApplianceInfo)>
         {
