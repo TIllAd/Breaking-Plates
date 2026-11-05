@@ -201,7 +201,7 @@ namespace BreakingPlates.Custom
     {
         public override string UniqueNameID => "Schraderbraeu";
         public override ItemStorage ItemStorageFlags => ItemStorage.None;
-        public override ItemValue ItemValue => ItemValue.Small;
+        public override ItemValue ItemValue => ItemValue.SideMedium;
         public override string ColourBlindTag => "Be";
         public override Appliance DedicatedProvider => (Appliance)GDOUtils.GetCustomGameDataObject<SchraderTap>().GameDataObject;
         private GameObject _prefab;

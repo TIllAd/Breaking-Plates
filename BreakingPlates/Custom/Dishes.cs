@@ -119,7 +119,7 @@ namespace BreakingPlates.Custom
         public override GameObject IconPrefab => _icon ??= Icon("Pure Candy - Icon", t => PureCrystal(t, "Crystal", new Vector3(0f, 0.12f, 0f), 1.3f));
         protected override string CardName => "99.1% Purity";
         protected override string CardDescription => "Some customers only accept the purest batch. Adds the Crystal Purifier.";
-        protected override string Quote => "I am the one who knocks.";
+        protected override string Quote => "A higher purity means a greater yield.";
         protected override string RecipeText => "Put a flask of set crystals into the Crystal Purifier until they turn pure (99). Smash and bag as usual. Pure candy can be chopped back into a normal portion.";
     }
 
@@ -165,7 +165,7 @@ namespace BreakingPlates.Custom
         public override GameObject IconPrefab => _icon ??= Icon("Sugar-Free - Icon", t => SteviaHeap(t, "Stevia", Vector3.zero));
         protected override string CardName => "Sugar-Free";
         protected override string CardDescription => "Some customers want their candy made with stevia (green zip)";
-        protected override string Quote => "Stevia.";
+        protected override string Quote => "I'll need more stevia.";
         protected override string RecipeText => "Cook stevia and water instead of sugar. Everything else stays the same - the bag gets a green zip.";
     }
 

@@ -111,6 +111,7 @@ namespace BreakingPlates.Custom
     public class PureCandyBag : FilledBagBase
     {
         public override string UniqueNameID => "Candy Bag - Pure";
+        public override ItemValue ItemValue => ItemValue.MediumLarge; // aufwendiger (Purifier) -> etwas mehr Geld
         protected override string PrefabName => "Pure Candy Bag";
         protected override Item Candy => (Item)GDOUtils.GetCustomGameDataObject<PureBlueRockCandy>().GameDataObject;
         protected override GameObject MakeContent(Transform parent) => PureCrystal(parent, "Pure Crystal", new Vector3(0f, 0.1f, 0f), 1f);

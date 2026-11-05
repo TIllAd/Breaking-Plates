@@ -4,19 +4,19 @@ It's just sugar. Probably.
 
 [h2]How to cook[/h2]
 [list]
-[*]Take a [b]lab flask[/b] (only 4 – put them back!) and add [b]sugar[/b] and [b]water[/b]
+[*]Take a [b]lab flask[/b] and add [b]sugar[/b] and [b]water[/b]
 [*][b]Cook[/b] it → blue syrup
-[*]Let it [b]cool[/b] off the heat – a [b]freezer[/b] is much faster → crystals
-[*][b]Smash[/b] the crystals by hand on a counter → 5 portions
-[*]Bag a portion and serve – no plates needed
+[*]Let it [b]cool down[/b] (a [b]freezer[/b] is much faster) to get crystals
+[*][b]Interact[/b] on a counter to smash the crystals → 5 portions
+[*][b]Portion[/b] it and combine with a [b]candy bag[/b] to serve – no plates needed
 [/list]
 
 [h2]Cards[/h2]
 [list]
 [*][b]Blue Rock Candy[/b] – "Say my name."
-[*][b]99.1% Purity[/b] – the Crystal Purifier makes pure, white crystals. "I am the one who knocks."
+[*][b]99.1% Purity[/b] – the Crystal Purifier makes pure, white crystals. "A higher purity means a greater yield."
 [*][b]Chili P[/b] – a chopped jalapeño in the bag, marked with a chili clip. "Chili P is my signature!"
-[*][b]Sugar-Free[/b] – cook with stevia, marked with a stevia sprig. "Stevia."
+[*][b]Sugar-Free[/b] – cook with stevia, marked with a stevia sprig. "I'll need more stevia."
 [*][b]On a Stick[/b] – rock candy lollis straight from the flask. "Yeah, science!"
 [*][b]Mass Production[/b] – groups order a whole flask, in every variant you sell. "I'm in the empire business."
 [*][b]Schraderbräu[/b] – home-brewed beer as a side. "Jesus, Marie!"

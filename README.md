@@ -11,26 +11,29 @@ cook **Blue Rock Candy** in lab flasks, smash it up and serve it in little bags.
 
 | Step | What you do |
 |---|---|
-| 1 | Take a **lab flask** (only 4 – put them back when you're done) and add **sugar** and **water** |
-| 2 | **Cook** it on a hob → blue syrup |
-| 3 | Take it off the heat and let it **cool** (12 s) – a **freezer** does it in 4 s → crystals |
-| 4 | **Smash** the crystals by hand on a counter → 5 portions |
-| 5 | Put a portion into a **candy bag** and serve – no plate needed |
+| 1 | Take a **lab flask** and add **sugar** and **water** |
+| 2 | **Cook** it → blue syrup |
+| 3 | Let it **cool down** (12 s, or 4 s in a **freezer**) to get crystals |
+| 4 | **Interact** on a counter to smash the crystals → 5 portions |
+| 5 | **Portion** it and combine with a **candy bag** to serve |
 
 Every candy bag looks the same: clear foil, blue zip. Toppings and variants are marked on the bag itself.
 
 ## Cards
 
-| Card | Type | What it adds | Quote |
-|---|---|---|---|
-| **Blue Rock Candy** | Main (base) | The dish above | *"Say my name."* |
-| **99.1% Purity** | Main | Adds the **Crystal Purifier**. Put a flask of crystals in it to make them pure (white crystals, `99`). | *"I am the one who knocks."* |
-| **Chili P** | Topping | Chop a jalapeño and add it to the bag → a **chili clipped to the zip** | *"Chili P is my signature!"* |
-| **Sugar-Free** | Main | Cook with **stevia** instead of sugar → bag with a **stevia sprig** | *"Stevia."* |
-| **On a Stick** | Main | Put a **candy stick** into the hot syrup before it sets → 5 rock candy lollis straight from the flask | *"Yeah, science!"* |
-| **Mass Production** | Main | Groups order a **whole flask** to share – in every variant you sell (normal, 99.1%, sugar-free) | *"I'm in the empire business."* |
-| **Schraderbräu** | Side | Home-brewed beer from the tap | *"Jesus, Marie!"* |
-| **Breaking Even** | Effect | Fewer customers, but you lose 25% of the day's earnings | *"Better call Saul!"* |
+| Card | Type | ★ | Customers | Order pays | What it adds | Quote |
+|---|---|---|---|---|---|---|
+| **Blue Rock Candy** | Main (base) | 3 | small decrease | 5 | The dish above | *"Say my name."* |
+| **99.1% Purity** | Main | 2 | small decrease | 6 | Adds the **Crystal Purifier**: crystals inside turn pure (white, `99`) | *"A higher purity means a greater yield."* |
+| **Chili P** | Topping | 1 | small decrease | +1 | Chopped jalapeño in the bag → **chili clipped to the zip** | *"Chili P is my signature!"* |
+| **Sugar-Free** | Main | 2 | small decrease | 5 | Cook with **stevia** instead of sugar → bag with a **stevia sprig** | *"I'll need more stevia."* |
+| **On a Stick** | Main | 2 | small decrease | 5 | **Candy stick** into the hot syrup → 5 lollis straight from the flask | *"Yeah, science!"* |
+| **Mass Production** | Main | 2 | small decrease | 20 | Groups order a **whole flask** (up to 4 customers) – in every variant you sell | *"I'm in the empire business."* |
+| **Schraderbräu** | Side | 1 | small decrease | 2 | Home-brewed beer from the tap | *"Jesus, Marie!"* |
+| **Breaking Even** | Effect | – | **large decrease** | –25% daily earnings | Fewer customers, but less money | *"Better call Saul!"* |
+
+"Small decrease" / "large decrease" are the game's customer tags (about −15% / −28% customers).
+Values are a first pass and still need balancing in real runs.
 
 ## Decorations
 

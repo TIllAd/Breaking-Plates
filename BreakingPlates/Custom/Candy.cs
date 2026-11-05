@@ -185,6 +185,9 @@ namespace BreakingPlates.Custom
         protected virtual bool WholeBatch => true;
         public override int MaxOrderSharers => WholeBatch ? 4 : 0;
         public override Item DirtiesTo => WholeBatch ? Container : null;
+        // Ganzer Kolben = 5 Portionen für eine Gruppe: fester Preis statt "Small" (3).
+        public override ItemValue ItemValue => WholeBatch ? ItemValue.ExtraLarge : ItemValue.Small;
+        public override int RewardOverride => WholeBatch ? 20 : -1;
 
         private GameObject _prefab;
         public override GameObject Prefab
