@@ -56,15 +56,27 @@ namespace BreakingPlates.Custom
         protected virtual Vector3 DefaultRot => Vector3.zero;
 
         // Ohne "unbeweglich", damit man sie verschieben und per Stuff on Demand (F3) holen kann.
-        public override List<IApplianceProperty> Properties =>
-            (Vanilla.Properties ?? new List<IApplianceProperty>()).Where(p => p != null && !(p is Kitchen.CImmovable)).ToList();
+        // Eigenes Thema statt dem der Vorlage (Shop zeigt Deko nur beim passenden Thema, sie zahlt darauf ein).
+        protected abstract DecorationType Theme { get; }
+        public override List<IApplianceProperty> Properties
+        {
+            get
+            {
+                var list = (Vanilla.Properties ?? new List<IApplianceProperty>())
+                    .Where(p => p != null && !(p is Kitchen.CImmovable) && !(p is Kitchen.CGivesDecoration)).ToList();
+                list.Add(KitchenPropertiesUtils.GetCGivesDecoration(
+                    Theme == DecorationType.Affordable ? 1 : 0, Theme == DecorationType.Charming ? 1 : 0,
+                    Theme == DecorationType.Exclusive ? 1 : 0, Theme == DecorationType.Formal ? 1 : 0, 0));
+                return list;
+            }
+        }
         public override OccupancyLayer Layer => Vanilla.Layer;
         public override bool IsNonInteractive => Vanilla.IsNonInteractive;
         public override bool IsPurchasable => true;
         public override ShoppingTags ShoppingTags => Vanilla.ShoppingTags;
         public override RarityTier RarityTier => Vanilla.RarityTier;
         public override PriceTier PriceTier => Vanilla.PriceTier;
-        public override DecorationType ThemeRequired => Vanilla.ThemeRequired;
+        public override DecorationType ThemeRequired => Theme;
 #pragma warning disable CS0618
         public override List<(Locale, ApplianceInfo)> InfoList => new List<(Locale, ApplianceInfo)>
         {
@@ -105,6 +117,7 @@ namespace BreakingPlates.Custom
     public class PeriodicPoster : DecoBase
     {
         public override string UniqueNameID => "Periodic Table Poster";
+        protected override DecorationType Theme => DecorationType.Formal;
         protected override int[] VanillaIDs => new[] { ApplianceReferences.FancyPainting, ApplianceReferences.Painting, ApplianceReferences.FriendsPoster, ApplianceReferences.BunnyPoster, ApplianceReferences.AffordableNeonSign1 };
         protected override string Title => "Periodic Table";
         protected override string Desc => "Br + Ba. Respect the chemistry.";
@@ -143,6 +156,7 @@ namespace BreakingPlates.Custom
     public class YellowBarrels : DecoBase
     {
         public override string UniqueNameID => "Yellow Barrels";
+        protected override DecorationType Theme => DecorationType.Affordable;
         protected override int[] VanillaIDs => new[] { ApplianceReferences.CosyBarrel };
         protected override string Title => "Yellow Barrels";
         protected override string Desc => "Nothing to see here. Definitely just decoration.";
@@ -171,6 +185,7 @@ namespace BreakingPlates.Custom
     public class LosPollitosSign : DecoBase
     {
         public override string UniqueNameID => "Los Pollitos Sign";
+        protected override DecorationType Theme => DecorationType.Affordable;
         protected override int[] VanillaIDs => new[] { ApplianceReferences.FancyPainting, ApplianceReferences.Painting, ApplianceReferences.FriendsPoster, ApplianceReferences.BunnyPoster, ApplianceReferences.AffordableNeonSign1 };
         protected override string Title => "Los Pollitos Hermanos";
         protected override string Desc => "Taste the family. Totally unrelated to any other business.";

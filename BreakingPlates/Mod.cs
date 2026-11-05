@@ -43,6 +43,8 @@ namespace BreakingPlates
             // Reihenfolge: Ergebnisse vor den Dingen, die auf sie verweisen.
             // Laborbedarf
             AddGameDataObject<CrystalPurifier>();
+            AddGameDataObject<LabReactor>();
+            AddGameDataObject<ReactProcess>();
             AddGameDataObject<PurifyProcess>();
             AddGameDataObject<FlaskProvider>();
             AddGameDataObject<LabFlask>();

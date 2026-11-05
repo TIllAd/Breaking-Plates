@@ -47,7 +47,8 @@ namespace BreakingPlates.Custom
 
         public override List<Item.ItemProcess> Processes => new List<Item.ItemProcess>
         {
-            new Item.ItemProcess { Process = G.P(ProcessReferences.Cook), Duration = CookTime, Result = CookResult }
+            new Item.ItemProcess { Process = G.P(ProcessReferences.Cook), Duration = CookTime, Result = CookResult },
+            new Item.ItemProcess { Process = ReactProcess.P, Duration = ReactProcess.CookTime, Result = CookResult }
         };
 
         private GameObject _prefab, _sweet, _water;
@@ -104,7 +105,8 @@ namespace BreakingPlates.Custom
         private Item.ItemProcess CoolOff => new Item.ItemProcess { Process = G.P(ProcessReferences.CoolOff), Duration = CoolTime, Result = Crystallised };
         private Item.ItemProcess Freeze => new Item.ItemProcess { Process = G.P(ProcessReferences.Freeze), Duration = FreezeTime, Result = Crystallised };
         public override Item.ItemProcess AutomaticItemProcess => CoolOff;
-        public override List<Item.ItemProcess> Processes => new List<Item.ItemProcess> { CoolOff, Freeze };
+        private Item.ItemProcess React => new Item.ItemProcess { Process = ReactProcess.P, Duration = ReactProcess.CoolTime, Result = Crystallised };
+        public override List<Item.ItemProcess> Processes => new List<Item.ItemProcess> { CoolOff, Freeze, React };
 
         private GameObject _prefab;
         public override GameObject Prefab
@@ -417,7 +419,8 @@ namespace BreakingPlates.Custom
         private static Item.ItemProcess CoolOff => new Item.ItemProcess { Process = G.P(ProcessReferences.CoolOff), Duration = 12f, Result = G.I<LolliPot>() };
         private static Item.ItemProcess Freeze => new Item.ItemProcess { Process = G.P(ProcessReferences.Freeze), Duration = 4f, Result = G.I<LolliPot>() };
         public override Item.ItemProcess AutomaticItemProcess => CoolOff;
-        public override List<Item.ItemProcess> Processes => new List<Item.ItemProcess> { CoolOff, Freeze };
+        private static Item.ItemProcess React => new Item.ItemProcess { Process = ReactProcess.P, Duration = ReactProcess.CoolTime, Result = G.I<LolliPot>() };
+        public override List<Item.ItemProcess> Processes => new List<Item.ItemProcess> { CoolOff, Freeze, React };
 
         private GameObject _prefab, _sticks;
         public override GameObject Prefab

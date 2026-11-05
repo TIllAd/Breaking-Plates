@@ -109,6 +109,7 @@ namespace BreakingPlates.Custom
     {
         public override string UniqueNameID => "Pure Blue Rock Candy Dish";
         public override DishType Type => DishType.Main;
+        public override bool IsMainThatDoesNotNeedPlates => true;
         public override int Difficulty => 2;
         public override HashSet<Process> RequiredProcesses => new HashSet<Process>
         {
@@ -158,6 +159,7 @@ namespace BreakingPlates.Custom
     {
         public override string UniqueNameID => "Sugar-Free Rock Candy Dish";
         public override DishType Type => DishType.Main;
+        public override bool IsMainThatDoesNotNeedPlates => true;
         public override int Difficulty => 2;
         public override HashSet<Item> MinimumIngredients => new HashSet<Item> { G.I<Stevia>() };
         public override List<Dish.MenuItem> ResultingMenuItems => new List<Dish.MenuItem> { Menu(G.I<SugarFreeBag>(), 0.75f) };
@@ -174,6 +176,7 @@ namespace BreakingPlates.Custom
     {
         public override string UniqueNameID => "Rock Candy Lolli Dish";
         public override DishType Type => DishType.Main;
+        public override bool IsMainThatDoesNotNeedPlates => true;
         public override int Difficulty => 2;
         public override HashSet<Item> MinimumIngredients => new HashSet<Item> { G.I<CandyStick>() };
         public override List<Dish.MenuItem> ResultingMenuItems => new List<Dish.MenuItem> { Menu(G.I<RockCandyLolli>(), 0.75f) };

@@ -1,3 +1,4 @@
+using Kitchen;
 using System.Collections.Generic;
 using KitchenData;
 using KitchenLib.Customs;
@@ -18,6 +19,8 @@ namespace BreakingPlates.Custom
         // Kleines Modell des Inhalts oben auf der Quelle (null = keins).
         protected virtual void Decorate(Transform top) { }
         protected virtual bool UseDecoration => false;
+        // false = feste Optik (Decorate) statt der einzelnen Items auf den vier Plätzen.
+        protected virtual bool ShowItemsInSlots => true;
 
         private GameObject _prefab;
         public override GameObject Prefab => _prefab ??= MakePrefab();
@@ -31,10 +34,26 @@ namespace BreakingPlates.Custom
             // "Snapshot" (große Spiel-Tüte vorne oben) leeren: stand bei Kolben sichtbar über.
             // Das Item-Prefab gibt es zu diesem Zeitpunkt nur über das eigene Custom-Objekt (Spiel-Daten noch im Aufbau).
             var itemPrefab = (GDOUtils.GetCustomGameDataObject(Provided.ID) as CustomItem)?.Prefab ?? Provided.Prefab;
+            if (!ShowItemsInSlots)
+            {
+                // Feste Optik statt einzelner Items: Plätze ausblenden, Anzeige-Logik stilllegen.
+                var view = go.GetComponent<LimitedItemSourceView>();
+                if (view != null)
+                {
+                    ReflectionUtils.GetField<LimitedItemSourceView>("FixedType").SetValue(view, true);
+                    ReflectionUtils.GetField<LimitedItemSourceView>("Items").SetValue(view, new List<GameObject>());
+                }
+                foreach (Transform slot in go.transform)
+                    if (slot.name.StartsWith("Takeaway Bag")) slot.gameObject.SetActive(false);
+                var fixedTop = new GameObject("BP Display");
+                fixedTop.transform.SetParent(go.transform, false);
+                fixedTop.transform.localPosition = new Vector3(0f, 0.5f, 0.15f);
+                Decorate(fixedTop.transform);
+            }
             // Ablageplätze (im Spiel "Takeaway Bag") ebenfalls mit dem eigenen Item füllen, damit auch Vorschaubilder stimmen.
             foreach (Transform slot in go.transform)
             {
-                if (!slot.name.StartsWith("Takeaway Bag") || itemPrefab == null) continue;
+                if (!ShowItemsInSlots || !slot.name.StartsWith("Takeaway Bag") || itemPrefab == null) continue;
                 for (int i = slot.childCount - 1; i >= 0; i--) Object.DestroyImmediate(slot.GetChild(i).gameObject);
                 PrefabUtil.CloneVisual(itemPrefab, slot, "Item", Vector3.zero);
             }
@@ -159,12 +178,16 @@ namespace BreakingPlates.Custom
         protected override Item Provided => (Item)GDOUtils.GetCustomGameDataObject<CandyStick>().GameDataObject;
         protected override string Title => "Candy Sticks";
         protected override string Desc => "Put one in the syrup before it sets.";
+        protected override bool ShowItemsInSlots => false;
+        // Glas mit aufrecht stehenden, leicht aufgefächerten Stielen.
         protected override void Decorate(Transform top)
         {
-            for (int i = 0; i < 5; i++)
+            ProcMesh.Create("Jar", top, ProcMesh.Mug(0.11f, 0.2f, 0.01f), Materials.Glass, Vector3.zero);
+            for (int i = 0; i < 9; i++)
             {
-                var s = Stick(top, "Stick " + i, new Vector3(-0.2f, 0.02f, -0.1f + i * 0.05f));
-                s.transform.localRotation = Quaternion.Euler(0f, 0f, -90f);
+                float a = i * 40f * Mathf.Deg2Rad, r = 0.02f + 0.05f * (i % 3) / 2f;
+                var st = Stick(top, "Stick " + i, new Vector3(Mathf.Cos(a) * r, 0.01f, Mathf.Sin(a) * r), 0.36f);
+                st.transform.localRotation = Quaternion.Euler(Mathf.Sin(a) * 9f, 0f, -Mathf.Cos(a) * 9f);
             }
         }
     }
