@@ -105,7 +105,7 @@ namespace BreakingPlates.Custom
         public override string UniqueNameID => "Lab Flask Provider";
         protected override Item Provided => (Item)GDOUtils.GetCustomGameDataObject<LabFlask>().GameDataObject;
         protected override string Title => "Lab Flasks";
-        protected override string Desc => "Borosilicate. Very professional. Only 4 - put them back when you're done.";
+        protected override string Desc => "Think of it as a pot. A very scientific pot.";
         protected override int Limit => 4;
         protected override void Decorate(Transform top)
         {
