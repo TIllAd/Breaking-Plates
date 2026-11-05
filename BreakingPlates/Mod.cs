@@ -46,8 +46,8 @@ namespace BreakingPlates
             AddGameDataObject<PurifyProcess>();
             AddGameDataObject<FlaskProvider>();
             AddGameDataObject<LabFlask>();
-            AddGameDataObject<BigFlaskProvider>();
-            AddGameDataObject<BigLabFlask>();
+            // AddGameDataObject<BigFlaskProvider>(); // Superlab vorerst raus (verwirrte eher)
+            // AddGameDataObject<BigLabFlask>(); // Superlab vorerst raus (verwirrte eher)
             AddGameDataObject<StickProvider>();
             AddGameDataObject<CandyStick>();
             AddGameDataObject<SteviaProvider>();
@@ -73,10 +73,10 @@ namespace BreakingPlates
             AddGameDataObject<PureCrystalPot>();
             AddGameDataObject<SyrupPot>();
             AddGameDataObject<SugarPot>();
-            AddGameDataObject<BigShardsPot>();
-            AddGameDataObject<BigCrystalPot>();
-            AddGameDataObject<BigSyrupPot>();
-            AddGameDataObject<BigSugarPot>();
+            // AddGameDataObject<BigShardsPot>(); // Superlab vorerst raus (verwirrte eher)
+            // AddGameDataObject<BigCrystalPot>(); // Superlab vorerst raus (verwirrte eher)
+            // AddGameDataObject<BigSyrupPot>(); // Superlab vorerst raus (verwirrte eher)
+            // AddGameDataObject<BigSugarPot>(); // Superlab vorerst raus (verwirrte eher)
             AddGameDataObject<SteviaShardsPot>();
             AddGameDataObject<SteviaCrystalPot>();
             AddGameDataObject<SteviaSyrupPot>();
@@ -91,7 +91,7 @@ namespace BreakingPlates
             AddGameDataObject<SugarFreeDish>();
             AddGameDataObject<LolliDish>();
             AddGameDataObject<PlatterDish>();
-            AddGameDataObject<SuperlabDish>();
+            // AddGameDataObject<SuperlabDish>(); // Superlab vorerst raus (verwirrte eher)
             AddGameDataObject<SchraderDish>();
             AddGameDataObject<PizzaRoofDish>();
             AddGameDataObject<BreakingEvenCard>();

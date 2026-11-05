@@ -53,6 +53,8 @@ namespace BreakingPlates.Custom
         protected abstract string PrefabName { get; }
         protected abstract GameObject MakeContent(Transform parent);
         protected virtual Material Zip => null;
+        // Zusätzliche Kennzeichnung außen am Tütchen (z.B. Stevia-Blatt).
+        protected virtual void Decorate(GameObject bag) { }
 
         public override ItemStorage ItemStorageFlags => ItemStorage.None;
         public override ItemValue ItemValue => ItemValue.Medium;
@@ -100,6 +102,7 @@ namespace BreakingPlates.Custom
                     var bag = Bag(_prefab.transform, Zip);
                     // Chili P erkennt man am roten Verschluss.
                     _chili = ChiliZip(bag);
+                    Decorate(bag);
 
                 }
                 return _prefab;
@@ -144,6 +147,20 @@ namespace BreakingPlates.Custom
         protected override string PrefabName => "Sugar-Free Candy Bag";
         protected override Item Candy => (Item)GDOUtils.GetCustomGameDataObject<SugarFreeCandy>().GameDataObject;
         protected override Material Zip => Materials.ZipGreen;
+        // Großes grünes Blatt vorne aufs Tütchen, damit man Sugar-Free sofort erkennt.
+        protected override void Decorate(GameObject bag)
+        {
+            var leafMat = Materials.Solid("Stevia Sticker", new Color(0.3f, 0.75f, 0.3f));
+            var sticker = new GameObject("Stevia Sticker");
+            sticker.transform.SetParent(bag.transform, false);
+            void Apply(GameObject t) => t.transform.localPosition = Tuning.V3("bag.stevia.pos", new Vector3(0f, 0.2f, -0.1f));
+            Apply(sticker);
+            Tuning.Register(sticker, "bag.stevia", Apply);
+            var a = ProcMesh.Create("Leaf A", sticker.transform, ProcMesh.Box(new Vector3(0.12f, 0.06f, 0.01f)), leafMat, new Vector3(-0.03f, 0f, 0f));
+            a.transform.localRotation = Quaternion.Euler(0f, 0f, 30f);
+            var b = ProcMesh.Create("Leaf B", sticker.transform, ProcMesh.Box(new Vector3(0.12f, 0.06f, 0.01f)), leafMat, new Vector3(0.03f, 0f, 0f));
+            b.transform.localRotation = Quaternion.Euler(0f, 0f, -30f);
+        }
         protected override GameObject MakeContent(Transform parent) => CrystalPile(parent, "Candy", new Vector3(0f, 0.06f, 0f), 0.75f, 5);
         public override List<ItemGroupView.ColourBlindLabel> Labels => new List<ItemGroupView.ColourBlindLabel>
         {
