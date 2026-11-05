@@ -102,6 +102,7 @@ namespace BreakingPlates
             AddGameDataObject<LosPollitosSign>();
             AddGameDataObject<HazmatSuit>();
             AddGameDataObject<HeisenbergHat>();
+            AddGameDataObject<GasMask>();
 
             Events.BuildGameDataPreSetupEvent += (s, args) => PrefabUtil.FixMaterials();
             Events.BuildGameDataEvent += (s, args) =>

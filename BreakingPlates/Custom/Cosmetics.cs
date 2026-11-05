@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace BreakingPlates.Custom
 {
-    // Gelber Schutzanzug: Taucher-Outfit aus dem Spiel umgefärbt, Helm/Flaschen weg, Atemschutzmaske am Kopf.
+    // Gelber Schutzanzug: Taucher-Outfit aus dem Spiel umgefärbt (blassgelb, blaue Handschuhe), Helm/Flaschen weg, Kapuze.
     public class HazmatSuit : CustomPlayerCosmetic
     {
         private const int DiverChef = -950136670;
@@ -34,9 +34,10 @@ namespace BreakingPlates.Custom
                     continue;
                 }
                 if (n.Contains("Suit")) SetAll(r, Materials.Hazmat);
-                else if (n.Contains("Gloves") || n.Contains("Boots")) SetAll(r, Materials.Black);
+                else if (n.Contains("Gloves")) SetAll(r, Materials.GloveBlue);
+                else if (n.Contains("Boots")) SetAll(r, Materials.DarkGrey);
             }
-            var mask = new GameObject("BP Mask");
+            var mask = new GameObject("BP Hood");
             mask.transform.SetParent(go.transform, false);
             BuildMask(mask.transform);
             if (outfit != null) outfit.AttachToHeadBone = mask;
@@ -50,25 +51,9 @@ namespace BreakingPlates.Custom
             r.sharedMaterials = mats;
         }
 
-        // Atemschutzmaske: sitzt am Kopf-Knochen; Lage per F8 einstellbar (suit.mask.*).
+        // Kapuze: sitzt am Kopf-Knochen; Lage per F8 einstellbar (suit.hood.*). Die Gasmaske ist ein eigener Hut.
         private static void BuildMask(Transform head)
         {
-            var m = new GameObject("Mask");
-            m.transform.SetParent(head, false);
-            void Apply(GameObject t)
-            {
-                t.transform.localPosition = Tuning.V3("suit.mask.pos", new Vector3(0f, 0.1f, 0.2f));
-                t.transform.localRotation = Quaternion.Euler(Tuning.V3("suit.mask.rot", Vector3.zero));
-                t.transform.localScale = Vector3.one * Tuning.F("suit.mask.scale", 1f);
-            }
-            Apply(m);
-            Tuning.Register(m, "suit.mask", Apply);
-            ProcMesh.Create("Face", m.transform, ProcMesh.Box(new Vector3(0.16f, 0.09f, 0.06f)), Materials.Black, Vector3.zero);
-            foreach (var x in new[] { -0.09f, 0.09f })
-            {
-                var f = ProcMesh.Create("Filter", m.transform, ProcMesh.Cylinder(0.035f, 0.04f, 12), Materials.DarkGrey, new Vector3(x, -0.02f, 0.02f));
-                f.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
-            }
             // Gelbe Kapuze um den Kopf (statt Taucherhelm).
             var hood = new GameObject("Hood");
             hood.transform.SetParent(head, false);
@@ -84,7 +69,6 @@ namespace BreakingPlates.Custom
                 new Vector2(0.23f, 0.12f), new Vector2(0.22f, 0.22f),
                 new Vector2(0.17f, 0.31f), new Vector2(0.09f, 0.36f), new Vector2(0f, 0.37f)
             }, 20, doubleSided: true), Materials.Hazmat, Vector3.zero);
-            ProcMesh.Create("Goggles", m.transform, ProcMesh.Box(new Vector3(0.2f, 0.05f, 0.03f)), Materials.Glass, new Vector3(0f, 0.09f, -0.01f));
         }
 
         public override List<(Locale, CosmeticInfo)> InfoList => new List<(Locale, CosmeticInfo)>
@@ -134,6 +118,51 @@ namespace BreakingPlates.Custom
         public override List<(Locale, CosmeticInfo)> InfoList => new List<(Locale, CosmeticInfo)>
         {
             (Locale.English, new CosmeticInfo { Name = "Heisenberg", Description = "Say my name." })
+        };
+    }
+
+    // Gasmaske als eigener Hut (passt zum Schutzanzug): dunkles Mundstück, zwei pinke Filter.
+    public class GasMask : CustomPlayerCosmetic
+    {
+        public override string UniqueNameID => "Gas Mask";
+        public override CosmeticType CosmeticType => CosmeticType.Hat;
+
+        private GameObject _visual;
+        public override GameObject Visual => _visual ??= Make();
+
+        private static GameObject Make()
+        {
+            var go = PrefabUtil.CreateRoot("BreakingPlates Gas Mask");
+            var outfit = go.AddComponent<PlayerOutfitComponent>();
+            var head = new GameObject("BP Gas Mask");
+            head.transform.SetParent(go.transform, false);
+            var m = new GameObject("Mask");
+            m.transform.SetParent(head.transform, false);
+            void Apply(GameObject t)
+            {
+                t.transform.localPosition = Tuning.V3("mask.pos", new Vector3(0f, 0.03f, -0.21f));
+                t.transform.localRotation = Quaternion.Euler(Tuning.V3("mask.rot", Vector3.zero));
+                t.transform.localScale = Vector3.one * Tuning.F("mask.scale", 1f);
+            }
+            Apply(m);
+            Tuning.Register(m, "mask", Apply);
+            ProcMesh.Create("Face", m.transform, ProcMesh.Box(new Vector3(0.16f, 0.11f, 0.06f)), Materials.DarkGrey, Vector3.zero);
+            ProcMesh.Create("Valve", m.transform, ProcMesh.Box(new Vector3(0.06f, 0.05f, 0.04f)), Materials.Black, new Vector3(0f, -0.02f, -0.04f));
+            foreach (var x in new[] { -1f, 1f })
+            {
+                var f = ProcMesh.Create("Filter", m.transform, ProcMesh.Cylinder(0.05f, 0.045f, 14), Materials.FilterPink, new Vector3(x * 0.1f, 0f, -0.01f));
+                f.transform.localRotation = Quaternion.Euler(0f, 0f, x * 90f) * Quaternion.Euler(0f, 0f, 0f);
+            }
+            ProcMesh.Create("Strap", m.transform, ProcMesh.Box(new Vector3(0.36f, 0.025f, 0.02f)), Materials.Black, new Vector3(0f, 0.05f, 0.12f));
+            outfit.AttachToHeadBone = head;
+            outfit.Renderers = new List<SkinnedMeshRenderer>();
+            outfit.Hats = new List<Renderer>();
+            return go;
+        }
+
+        public override List<(Locale, CosmeticInfo)> InfoList => new List<(Locale, CosmeticInfo)>
+        {
+            (Locale.English, new CosmeticInfo { Name = "Gas Mask", Description = "Pairs well with a yellow suit." })
         };
     }
 }

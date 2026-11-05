@@ -43,9 +43,6 @@ namespace BreakingPlates.Custom
             Tuning.Register(deco, "purifier", Apply);
             ProcMesh.Create("Light", deco.transform, ProcMesh.Cylinder(0.08f, 0.1f, 16), Materials.BlueCrystal, Vector3.zero);
             ProcMesh.Create("Base", deco.transform, ProcMesh.Cylinder(0.1f, 0.03f, 16), Materials.DarkGrey, new Vector3(0f, -0.01f, 0f));
-            for (int i = 0; i < 5; i++)
-                ProcMesh.Create("Stripe " + i, deco.transform, ProcMesh.Box(new Vector3(0.12f, 0.04f, 0.02f)),
-                    i % 2 == 0 ? Materials.Hazmat : Materials.Black, new Vector3(-0.3f + i * 0.12f, -0.12f, -0.46f));
             return go;
         }
 

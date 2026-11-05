@@ -108,7 +108,7 @@ namespace BreakingPlates.Custom
         protected override int[] VanillaIDs => new[] { ApplianceReferences.FancyPainting, ApplianceReferences.Painting, ApplianceReferences.FriendsPoster, ApplianceReferences.BunnyPoster, ApplianceReferences.AffordableNeonSign1 };
         protected override string Title => "Periodic Table";
         protected override string Desc => "Br + Ba. Respect the chemistry.";
-        protected override Vector3 DefaultPos => new Vector3(0f, 1.4f, 0.45f);
+        protected override Vector3 DefaultPos => new Vector3(0f, 0.85f, 0.45f);
 
         protected override void Build(Transform root)
         {
@@ -174,7 +174,7 @@ namespace BreakingPlates.Custom
         protected override int[] VanillaIDs => new[] { ApplianceReferences.FancyPainting, ApplianceReferences.Painting, ApplianceReferences.FriendsPoster, ApplianceReferences.BunnyPoster, ApplianceReferences.AffordableNeonSign1 };
         protected override string Title => "Los Pollitos Hermanos";
         protected override string Desc => "Taste the family. Totally unrelated to any other business.";
-        protected override Vector3 DefaultPos => new Vector3(0f, 1.4f, 0.45f);
+        protected override Vector3 DefaultPos => new Vector3(0f, 0.85f, 0.45f);
 
         protected override void Build(Transform root)
         {
