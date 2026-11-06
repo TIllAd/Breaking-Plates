@@ -107,14 +107,7 @@ namespace BreakingPlates.Custom
                 Shapes.Ball("Rim", visor.transform, new Vector3(0.39f, 0.33f, 0.2f), seam, new Vector3(0f, 0f, -0.058f)); // schmaler Rahmen, mehr Glas
                 Shapes.Ball("Glass", visor.transform, new Vector3(0.36f, 0.3f, 0.2f), glass, new Vector3(0f, 0f, -0.042f));
                 // Dezente, größere Reflexion statt weißem Punkt
-                // Weiche, breite Reflexion: zwei übereinanderliegende helle Flächen, oben links auf der Wölbung.
-                var soft = Materials.Flat("Hazmat Visor Soft", new Color(0.27f, 0.35f, 0.45f), 1f);
-                var bright = Materials.Flat("Hazmat Visor Shine", new Color(0.42f, 0.52f, 0.62f), 1f);
-                soft.SetFloat("_OverlayMax", 0f); bright.SetFloat("_OverlayMax", 0f);
-                var r1 = Shapes.Ball("Reflection Soft", visor.transform, new Vector3(0.24f, 0.13f, 0.02f), soft, new Vector3(-0.03f, 0.06f, 0.04f));
-                r1.transform.localRotation = Quaternion.Euler(0f, 0f, 18f);
-                var r2 = Shapes.Ball("Reflection", visor.transform, new Vector3(0.12f, 0.05f, 0.02f), bright, new Vector3(-0.06f, 0.08f, 0.036f));
-                r2.transform.localRotation = Quaternion.Euler(0f, 0f, 22f);
+                // Keine aufgesetzte Reflexion: das Glas glänzt selbst (Shininess), die flache Scheibe stand bei gekipptem Visier heraus.
                 // Warnschild auf dem Rücken: gelbes Dreieck mit schwarzem Rand und Strahlungs-Kleeblatt.
                 // Wird zur Laufzeit an den oberen Rücken-Knochen gehängt (das Spiel bietet nur den Kopf an).
                 var back = new GameObject("BP Back Sign");
