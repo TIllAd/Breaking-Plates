@@ -378,14 +378,35 @@ namespace BreakingPlates.Custom
             if (_obj == null) return;
             if (_head == null)
             {
-                var bones = _outfit != null && _outfit.Source != null ? _outfit.Source.bones : null;
-                if (bones != null)
-                    foreach (var b in bones) if (b != null && b.name == "Head") { _head = b; break; }
+                _head = FindHead();
                 if (_head == null) return;
             }
             if (!_obj.activeSelf) _obj.SetActive(true);
             _obj.transform.SetPositionAndRotation(_head.position, _head.rotation);
             _obj.transform.localScale = _head.lossyScale;
+        }
+
+        // Kopf-Knochen der Spielfigur finden: das Spiel setzt "Source" nicht immer, aber es gibt den Renderern
+        // des Outfits die Knochen der Figur. Für Hüte (ohne eigene Renderer) den Körper der Figur oberhalb suchen.
+        private Transform FindHead()
+        {
+            if (_outfit != null && _outfit.Source != null) { var h = Head(_outfit.Source.bones); if (h != null) return h; }
+            foreach (var r in GetComponentsInChildren<SkinnedMeshRenderer>(true)) { var h = Head(r.bones); if (h != null && !h.IsChildOf(transform)) return h; }
+            for (var t = transform.parent; t != null; t = t.parent)
+                foreach (var r in t.GetComponentsInChildren<SkinnedMeshRenderer>(true))
+                {
+                    if (r.transform.IsChildOf(transform)) continue;
+                    var h = Head(r.bones);
+                    if (h != null) return h;
+                }
+            return null;
+        }
+
+        private static Transform Head(Transform[] bones)
+        {
+            if (bones == null) return null;
+            foreach (var b in bones) if (b != null && b.name == "Head") return b;
+            return null;
         }
 
         private void OnDisable() { if (_obj != null) _obj.SetActive(false); }
