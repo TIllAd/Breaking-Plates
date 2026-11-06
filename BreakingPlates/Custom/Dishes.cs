@@ -293,7 +293,7 @@ namespace BreakingPlates.Custom
             (Locale.English, new UnlockInfo
             {
                 Name = "Breaking Even",
-                Description = "Fewer customers. At the end of each day, 25% of that day's earnings are taken away",
+                Description = "Fewer customers. Earn 25% less money",
                 FlavourText = "Better call Saul!"
             })
         };

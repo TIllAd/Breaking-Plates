@@ -7,7 +7,7 @@ using Unity.Entities;
 
 namespace BreakingPlates.Custom
 {
-    // Wer einen ganzen Kolben (Mass Production) bestellt, bestellt keine Beilage dazu.
+    // Wer einen ganzen Kolben (Mass Production) oder einen Lolli bestellt, bestellt keine Beilage dazu.
     // Ein Kolben wird vom ganzen Tisch geteilt und hat keinen Platz für Beilagen – das wäre nur verwirrend.
     [HarmonyPatch(typeof(AssignMenuRequests), nameof(AssignMenuRequests.OrderItem))]
     public static class NoSideWithFlask
@@ -21,7 +21,7 @@ namespace BreakingPlates.Custom
                 if (_ids == null || _ids.Count == 0)
                 {
                     _ids = new HashSet<int>();
-                    foreach (var id in new[] { Id<ShardsPot>(), Id<PureShardsPot>(), Id<SteviaShardsPot>() })
+                    foreach (var id in new[] { Id<ShardsPot>(), Id<PureShardsPot>(), Id<SteviaShardsPot>(), Id<RockCandyLolli>() })
                         if (id != 0) _ids.Add(id);
                 }
                 return _ids;

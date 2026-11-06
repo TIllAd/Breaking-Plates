@@ -32,10 +32,10 @@ Every candy bag looks the same: clear foil, blue zip. Toppings and variants are 
 | **Chili P** | Topping | 1 | small decrease | +1 | Chopped jalapeño in the bag → **chili clipped to the zip** | *"Chili P is my signature!"* |
 | **Sugar-Free** | Main | 2 | small decrease | 5 | Cook with **stevia** instead of sugar → bag with a **stevia sprig** | *"I'll need more stevia."* |
 | **On a Stick** | Main | 2 | small decrease | 5 | **Candy stick** into the hot syrup → 5 lollis straight from the flask | *"Yeah, science!"* |
-| **Mass Production** | Main | 2 | small decrease | 20 | Groups order a **full flask** (up to 5 customers – one per portion) – in every variant you sell. Only a full flask counts, and whoever orders a flask orders no side | *"I'm in the empire business."* |
+| **Mass Production** | Main | 2 | small decrease | 20 | Groups order a **full flask** (up to 5 customers – one per portion) – in every variant you sell. Only a full flask counts. Whoever orders a flask or a lolli orders no side | *"I'm in the empire business."* |
 | **Schraderbräu** | Side | 1 | small decrease | 2 | Home-brewed beer from the tap | *"Home-brewed to silky perfection."* |
 | **Birthday Bacon** | Side | 2 | small decrease | 2 | Pork from the fridge → chop → fry into bacon (IngredientLib) | *"Fifty-two."* |
-| **Breaking Even** | Effect | – | **large decrease** | –25% of each day's earnings | Fewer customers, but 25% of the day's earnings are taken at the end of the day | *"Better call Saul!"* |
+| **Breaking Even** | Effect | – | **large decrease** | –25% money | Fewer customers, earn 25% less money | *"Better call Saul!"* |
 
 "Small decrease" / "large decrease" are the game's customer tags (about −15% / −28% customers).
 Sides go with every main and can be added to plates and candy bags.

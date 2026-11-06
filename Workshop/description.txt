@@ -21,7 +21,7 @@ It's just sugar. Probably.
 [*][b]Mass Production[/b] – groups of up to 5 order a full flask, in every variant you sell. "I'm in the empire business."
 [*][b]Schraderbräu[/b] – home-brewed beer as a side. "Home-brewed to silky perfection."
 [*][b]Birthday Bacon[/b] – fry some bacon as a side. "Fifty-two."
-[*][b]Breaking Even[/b] – fewer customers, but 25% of each day's earnings are taken away at the end of the day. "Better call Saul!"
+[*][b]Breaking Even[/b] – fewer customers, earn 25% less money. "Better call Saul!"
 [/list]
 
 [h2]Superlab[/h2]

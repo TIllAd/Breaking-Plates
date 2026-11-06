@@ -288,10 +288,7 @@ namespace BreakingPlates.Custom
             filter.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
             var inner = ProcMesh.Create("Filter Inner", m.transform, ProcMesh.Cylinder(0.03f, 0.01f, 14), filterDark, new Vector3(0f, -0.015f, 0.345f));
             inner.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
-            // Riemen
-            foreach (var x in new[] { -1f, 1f })
-                ProcMesh.Create("Strap Side", m.transform, ProcMesh.Box(new Vector3(0.02f, 0.035f, 0.34f)), rubber, new Vector3(x * 0.25f, 0.13f, 0.02f));
-            ProcMesh.Create("Strap Back", m.transform, ProcMesh.Box(new Vector3(0.5f, 0.035f, 0.02f)), rubber, new Vector3(0f, 0.13f, -0.16f));
+            // (Riemen um den Kopf entfernt – sahen wie ein Kasten um den Kopf aus.)
             // Schlauch: Ringe entlang eines Bogens vom Filter nach unten/seitlich
             if (Tuning.F("mask.hose", 1f) > 0.5f)
             {
@@ -356,6 +353,7 @@ namespace BreakingPlates.Custom
 
     // Hängt Kapuze/Maske NICHT als Kind an den Kopf-Knochen (das bringt den Animator der Spielfigur beim Szenenwechsel
     // zum Absturz: "Transform ... not found in HumanDescription"), sondern lässt sie dem Kopf jedes Bild folgen.
+    [DefaultExecutionOrder(10000)] // nach den Animations-/IK-Skripten der Figur, damit nichts nachwackelt
     public class HeadFollower : MonoBehaviour
     {
         private PlayerOutfitComponent _outfit;
