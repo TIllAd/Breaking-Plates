@@ -28,7 +28,7 @@ namespace BreakingPlates.Custom
         }
         public static readonly Vector2[] BellProfile =
         {
-            new Vector2(0f, 0f), new Vector2(0.5f, 0f), new Vector2(0.45f, 0.2f), new Vector2(0.38f, 0.55f), new Vector2(0.25f, 0.9f), new Vector2(0f, 1f)
+            new Vector2(0f, 0f), new Vector2(0.5f, 0f), new Vector2(0.47f, 0.15f), new Vector2(0.44f, 0.4f), new Vector2(0.41f, 0.65f), new Vector2(0.33f, 0.85f), new Vector2(0.18f, 0.97f), new Vector2(0f, 1f)
         };
         public static readonly Vector2[] PotProfile =
         {
@@ -108,19 +108,21 @@ namespace BreakingPlates.Custom
                 arc.transform.SetParent(root, false);
                 arc.transform.localPosition = new Vector3(0f, 0.27f, 0f);
                 arc.transform.localRotation = Quaternion.Euler(0f, dirs[s] + 15f, 0f);
-                const int segs = 8;
+                const int segs = 12;
                 for (int i = 0; i < segs; i++)
                 {
                     float t = i / (float)(segs - 1);
                     // Bogen: erst hoch, dann nach außen überhängend
                     var p = new Vector3(0f, 0.38f * Mathf.Sin(t * Mathf.PI * 0.62f) + 0.02f, 0.2f * t * t);
-                    ProcMesh.Create("Seg", arc.transform, ProcMesh.Box(new Vector3(0.012f, 0.06f, 0.012f)), stem, p)
+                    ProcMesh.Create("Seg", arc.transform, ProcMesh.Box(new Vector3(0.009f, 0.045f, 0.009f)), stem, p)
                         .transform.localRotation = Quaternion.Euler(70f * t, 0f, 0f);
-                    if (i >= 3)
+                    if (i >= 5 && i % 2 == 1 || i == segs - 1)
                     {
                         ProcMesh.Create("Pedicel", arc.transform, ProcMesh.Box(new Vector3(0.005f, 0.035f, 0.005f)), stem, p + new Vector3(0f, -0.02f, 0f));
                         var bell = ProcMesh.Create("Bell", arc.transform, ProcMesh.Lathe(Shapes.BellProfile, 12), white, p + new Vector3(0f, -0.075f, 0f));
                         bell.transform.localScale = Vector3.one * 0.07f;
+                        // kleiner grüner Kelch oben auf dem Glöckchen
+                        Shapes.Ball("Calyx", arc.transform, new Vector3(0.025f, 0.015f, 0.025f), stem, p + new Vector3(0f, -0.006f, 0f));
                     }
                 }
             }
@@ -181,29 +183,43 @@ namespace BreakingPlates.Custom
 
         protected override void Build(Transform root)
         {
-            var wood = Materials.Solid("Pallet Wood", new Color(0.78f, 0.62f, 0.4f));
-            var money = Materials.Solid("Money", new Color(0.55f, 0.72f, 0.5f));
-            var band = Materials.Solid("Money Band", new Color(0.92f, 0.88f, 0.75f));
-            for (int i = 0; i < 3; i++) Box(root, "Pallet Board", new Vector3(0.7f, 0.025f, 0.12f), new Vector3(0f, 0.08f, -0.2f + i * 0.2f), wood);
-            for (int i = 0; i < 3; i++) Box(root, "Pallet Block", new Vector3(0.1f, 0.07f, 0.55f), new Vector3(-0.28f + i * 0.28f, 0.035f, 0f), wood);
-            // Bündel: 4 x 3 Reihen, 5 Lagen
-            const float bw = 0.15f, bd = 0.07f, bh = 0.045f;
-            for (int layer = 0; layer < 5; layer++)
-            for (int x = 0; x < 4; x++)
-            for (int z = 0; z < 6; z++)
+            var wood = Materials.Solid("Pallet Wood", new Color(0.72f, 0.55f, 0.35f));
+            var note = Materials.Solid("Money Note", new Color(0.42f, 0.62f, 0.38f));
+            var noteEdge = Materials.Solid("Money Edge", new Color(0.86f, 0.9f, 0.8f));
+            var noteDark = Materials.Solid("Money Print", new Color(0.22f, 0.4f, 0.24f));
+            var band = Materials.Solid("Money Band", new Color(0.95f, 0.85f, 0.45f));
+            for (int i = 0; i < 3; i++) Box(root, "Pallet Board", new Vector3(0.66f, 0.025f, 0.12f), new Vector3(0f, 0.08f, -0.2f + i * 0.2f), wood);
+            for (int i = 0; i < 3; i++) Box(root, "Pallet Block", new Vector3(0.1f, 0.07f, 0.52f), new Vector3(-0.26f + i * 0.26f, 0.035f, 0f), wood);
+            // Unregelmäßiger Stapel: größere Bündel mit Papierkante, aufgedrucktem Mittelfeld und gelber Banderole.
+            const float bw = 0.19f, bd = 0.09f, bh = 0.06f;
+            int[] heights = { 4, 3, 4, 2, 3, 4, 3, 2, 3, 4, 2, 3 };
+            int k = 0;
+            for (int x = 0; x < 3; x++)
+            for (int z = 0; z < 4; z++, k++)
             {
-                var pos = new Vector3(-0.24f + x * (bw + 0.01f), 0.115f + layer * bh, -0.21f + z * (bd + 0.012f));
-                Box(root, "Bundle", new Vector3(bw, bh - 0.004f, bd), pos, money);
-                Box(root, "Band", new Vector3(0.03f, bh - 0.002f, bd + 0.002f), pos, band);
+                int hgt = heights[k];
+                for (int layer = 0; layer < hgt; layer++)
+                {
+                    float jitter = ((k * 7 + layer * 3) % 5 - 2) * 0.006f;
+                    var pos = new Vector3(-0.2f + x * (bw + 0.012f) + jitter, 0.12f + layer * bh, -0.17f + z * (bd + 0.022f));
+                    Bundle(root, pos, bw, bd, bh, note, noteEdge, noteDark, band);
+                }
             }
-            // Folie drumherum
-            Box(root, "Wrap", new Vector3(0.68f, 5 * bh + 0.02f, 0.5f), new Vector3(0f, 0.1f + 5 * bh / 2f + 0.01f, 0f), Materials.Glass);
-            // Ein paar lose Bündel obendrauf
-            for (int i = 0; i < 3; i++)
-            {
-                var b = Box(root, "Loose", new Vector3(bw, bh - 0.004f, bd), new Vector3(-0.1f + i * 0.09f, 0.36f + i * 0.02f, -0.05f + i * 0.04f), money);
-                b.transform.localRotation = Quaternion.Euler(0f, 25f * i - 20f, 0f);
-            }
+            // Zwei lose Bündel obendrauf, leicht schräg
+            Bundle(root, new Vector3(-0.05f, 0.12f + 4 * bh, 0.0f), bw, bd, bh, note, noteEdge, noteDark, band).transform.localRotation = Quaternion.Euler(0f, 25f, 0f);
+            Bundle(root, new Vector3(0.12f, 0.12f + 4 * bh, -0.12f), bw, bd, bh, note, noteEdge, noteDark, band).transform.localRotation = Quaternion.Euler(0f, -15f, 0f);
+        }
+
+        private static GameObject Bundle(Transform root, Vector3 pos, float w, float d, float h, Material note, Material edge, Material print, Material band)
+        {
+            var b = new GameObject("Bundle");
+            b.transform.SetParent(root, false);
+            b.transform.localPosition = pos;
+            ProcMesh.Create("Paper", b.transform, ProcMesh.Box(new Vector3(w, h - 0.006f, d)), edge, Vector3.zero);
+            ProcMesh.Create("Top", b.transform, ProcMesh.Box(new Vector3(w - 0.008f, 0.004f, d - 0.008f)), note, new Vector3(0f, (h - 0.006f) / 2f, 0f));
+            ProcMesh.Create("Print", b.transform, ProcMesh.Box(new Vector3(0.05f, 0.005f, 0.05f)), print, new Vector3(-0.045f, (h - 0.006f) / 2f, 0f));
+            ProcMesh.Create("Band", b.transform, ProcMesh.Box(new Vector3(0.035f, h - 0.002f, d + 0.004f)), band, new Vector3(0.03f, 0f, 0f));
+            return b;
         }
     }
 
@@ -223,15 +239,17 @@ namespace BreakingPlates.Custom
             var purple = Materials.Solid("Marie Purple", new Color(0.5f, 0.25f, 0.65f));
             var dark = Materials.Solid("Marie Purple Dark", new Color(0.35f, 0.15f, 0.48f));
             var lilac = Materials.Solid("Marie Lilac", new Color(0.75f, 0.55f, 0.9f));
-            // Sessel
-            Box(root, "Seat", new Vector3(0.48f, 0.14f, 0.42f), new Vector3(-0.08f, 0.24f, 0f), purple);
-            Box(root, "Cushion", new Vector3(0.4f, 0.06f, 0.36f), new Vector3(-0.08f, 0.33f, -0.02f), lilac);
-            Box(root, "Back", new Vector3(0.48f, 0.42f, 0.1f), new Vector3(-0.08f, 0.45f, 0.18f), purple);
-            foreach (var s in new[] { -1f, 1f })
+            // Weicher, runder Sessel aus gepolsterten Formen
+            var c = new Vector3(-0.08f, 0f, 0f);
+            Shapes.Ball("Base", root, new Vector3(0.5f, 0.2f, 0.44f), purple, c + new Vector3(0f, 0.2f, 0f));
+            Shapes.Ball("Cushion", root, new Vector3(0.38f, 0.1f, 0.34f), lilac, c + new Vector3(0f, 0.3f, -0.03f));
+            Shapes.Ball("Back", root, new Vector3(0.5f, 0.5f, 0.16f), purple, c + new Vector3(0f, 0.46f, 0.18f));
+            Shapes.Ball("Back Cushion", root, new Vector3(0.36f, 0.3f, 0.08f), lilac, c + new Vector3(0f, 0.46f, 0.11f));
+            foreach (var sd in new[] { -1f, 1f })
             {
-                Box(root, "Armrest", new Vector3(0.08f, 0.2f, 0.42f), new Vector3(-0.08f + 0.24f * s, 0.34f, 0f), dark);
-                Box(root, "Leg F", new Vector3(0.04f, 0.17f, 0.04f), new Vector3(-0.08f + 0.2f * s, 0.085f, -0.17f), Materials.Black);
-                Box(root, "Leg B", new Vector3(0.04f, 0.17f, 0.04f), new Vector3(-0.08f + 0.2f * s, 0.085f, 0.17f), Materials.Black);
+                Shapes.Ball("Arm", root, new Vector3(0.12f, 0.24f, 0.44f), dark, c + new Vector3(0.24f * sd, 0.3f, 0f));
+                Shapes.Ball("Foot F", root, new Vector3(0.05f, 0.08f, 0.05f), Materials.Black, c + new Vector3(0.18f * sd, 0.04f, -0.15f));
+                Shapes.Ball("Foot B", root, new Vector3(0.05f, 0.08f, 0.05f), Materials.Black, c + new Vector3(0.18f * sd, 0.04f, 0.15f));
             }
             // Vase mit Blumen daneben
             var vase = ProcMesh.Create("Vase", root, ProcMesh.Lathe(Shapes.BellProfile, 16), dark, new Vector3(0.33f, 0f, -0.1f));
@@ -254,30 +272,38 @@ namespace BreakingPlates.Custom
         protected override int[] VanillaIDs => new[] { ApplianceReferences.CosyBarrel };
         protected override string Title => "Lab Notebook";
         protected override string Desc => "To W.W. My star, my perfect silence.";
+        protected override Vector3 DefaultRot => new Vector3(0f, 0f, 0f);
 
         protected override void Build(Transform root)
         {
-            var wood = Materials.Solid("Lectern Wood", new Color(0.45f, 0.3f, 0.18f));
-            var cover = Materials.Solid("Notebook Cover", new Color(0.15f, 0.3f, 0.2f));
-            Box(root, "Base", new Vector3(0.36f, 0.04f, 0.3f), new Vector3(0f, 0.02f, 0f), wood);
-            Box(root, "Post", new Vector3(0.08f, 0.62f, 0.08f), new Vector3(0f, 0.33f, 0f), wood);
-            var top = new GameObject("Top");
-            top.transform.SetParent(root, false);
-            top.transform.localPosition = new Vector3(0f, 0.68f, 0f);
-            top.transform.localRotation = Quaternion.Euler(-25f, 0f, 0f);
-            Box(top.transform, "Desk", new Vector3(0.46f, 0.03f, 0.34f), Vector3.zero, wood);
-            Box(top.transform, "Lip", new Vector3(0.46f, 0.04f, 0.02f), new Vector3(0f, 0.025f, -0.16f), wood);
-            Box(top.transform, "Cover", new Vector3(0.42f, 0.012f, 0.28f), new Vector3(0f, 0.022f, 0f), cover);
-            foreach (var s in new[] { -1f, 1f })
+            // Kein Pult mehr: ein Bücherstapel am Boden, obenauf Gales aufgeschlagenes Laborheft.
+            Color[] covers = { new Color(0.55f, 0.18f, 0.15f), new Color(0.2f, 0.3f, 0.5f), new Color(0.3f, 0.42f, 0.25f), new Color(0.5f, 0.4f, 0.25f) };
+            float y = 0f;
+            for (int i = 0; i < covers.Length; i++)
             {
-                var page = Box(top.transform, "Page", new Vector3(0.19f, 0.012f, 0.26f), new Vector3(0.1f * s, 0.033f, 0f), Materials.Paper);
-                page.transform.localRotation = Quaternion.Euler(0f, 0f, -4f * s);
-                // Formel-Zeilen
-                for (int l = 0; l < 6; l++)
-                    Box(top.transform, "Line", new Vector3(0.14f - (l % 3) * 0.02f, 0.002f, 0.008f), new Vector3(0.1f * s - (l % 3) * 0.01f, 0.041f, 0.09f - l * 0.035f), Materials.DarkGrey);
+                float h = 0.07f + (i % 2) * 0.02f;
+                var book = new GameObject("Book " + i);
+                book.transform.SetParent(root, false);
+                book.transform.localPosition = new Vector3((i % 2 == 0 ? -0.02f : 0.03f), y + h / 2f, (i % 3 - 1) * 0.02f);
+                book.transform.localRotation = Quaternion.Euler(0f, i * 11f - 15f, 0f);
+                var size = new Vector3(0.42f - i * 0.03f, h, 0.3f - i * 0.015f);
+                ProcMesh.Create("Cover", book.transform, ProcMesh.Box(size), Materials.Solid("Book " + i, covers[i]), Vector3.zero);
+                ProcMesh.Create("Pages", book.transform, ProcMesh.Box(new Vector3(size.x - 0.02f, h - 0.016f, size.z + 0.002f)), Materials.Paper, new Vector3(0.012f, 0f, 0f));
+                y += h;
             }
-            // Widmung "W.W." auf der linken Seite (als flacher Text nach oben)
-            var ww = Text(top.transform, "WW", "W.W.", new Vector3(-0.1f, 0.042f, -0.09f), 0.35f, new Color(0.15f, 0.25f, 0.6f));
+            // Aufgeschlagenes Heft obendrauf
+            var nb = new GameObject("Notebook");
+            nb.transform.SetParent(root, false);
+            nb.transform.localPosition = new Vector3(0f, y, 0f);
+            nb.transform.localRotation = Quaternion.Euler(0f, 8f, 0f);
+            ProcMesh.Create("Cover", nb.transform, ProcMesh.Box(new Vector3(0.36f, 0.01f, 0.24f)), Materials.Solid("Notebook Cover", new Color(0.15f, 0.3f, 0.2f)), new Vector3(0f, 0.005f, 0f));
+            foreach (var sd in new[] { -1f, 1f })
+            {
+                ProcMesh.Create("Page", nb.transform, ProcMesh.Box(new Vector3(0.165f, 0.012f, 0.22f)), Materials.Paper, new Vector3(0.087f * sd, 0.014f, 0f));
+                for (int l = 0; l < 6; l++)
+                    ProcMesh.Create("Line", nb.transform, ProcMesh.Box(new Vector3(0.12f - (l % 3) * 0.02f, 0.002f, 0.007f)), Materials.DarkGrey, new Vector3(0.087f * sd - (l % 3) * 0.01f, 0.021f, 0.08f - l * 0.03f));
+            }
+            var ww = Text(nb.transform, "WW", "W.W.", new Vector3(-0.09f, 0.022f, -0.08f), 0.32f, new Color(0.15f, 0.25f, 0.6f));
             ww.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
         }
     }

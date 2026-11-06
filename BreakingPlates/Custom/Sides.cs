@@ -68,122 +68,23 @@ namespace BreakingPlates.Custom
         protected override string RecipeText => "Grab a bag of Funions from the rack and serve it with the order.";
     }
 
-    // ---------- Birthday Bacon (52) ----------
-    internal static class BaconVisual
-    {
-        // Sieben-Segment-Ziffern aus Speckstreifen, flach liegend (Ziffer zeigt nach oben).
-        private static readonly Dictionary<char, string> Segs = new Dictionary<char, string> { { '5', "afgcd" }, { '2', "abged" } };
-        public static void Digits(Transform parent, string digits, Material meat, Material fat)
-        {
-            const float L = 0.13f, W = 0.016f, H = 0.01f, gap = 0.21f;
-            float x0 = -(digits.Length - 1) * gap / 2f;
-            for (int d = 0; d < digits.Length; d++)
-            {
-                float cx = x0 + d * gap;
-                foreach (char s in Segs[digits[d]])
-                {
-                    Vector3 pos; bool vertical;
-                    switch (s)
-                    {
-                        case 'a': pos = new Vector3(cx, 0f, L); vertical = false; break;
-                        case 'g': pos = new Vector3(cx, 0f, 0f); vertical = false; break;
-                        case 'd': pos = new Vector3(cx, 0f, -L); vertical = false; break;
-                        case 'f': pos = new Vector3(cx - L / 2f, 0f, L / 2f); vertical = true; break;
-                        case 'b': pos = new Vector3(cx + L / 2f, 0f, L / 2f); vertical = true; break;
-                        case 'e': pos = new Vector3(cx - L / 2f, 0f, -L / 2f); vertical = true; break;
-                        default: pos = new Vector3(cx + L / 2f, 0f, -L / 2f); vertical = true; break; // c
-                    }
-                    var strip = new GameObject("Strip " + s);
-                    strip.transform.SetParent(parent, false);
-                    strip.transform.localPosition = pos + new Vector3(0f, H / 2f, 0f);
-                    // Ohne Drehung: senkrechte Streifen bekommen einfach vertauschte Maße.
-                    var meatSize = vertical ? new Vector3(W, H, L * 0.86f) : new Vector3(L * 0.86f, H, W);
-                    var fatSize = vertical ? new Vector3(W * 0.3f, H + 0.002f, L * 0.86f) : new Vector3(L * 0.86f, H + 0.002f, W * 0.3f);
-                    var fatPos = vertical ? new Vector3(W * 0.25f, 0f, 0f) : new Vector3(0f, 0f, W * 0.25f);
-                    ProcMesh.Create("Meat", strip.transform, ProcMesh.Box(meatSize), meat, Vector3.zero);
-                    ProcMesh.Create("Fat", strip.transform, ProcMesh.Box(fatSize), fat, fatPos);
-                }
-            }
-        }
-    }
-
-    public class RawBacon : CustomItem
-    {
-        public override string UniqueNameID => "Raw Bacon";
-        public override ItemStorage ItemStorageFlags => ItemStorage.StackableFood;
-        public override string ColourBlindTag => "Ba";
-        public override Appliance DedicatedProvider => (Appliance)GDOUtils.GetCustomGameDataObject<BaconProvider>().GameDataObject;
-        public override List<Item.ItemProcess> Processes => new List<Item.ItemProcess>
-        {
-            new Item.ItemProcess { Process = G.P(ProcessReferences.Cook), Duration = 4f, Result = G.I<BirthdayBacon>() }
-        };
-        private GameObject _prefab;
-        public override GameObject Prefab => _prefab ??= Make();
-        private static GameObject Make()
-        {
-            var root = PrefabUtil.CreateRoot("Raw Bacon");
-            var meat = Materials.Solid("Raw Bacon", new Color(0.92f, 0.45f, 0.48f));
-            var fat = Materials.Solid("Raw Bacon Fat", new Color(0.99f, 0.9f, 0.88f));
-            for (int i = 0; i < 4; i++)
-            {
-                var s = new GameObject("Strip");
-                s.transform.SetParent(root.transform, false);
-                s.transform.localPosition = new Vector3(0f, 0.01f + i * 0.012f, -0.04f + i * 0.025f);
-                s.transform.localRotation = Quaternion.Euler(0f, i * 6f - 9f, 0f);
-                ProcMesh.Create("Meat", s.transform, ProcMesh.Box(new Vector3(0.26f, 0.01f, 0.06f)), meat, Vector3.zero);
-                ProcMesh.Create("Fat", s.transform, ProcMesh.Box(new Vector3(0.26f, 0.012f, 0.018f)), fat, new Vector3(0f, 0f, 0.015f));
-            }
-            return root;
-        }
-    }
-
-    public class BirthdayBacon : CustomItem
-    {
-        public override string UniqueNameID => "Birthday Bacon";
-        public override ItemStorage ItemStorageFlags => ItemStorage.StackableFood;
-        public override ItemValue ItemValue => ItemValue.SideMedium;
-        public override bool IsMergeableSide => true;
-        public override string ColourBlindTag => "52";
-        private GameObject _prefab;
-        public override GameObject Prefab => _prefab ??= Make();
-        internal static GameObject Make(Transform parent = null)
-        {
-            var root = parent == null ? PrefabUtil.CreateRoot("Birthday Bacon") : new GameObject("Birthday Bacon");
-            if (parent != null) root.transform.SetParent(parent, false);
-            var meat = Materials.Solid("Cooked Bacon", new Color(0.62f, 0.25f, 0.15f));
-            var fat = Materials.Solid("Cooked Bacon Fat", new Color(0.93f, 0.75f, 0.5f));
-            // Kleiner Teller darunter, damit die "52" lesbar ist.
-            var plate = ProcMesh.Create("Plate", root.transform, ProcMesh.Cylinder(0.24f, 0.012f, 24), Materials.LabelWhite, Vector3.zero);
-            plate.transform.localScale = new Vector3(1.2f, 1f, 1f);
-            var digits = new GameObject("52");
-            digits.transform.SetParent(root.transform, false);
-            digits.transform.localPosition = new Vector3(0f, 0.012f, 0f);
-            BaconVisual.Digits(digits.transform, "52", meat, fat);
-            return root;
-        }
-    }
-
-    public class BaconProvider : ProviderBase
-    {
-        public override string UniqueNameID => "Bacon Provider";
-        protected override Item Provided => G.I<RawBacon>();
-        protected override string Title => "Bacon";
-        protected override string Desc => "Fifty-two. Happy birthday.";
-    }
-
+    // ---------- Birthday Bacon ----------
+    // Nutzt den Speck aus IngredientLib: Schwein aus dem Kühlschrank -> schneiden -> braten -> Bacon.
     public class BaconDish : CandyCardBase
     {
+        private static Item ILib<T>() where T : CustomGameDataObject => (Item)GDOUtils.GetCustomGameDataObject<T>().GameDataObject;
         public override string UniqueNameID => "Birthday Bacon Side";
         public override DishType Type => DishType.Side;
         public override int Difficulty => 2;
-        public override HashSet<Item> MinimumIngredients => new HashSet<Item> { G.I<RawBacon>() };
-        public override HashSet<Process> RequiredProcesses => new HashSet<Process> { G.P(ProcessReferences.Cook) };
-        public override List<Dish.MenuItem> ResultingMenuItems => new List<Dish.MenuItem> { Menu(G.I<BirthdayBacon>(), 1f, MenuPhase.Side) };
+        public override HashSet<Item> MinimumIngredients => new HashSet<Item> { ILib<IngredientLib.Ingredient.Items.Pork>() };
+        public override HashSet<Process> RequiredProcesses => new HashSet<Process> { G.P(ProcessReferences.Chop), G.P(ProcessReferences.Cook) };
+        public override List<Dish.MenuItem> ResultingMenuItems => new List<Dish.MenuItem> { Menu(ILib<IngredientLib.Ingredient.Items.Bacon>(), 1f, MenuPhase.Side) };
         private GameObject _icon;
-        public override GameObject IconPrefab => _icon ??= Icon("Birthday Bacon - Icon", t => BirthdayBacon.Make(t));
+        public override GameObject IconPrefab => _icon ??= Icon("Birthday Bacon - Icon", t =>
+            PrefabUtil.CloneCustomItem(GDOUtils.GetCustomGameDataObject<IngredientLib.Ingredient.Items.Bacon>(), t, "Bacon", Vector3.zero, 1.4f));
         protected override string CardName => "Birthday Bacon";
-        protected override string CardDescription => "Adds Birthday Bacon as a side";
+        protected override string CardDescription => "Adds Bacon as a side";
         protected override string Quote => "Fifty-two.";
-        protected override string RecipeText => "Cook the bacon on the hob. It comes out as a 52 – serve it with the order.";
+        protected override string RecipeText => "Take pork from the fridge, chop it and fry it into bacon. Serve it with the order.";
     }
 }

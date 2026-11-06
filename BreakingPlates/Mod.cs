@@ -67,9 +67,6 @@ namespace BreakingPlates
             AddGameDataObject<Schraderbraeu>();
             AddGameDataObject<FunionsRack>();
             AddGameDataObject<Funions>();
-            AddGameDataObject<BaconProvider>();
-            AddGameDataObject<BirthdayBacon>();
-            AddGameDataObject<RawBacon>();
             AddGameDataObject<BagProvider>();
             AddGameDataObject<EmptyBag>();
 
