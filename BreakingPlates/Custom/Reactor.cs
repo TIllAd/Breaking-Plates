@@ -65,7 +65,8 @@ namespace BreakingPlates.Custom
         public override bool IsPurchasable => true;
         public override PriceTier PriceTier => PriceTier.Expensive;
         public override RarityTier RarityTier => RarityTier.Rare;
-        public override ShoppingTags ShoppingTags => ShoppingTags.Cooking | ShoppingTags.Technology;
+        // Nur "Kochen": mit "Technik" passte es auf zu viele Shop-Plätze und kam sehr oft.
+        public override ShoppingTags ShoppingTags => ShoppingTags.Cooking;
         // Nur im Shop, wenn Kolben im Spiel sind (also Blue Rock Candy auf der Karte steht).
         public override List<Item> RequiresIngredientForShop => new List<Item> { G.I<LabFlask>() };
 #pragma warning disable CS0618
