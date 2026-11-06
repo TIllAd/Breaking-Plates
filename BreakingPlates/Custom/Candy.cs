@@ -11,7 +11,7 @@ namespace BreakingPlates.Custom
 {
     // Ablauf: Kolben + Zucker + Wasser -> kochen -> blauer Sirup -> abkühlen (Freezer schneller) -> Kristalle
     // -> mit der Hand zerschlagen (Kneten) -> Portionen. Lässt man die Kristalle noch länger abkühlen, werden sie rein (99,1 %).
-    // Varianten: großer Kolben (, 10 Portionen), Stevia (Sugar-Free), Stiel (Lollis).
+    // Varianten: 99,1 % (Umkristallisieren), Stevia (Sugar-Free), Stiel (Lollis).
 
     internal static class G
     {
@@ -87,7 +87,7 @@ namespace BreakingPlates.Custom
         }
     }
 
-    // Blauer Sirup: kühlt vom Herd genommen von selbst ab (wie die Fajita-Pfanne), im Freezer schneller.
+    // Blauer Sirup: kühlt vom Herd genommen von selbst ab, im Freezer oder Superlab schneller.
     public abstract class SyrupBase : CustomItem
     {
         protected virtual bool MarkStevia => false;
@@ -105,7 +105,7 @@ namespace BreakingPlates.Custom
         private Item.ItemProcess CoolOff => new Item.ItemProcess { Process = G.P(ProcessReferences.CoolOff), Duration = CoolTime, Result = Crystallised };
         private Item.ItemProcess Freeze => new Item.ItemProcess { Process = G.P(ProcessReferences.Freeze), Duration = FreezeTime, Result = Crystallised };
         public override Item.ItemProcess AutomaticItemProcess => CoolOff;
-        private Item.ItemProcess React => new Item.ItemProcess { Process = ReactCoolProcess.P, Duration = ReactProcess.CoolTime, Result = Crystallised };
+        private Item.ItemProcess React => new Item.ItemProcess { Process = ReactCoolProcess.P, Duration = ReactCoolProcess.CoolTime, Result = Crystallised };
         public override List<Item.ItemProcess> Processes => new List<Item.ItemProcess> { CoolOff, Freeze, React };
 
         private GameObject _prefab;
@@ -124,7 +124,7 @@ namespace BreakingPlates.Custom
         }
     }
 
-    // Auskristallisiert: zerschlagen (Kneten). Optional: im Crystal Purifier -> reine Kristalle.
+    // Auskristallisiert: zerschlagen (Kneten).
     public abstract class CrystalBase : CustomItem
     {
         protected virtual bool MarkStevia => false;
@@ -332,7 +332,7 @@ namespace BreakingPlates.Custom
         }
     }
 
-    // 99,1 %: reine Kristalle. Ohne Karte kann man sie zur Not wieder klein schneiden (= normale Portion).
+    // 99,1 %: reine Kristalle (erfüllen auch normale Bestellungen, siehe PureSatisfies).
     public class PureBlueRockCandy : CustomItem
     {
         public override string UniqueNameID => "Blue Rock Candy - Pure";
@@ -351,46 +351,6 @@ namespace BreakingPlates.Custom
             PureCrystal(p.transform, "Crystal", new Vector3(0f, 0.12f, 0f), 0.8f);
             return p;
         }
-    }
-
-    // ---------- Großer Kolben (10 Portionen) ----------
-
-    public class BigSugarPot : RawBatchBase
-    {
-        public override string UniqueNameID => "Sugar Pot - Big";
-        protected override Item Container => G.I<BigLabFlask>();
-        protected override Item Sweetener => Ref(ItemReferences.Sugar);
-        protected override Item CookResult => G.I<BigSyrupPot>();
-        protected override float CookTime => 14f;
-        protected override float FlaskScale => BigFlaskScale;
-    }
-
-    public class BigSyrupPot : SyrupBase
-    {
-        public override string UniqueNameID => "Blue Syrup Pot - Big";
-        protected override Item Container => G.I<BigLabFlask>();
-        protected override Item Crystallised => G.I<BigCrystalPot>();
-        protected override float CoolTime => 18f;
-        protected override float FreezeTime => 6f;
-        protected override float FlaskScale => BigFlaskScale;
-        public override string ColourBlindTag => "XL";
-    }
-
-    public class BigCrystalPot : CrystalBase
-    {
-        public override string UniqueNameID => "Crystal Pot - Big";
-        protected override Item Container => G.I<BigLabFlask>();
-        protected override Item Smashed => G.I<BigShardsPot>();
-        protected override float FlaskScale => BigFlaskScale;
-    }
-
-    public class BigShardsPot : ShardsBase
-    {
-        public override string UniqueNameID => "Crystal Shards Pot - Big";
-        protected override Item Container => G.I<BigLabFlask>();
-        protected override Item Portion => G.I<BlueRockCandy>();
-        protected override int Portions => 10;
-        protected override float FlaskScale => BigFlaskScale;
     }
 
     // ---------- Sugar-Free (Stevia) ----------
@@ -468,7 +428,7 @@ namespace BreakingPlates.Custom
         private static Item.ItemProcess CoolOff => new Item.ItemProcess { Process = G.P(ProcessReferences.CoolOff), Duration = 12f, Result = G.I<LolliPot>() };
         private static Item.ItemProcess Freeze => new Item.ItemProcess { Process = G.P(ProcessReferences.Freeze), Duration = 4f, Result = G.I<LolliPot>() };
         public override Item.ItemProcess AutomaticItemProcess => CoolOff;
-        private static Item.ItemProcess React => new Item.ItemProcess { Process = ReactCoolProcess.P, Duration = ReactProcess.CoolTime, Result = G.I<LolliPot>() };
+        private static Item.ItemProcess React => new Item.ItemProcess { Process = ReactCoolProcess.P, Duration = ReactCoolProcess.CoolTime, Result = G.I<LolliPot>() };
         public override List<Item.ItemProcess> Processes => new List<Item.ItemProcess> { CoolOff, Freeze, React };
 
         private GameObject _prefab, _sticks;

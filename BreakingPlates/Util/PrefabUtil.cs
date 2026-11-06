@@ -80,23 +80,5 @@ namespace BreakingPlates
             }
         }
 
-        // Einfärben (z.B. Eiswürfel -> blaue Kristalle). Erzeugt eine Kopie des Materials.
-        public static void Tint(GameObject go, Color color)
-        {
-            foreach (var r in go.GetComponentsInChildren<MeshRenderer>(true))
-            {
-                var mats = r.sharedMaterials;
-                for (int i = 0; i < mats.Length; i++)
-                {
-                    if (mats[i] == null) continue;
-                    var m = new Material(mats[i]) { name = mats[i].name + " (Blue)" };
-                    if (m.HasProperty("_Color0")) m.SetColor("_Color0", color);
-                    if (m.HasProperty("_Color")) m.SetColor("_Color", color);
-                    if (m.HasProperty("_BaseColor")) m.SetColor("_BaseColor", color);
-                    mats[i] = m;
-                }
-                r.sharedMaterials = mats;
-            }
-        }
     }
 }

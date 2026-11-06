@@ -136,28 +136,6 @@ namespace BreakingPlates.Custom
         }
     }
 
-    // --- Großer Kolben ---
-    public class BigLabFlask : CustomItem
-    {
-        public override string UniqueNameID => "Lab Flask - Big";
-        public override ItemStorage ItemStorageFlags => ItemStorage.None;
-        public override bool IsIndisposable => true;
-        public override string ColourBlindTag => "XL";
-        public override Appliance DedicatedProvider => (Appliance)GDOUtils.GetCustomGameDataObject<BigFlaskProvider>().GameDataObject;
-        private GameObject _prefab;
-        public override GameObject Prefab => _prefab ??= LabFlask.MakeFlask("Big Lab Flask", BigFlaskScale);
-    }
-
-    public class BigFlaskProvider : ProviderBase
-    {
-        public override string UniqueNameID => "Big Lab Flask Provider";
-        protected override Item Provided => (Item)GDOUtils.GetCustomGameDataObject<BigLabFlask>().GameDataObject;
-        protected override string Title => "Big Flasks";
-        protected override string Desc => "Bigger batches, longer cooks. Only 2.";
-        protected override int Limit => 2;
-        protected override void Decorate(Transform top) => Flask(top, "Flask", Vector3.zero, 0.9f);
-    }
-
     // --- Holzstiele (Kristall-Lollis) ---
     public class CandyStick : CustomItem
     {

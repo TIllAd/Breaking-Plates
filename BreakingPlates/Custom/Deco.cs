@@ -168,7 +168,7 @@ namespace BreakingPlates.Custom
         protected override int[] VanillaIDs => new[] { ApplianceReferences.CosyBarrel };
         protected override string Title => "Yellow Barrels";
         protected override string Desc => "Why does a kitchen produce so much chemical waste?";
-        // Till: Fässer 2 Punkte und besser als der Sessel -> gleiche Punkte, aber günstiger.
+        // 2 Punkte zum günstigeren Preis (wie die Formal Dog Statue im Spiel).
         protected override int Points => 2;
         protected override PriceTier Price => PriceTier.DecoMediumCheap;
 
@@ -219,7 +219,7 @@ namespace BreakingPlates.Custom
 
         protected override void Build(Transform root)
         {
-            Box(root, "Board", new Vector3(0.9f, 0.32f, 0.03f), new Vector3(0f, 0f, 0.015f), Materials.PizzaYellow);
+            Box(root, "Board", new Vector3(0.9f, 0.32f, 0.03f), new Vector3(0f, 0f, 0.015f), Materials.SignYellow);
             Box(root, "Border", new Vector3(0.94f, 0.36f, 0.02f), new Vector3(0f, 0f, 0.03f), Materials.Red);
             Text(root, "Name", "LOS POLLITOS", new Vector3(0f, 0.05f, -0.005f), 1.1f, new Color(0.75f, 0.1f, 0.08f));
             Text(root, "Sub", "HERMANOS", new Vector3(0f, -0.08f, -0.005f), 0.7f, new Color(0.75f, 0.1f, 0.08f));

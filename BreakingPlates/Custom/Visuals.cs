@@ -267,9 +267,6 @@ namespace BreakingPlates.Custom
             return root;
         }
 
-        // Großer Kolben (vorerst ungenutzt).
-        public const float BigFlaskScale = 1.35f;
-
         // Ein einzelner großer, besonders klarer Kristall (99 % Reinheit).
         public static GameObject PureCrystal(Transform parent, string name, Vector3 pos, float scale)
         {

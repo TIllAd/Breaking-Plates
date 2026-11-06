@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace BreakingPlates.Custom
 {
-    // Beilagen: passen wie Schraderbräu zu jedem Hauptgericht. (Funions gestrichen – das Spiel hat schon Onion Rings.)
+    // Beilagen: passen wie Schraderbräu zu jedem Hauptgericht.
 
     // ---------- Birthday Bacon ----------
     // Nutzt den Speck aus IngredientLib: Schwein aus dem Kühlschrank -> schneiden -> braten -> Bacon.

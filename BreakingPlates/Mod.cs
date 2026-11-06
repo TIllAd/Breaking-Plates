@@ -50,15 +50,10 @@ namespace BreakingPlates
 
             // Reihenfolge: Ergebnisse vor den Dingen, die auf sie verweisen.
             // Laborbedarf
-            // AddGameDataObject<CrystalPurifier>(); // ersetzt durch Umkristallisieren
             AddGameDataObject<Superlab>();
-            // AddGameDataObject<GlassReactor>(); // Vergleichsvariante, Ofen-Reactor gewählt
-            AddGameDataObject<ReactProcess>();
             AddGameDataObject<ReactCoolProcess>();
             AddGameDataObject<FlaskProvider>();
             AddGameDataObject<LabFlask>();
-            // AddGameDataObject<BigFlaskProvider>(); // großer Kolben vorerst raus (verwirrte eher)
-            // AddGameDataObject<BigLabFlask>(); // großer Kolben vorerst raus (verwirrte eher)
             AddGameDataObject<StickProvider>();
             AddGameDataObject<CandyStick>();
             AddGameDataObject<SteviaProvider>();
@@ -86,10 +81,6 @@ namespace BreakingPlates
             AddGameDataObject<RecrystallisePot>();
             AddGameDataObject<SyrupPot>();
             AddGameDataObject<SugarPot>();
-            // AddGameDataObject<BigShardsPot>(); // großer Kolben vorerst raus (verwirrte eher)
-            // AddGameDataObject<BigCrystalPot>(); // großer Kolben vorerst raus (verwirrte eher)
-            // AddGameDataObject<BigSyrupPot>(); // großer Kolben vorerst raus (verwirrte eher)
-            // AddGameDataObject<BigSugarPot>(); // großer Kolben vorerst raus (verwirrte eher)
             AddGameDataObject<SteviaShardsPot>();
             AddGameDataObject<SteviaCrystalPot>();
             AddGameDataObject<SteviaSyrupPot>();
@@ -104,17 +95,14 @@ namespace BreakingPlates
             AddGameDataObject<SugarFreeDish>();
             AddGameDataObject<LolliDish>();
             AddGameDataObject<PlatterDish>();
-            // AddGameDataObject<BigFlaskDish>(); // großer Kolben vorerst raus (verwirrte eher)
             AddGameDataObject<SchraderDish>();
             AddGameDataObject<BaconDish>();
-            // AddGameDataObject<PizzaRoofDish>(); // Pizza vorerst raus (später evtl.)
             AddGameDataObject<BreakingEvenCard>();
 
             // Deko und Kostüm
             AddGameDataObject<PeriodicPoster>();
             AddGameDataObject<YellowBarrels>();
             AddGameDataObject<LosPollitosSign>();
-            // Pilot 06.11.
             AddGameDataObject<PinkTeddy>();
             AddGameDataObject<LilyOfTheValley>();
             AddGameDataObject<HankMinerals>();
@@ -125,7 +113,6 @@ namespace BreakingPlates
             AddGameDataObject<SaulPoster>();
             AddGameDataObject<HazmatSuit>();
 
-            // AddGameDataObject<HeisenbergHat>(); // Kostüme vorerst raus (macht Till später selbst)
             AddGameDataObject<GasMask>();
 
             Events.BuildGameDataPreSetupEvent += (s, args) => PrefabUtil.FixMaterials();

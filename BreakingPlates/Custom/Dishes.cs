@@ -104,7 +104,7 @@ namespace BreakingPlates.Custom
         };
     }
 
-    // 99,1 %: Kristalle im Crystal Purifier reinigen -> reine Kristalle.
+    // 99,1 %: Umkristallisieren (Splitter + Wasser, kochen, abkühlen) -> reine Kristalle.
     public class PureCandyDish : CandyCardBase
     {
         public override string UniqueNameID => "Pure Blue Rock Candy Dish";
@@ -208,23 +208,6 @@ namespace BreakingPlates.Custom
         protected override string RecipeText => "Serve a full flask of smashed candy (all 5 portions) to the table. Works for every variant you have (99.1%, sugar-free). The group shares it and leaves the empty flask behind.";
     }
 
-    // Großer Kolben, 10 Portionen, längere Kochzeit, mehr Bestellungen.
-    public class BigFlaskDish : CandyCardBase
-    {
-        public override string UniqueNameID => "Big Flask Dish";
-        public override DishType Type => DishType.Main;
-        public override int Difficulty => 2;
-        public override DishCustomerChange CustomerMultiplier => DishCustomerChange.SmallIncrease;
-        public override HashSet<Item> MinimumIngredients => new HashSet<Item> { G.I<BigLabFlask>() };
-        public override List<Dish.MenuItem> ResultingMenuItems => new List<Dish.MenuItem> { Menu(G.I<CandyBag>(), 0.5f) };
-        private GameObject _icon;
-        public override GameObject IconPrefab => _icon ??= Icon("Big Flask - Icon", t => Flask(t, "Flask", Vector3.zero, BigFlaskScale, Materials.BlueSyrup));
-        protected override string CardName => "Big Flask";
-        protected override string CardDescription => "Big flasks: 10 portions per batch, but they cook and cool longer. More customers.";
-        protected override string Quote => "I'm in the empire business.";
-        protected override string RecipeText => "Use the big lab flask with sugar and water. It takes longer to cook and cool, but gives 10 portions.";
-    }
-
     // Schraderbräu als Beilage.
     public class SchraderDish : CandyCardBase
     {
@@ -239,36 +222,6 @@ namespace BreakingPlates.Custom
         protected override string CardDescription => "Adds Schraderbräu as a side";
         protected override string Quote => "Home-brewed to silky perfection.";
         protected override string RecipeText => "Pour a Schraderbräu from the tap and serve it with the order.";
-    }
-
-    // Pizza als Extra (mit dem normalen Pizza-Ablauf aus dem Spiel).
-    public class PizzaRoofDish : CandyCardBase
-    {
-        public override string UniqueNameID => "Pizza On The Roof";
-        public override DishType Type => DishType.Extra;
-        public override int Difficulty => 2;
-        private static Dish VanillaPizza => GDOUtils.GetExistingGDO(DishReferences.PizzaBase) as Dish;
-        private static Item PizzaItem
-        {
-            get
-            {
-                var d = VanillaPizza;
-                var mi = d?.UnlocksMenuItems?.FirstOrDefault(m => m.Item != null);
-                return mi?.Item ?? Ref(ItemReferences.PizzaSlice);
-            }
-        }
-        public override HashSet<Item> MinimumIngredients => VanillaPizza?.MinimumIngredients != null ? new HashSet<Item>(VanillaPizza.MinimumIngredients) : new HashSet<Item>();
-        public override HashSet<Process> RequiredProcesses => VanillaPizza?.RequiredProcesses != null ? new HashSet<Process>(VanillaPizza.RequiredProcesses) : new HashSet<Process>();
-        public override HashSet<Dish.IngredientUnlock> ExtraOrderUnlocks => new HashSet<Dish.IngredientUnlock>
-        {
-            new Dish.IngredientUnlock { MenuItem = (ItemGroup)G.I<CandyBag>(), Ingredient = PizzaItem }
-        };
-        private GameObject _icon;
-        public override GameObject IconPrefab => _icon ??= Icon("Pizza - Icon", t => PrefabUtil.CloneVisual(Ref(ItemReferences.PizzaSlice).Prefab, t, "Pizza", Vector3.zero));
-        protected override string CardName => "Pizza on the Roof";
-        protected override string CardDescription => "Customers may order a pizza with their candy";
-        protected override string Quote => "Stay out of my territory.";
-        protected override string RecipeText => "Make a pizza the usual way and serve it alongside the candy bag.";
     }
 
     // Effekt-Karte "Breaking Even": weniger Kunden (~30 %), dafür 25 % weniger Geld am Tagesende.

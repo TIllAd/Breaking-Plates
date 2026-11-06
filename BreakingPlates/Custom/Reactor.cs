@@ -7,25 +7,7 @@ using UnityEngine;
 
 namespace BreakingPlates.Custom
 {
-    // Reactor: kocht UND kühlt automatisch (Kolben rein -> Kristalle raus). Eigenes Gerät, kein Upgrade,
-    // eigener Prozess, damit er nur Kolben verarbeitet. Zum Vergleich gibt es gerade zwei Optiken:
-    // A = umgebauter Ofen (Superlab), B = Glas-Reaktor auf Arbeitsfläche (Glass Reactor).
-    public class ReactProcess : CustomProcess
-    {
-        public override string UniqueNameID => "React";
-        public override GameDataObject BasicEnablingAppliance => GDOUtils.GetCustomGameDataObject<Superlab>().GameDataObject;
-        public override bool CanObfuscateProgress => true;
-        public override List<(Locale, ProcessInfo)> InfoList => new List<(Locale, ProcessInfo)>
-        {
-            (Locale.English, new ProcessInfo { Name = "Cook", Icon = "<sprite name=\"cook\">" })
-        };
-
-        public static Process P => (Process)GDOUtils.GetCustomGameDataObject<ReactProcess>().GameDataObject;
-        public const float CookTime = 5f;
-        public const float CoolTime = 5f;
-    }
-
-    // Zweiter Schritt im Reactor: Abkühlen (eigenes Symbol, Eiskristall).
+    // Abkühlen im Superlab: eigener Vorgang mit Eiskristall-Symbol, nur für Kolben.
     public class ReactCoolProcess : CustomProcess
     {
         public override string UniqueNameID => "React Cool";
@@ -36,6 +18,9 @@ namespace BreakingPlates.Custom
             (Locale.English, new ProcessInfo { Name = "Cool", Icon = "<sprite name=\"snow\">" })
         };
         public static Process P => (Process)GDOUtils.GetCustomGameDataObject<ReactCoolProcess>().GameDataObject;
+        // Anzeige am Superlab: Kochen dauert dort ca. 5 s (Spiel-"Cook" x1,6), Abkühlen 5 s.
+        public const float CookTime = 5f;
+        public const float CoolTime = 5f;
     }
 
     public abstract class ReactorBase : CustomAppliance
@@ -102,7 +87,7 @@ namespace BreakingPlates.Custom
         }
     }
 
-    // A: Ofen aus dem Spiel, Edelstahl statt Rot, gelber Warnstreifen, schwarze Regler, Display, Gefahren-Raute an der Seite.
+    // Superlab: Ofen aus dem Spiel, Edelstahl statt Rot, schwarze Regler, Display mit Timer, Lampe, Schild mit Flamme und Eiskristall.
     public class Superlab : ReactorBase
     {
         public override string UniqueNameID => "Superlab";
@@ -172,40 +157,6 @@ namespace BreakingPlates.Custom
         }
     }
 
-    // B: Arbeitsfläche aus dem Spiel mit Glaskammer; der Kolben steht sichtbar darin. Rote Heizspirale unten, blaue Kühlspirale oben.
-    public class GlassReactor : ReactorBase
-    {
-        public override string UniqueNameID => "Glass Reactor";
-        protected override Appliance Template => (Appliance)GDOUtils.GetExistingGDO(ApplianceReferences.Countertop);
-        protected override string Title => "Glass Reactor";
-        protected override string Desc => "Watch it boil, watch it freeze. Science.";
-
-        private static Mesh Ring(float r, float thick = 0.018f) => ProcMesh.Lathe(new[]
-        {
-            new Vector2(r - thick, 0f), new Vector2(r + thick, 0f), new Vector2(r + thick, thick * 2f), new Vector2(r - thick, thick * 2f), new Vector2(r - thick, 0f)
-        }, 24);
-
-        protected override void Build(GameObject go)
-        {
-            var root = Tuned(go.transform, "BP Glass Reactor", "glassreactor", new Vector3(0f, 0.5f, 0f));
-            Part("Base Plate", root.transform, ProcMesh.Cylinder(0.36f, 0.04f, 24), Materials.DarkGrey, Vector3.zero);
-            Part("Chamber", root.transform, ProcMesh.Mug(0.33f, 0.56f, 0.01f), Materials.Glass, new Vector3(0f, 0.04f, 0f));
-            var heat = Materials.Solid("Heater Coil", new Color(0.95f, 0.35f, 0.12f));
-            var cool = Materials.Solid("Cooler Coil", new Color(0.3f, 0.6f, 0.95f));
-            Part("Heat 1", root.transform, Ring(0.3f), heat, new Vector3(0f, 0.07f, 0f));
-            Part("Heat 2", root.transform, Ring(0.3f), heat, new Vector3(0f, 0.12f, 0f));
-            Part("Cool 1", root.transform, Ring(0.3f), cool, new Vector3(0f, 0.46f, 0f));
-            Part("Cool 2", root.transform, Ring(0.3f), cool, new Vector3(0f, 0.51f, 0f));
-            Part("Lid", root.transform, ProcMesh.Cylinder(0.35f, 0.035f, 24), Materials.DarkGrey, new Vector3(0f, 0.6f, 0f));
-            Part("Vent", root.transform, ProcMesh.Cylinder(0.05f, 0.08f, 12), Materials.Black, new Vector3(0.18f, 0.635f, 0.1f));
-            var panel = new GameObject("Panel");
-            panel.transform.SetParent(root.transform, false);
-            panel.transform.localPosition = new Vector3(0f, -0.12f, -0.47f);
-            Part("Display", panel.transform, ProcMesh.Box(new Vector3(0.2f, 0.08f, 0.02f)), Materials.Black, Vector3.zero);
-            DecoBase.MakeText(panel.transform, "Timer", "00:10", new Vector3(0f, 0f, -0.012f), 0.42f, new Color(0.35f, 1f, 0.45f));
-        }
-    }
-
     // Lampe leuchtet und der Timer zählt runter, solange der Reactor arbeitet.
     // Liest die Werte, die das Spiel ohnehin für die Ofen-Animation setzt.
     public class ReactorStatus : MonoBehaviour
@@ -226,7 +177,7 @@ namespace BreakingPlates.Custom
             bool active = _anim.GetInteger(ProcessHash) != 0;
             _done = !active && HasItem();
             if (Bulb != null) Bulb.sharedMaterial = active ? On : _done ? Done : Off;
-            int secs = active ? Mathf.CeilToInt((1f - Mathf.Clamp01(_anim.GetFloat(ProgressHash))) * ReactProcess.CookTime) : -1;
+            int secs = active ? Mathf.CeilToInt((1f - Mathf.Clamp01(_anim.GetFloat(ProgressHash))) * ReactCoolProcess.CookTime) : -1;
             if (_done) secs = -3;
             if (_text != null && secs != _lastShown)
             {

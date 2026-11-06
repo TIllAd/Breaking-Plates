@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace BreakingPlates.Custom
 {
-    // Pilot: neue Deko-Ideen (06.11.). Alles aus einfachen Formen, wie die bisherige Deko.
+    // Weitere Deko aus einfachen Formen, wie die bisherige.
     internal static class Shapes
     {
         public static readonly Vector2[] SphereProfile = MakeSphere(10);
@@ -203,7 +203,7 @@ namespace BreakingPlates.Custom
         }
     }
 
-    // Geldstapel auf Palette, in Folie gewickelt.
+    // Geldstapel auf einer Palette.
     public class MoneyStack : DecoBase
     {
         public override string UniqueNameID => "Money Stack";
@@ -297,7 +297,7 @@ namespace BreakingPlates.Custom
         }
     }
 
-    // Gales Laborbuch auf einem Lesepult.
+    // Gales Laborbuch auf einem Bücherstapel.
     public class GaleNotebook : DecoBase
     {
         public override string UniqueNameID => "Gale Notebook";
@@ -416,14 +416,15 @@ namespace BreakingPlates.Custom
         }
     }
 
-    // "Better Call Saul!"-Plakat: Variante mit Silhouette und Variante nur mit Schrift (zum Vergleichen).
-    public abstract class SaulPosterBase : DecoBase
+    // "Better Call Saul!"-Plakat (nur Schrift).
+    public class SaulPoster : DecoBase
     {
+        public override string UniqueNameID => "Saul Poster";
+        protected override string Title => "Better Call Saul!";
         protected override DecorationType Theme => DecorationType.Affordable;
         protected override int[] VanillaIDs => new[] { ApplianceReferences.FancyPainting, ApplianceReferences.Painting, ApplianceReferences.FriendsPoster, ApplianceReferences.BunnyPoster, ApplianceReferences.AffordableNeonSign1 };
         protected override string Desc => "Did you know that you have rights?";
         protected override Vector3 DefaultPos => new Vector3(0f, 0.75f, 0.36f);
-        protected abstract bool Silhouette { get; }
 
         protected override void Build(Transform root)
         {
@@ -431,32 +432,9 @@ namespace BreakingPlates.Custom
             var red = new Color(0.75f, 0.1f, 0.08f);
             Box(root, "Border", new Vector3(0.84f, 0.6f, 0.02f), new Vector3(0f, 0f, 0.01f), Materials.Red);
             Box(root, "Paper", new Vector3(0.78f, 0.54f, 0.012f), new Vector3(0f, 0f, 0f), bg);
-            float textX = 0f;
-            if (Silhouette)
-            {
-                textX = 0.12f;
-                var dark = Materials.Solid("Saul Silhouette", new Color(0.12f, 0.12f, 0.16f));
-                // Kopf, Schultern/Anzug, erhobener Zeigefinger
-                Shapes.Ball("Head", root, new Vector3(0.12f, 0.14f, 0.01f), dark, new Vector3(-0.24f, 0.08f, -0.008f));
-                Box(root, "Torso", new Vector3(0.26f, 0.2f, 0.008f), new Vector3(-0.24f, -0.15f, -0.008f), dark);
-                Box(root, "Shoulders", new Vector3(0.22f, 0.06f, 0.008f), new Vector3(-0.24f, -0.03f, -0.008f), dark);
-                var arm = Box(root, "Arm", new Vector3(0.05f, 0.18f, 0.008f), new Vector3(-0.1f, 0.0f, -0.008f), dark);
-                arm.transform.localRotation = Quaternion.Euler(0f, 0f, -20f);
-                Box(root, "Finger", new Vector3(0.018f, 0.07f, 0.008f), new Vector3(-0.065f, 0.12f, -0.008f), dark);
-                // Krawatte als Akzent
-                Box(root, "Tie", new Vector3(0.03f, 0.12f, 0.006f), new Vector3(-0.24f, -0.12f, -0.012f), Materials.Red);
-            }
-            float size = Silhouette ? 0.75f : 1f;
-            Text(root, "Line 1", "BETTER CALL", new Vector3(textX, 0.11f, -0.01f), 0.9f * size, red);
-            Text(root, "Line 2", "SAUL!", new Vector3(textX, -0.02f, -0.01f), 1.5f * size, red);
-            Text(root, "Phone", "505-503-4455", new Vector3(textX, -0.18f, -0.01f), 0.55f * size, new Color(0.1f, 0.1f, 0.15f));
+            Text(root, "Line 1", "BETTER CALL", new Vector3(0f, 0.11f, -0.01f), 0.9f, red);
+            Text(root, "Line 2", "SAUL!", new Vector3(0f, -0.02f, -0.01f), 1.5f, red);
+            Text(root, "Phone", "505-503-4455", new Vector3(0f, -0.18f, -0.01f), 0.55f, new Color(0.1f, 0.1f, 0.15f));
         }
-    }
-    public class SaulPoster : SaulPosterBase
-    {
-        public override string UniqueNameID => "Saul Poster";
-        protected override string Title => "Better Call Saul!";
-        // Till: ohne Figur gefällt besser.
-        protected override bool Silhouette => false;
     }
 }

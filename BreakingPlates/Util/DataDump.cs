@@ -1,3 +1,4 @@
+#if DEBUG
 using System;
 using System.Collections;
 using System.IO;
@@ -10,7 +11,7 @@ using UnityEngine;
 
 namespace BreakingPlates
 {
-    // Debug: schreibt die Spieldaten zu Reis, Brokkoli, Soßen usw. in eine Textdatei,
+    // Nur Debug-Builds: schreibt relevante Spieldaten (Items, Prozesse, Geräte, Deko-Werte, Outfits) in eine Textdatei,
     // damit wir die echten Verarbeitungsschritte kennen statt zu raten.
     public static class DataDump
     {
@@ -149,3 +150,4 @@ namespace BreakingPlates
         }
     }
 }
+#endif
