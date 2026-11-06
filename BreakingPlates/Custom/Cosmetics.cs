@@ -17,12 +17,14 @@ namespace BreakingPlates.Custom
         public override string UniqueNameID => "Hazmat Suit";
         protected override bool Helmet => false;
     }
+    // Grund-Outfit-Vergleich (Runde 4): Taucheranzug gewann gegen Nightmare-Chef (Knopfleiste), Mumie (Bandagen) und Astronaut (Brust-Panel).
 
     public abstract class HazmatSuitBase : CustomPlayerCosmetic
     {
         private const int DiverChef = -950136670;
         private const int AstronautChef = 20631900;
         protected abstract bool Helmet { get; }
+        protected virtual int BaseOutfit => DiverChef;
         public override CosmeticType CosmeticType => CosmeticType.Outfit;
 
         private GameObject _visual;
@@ -30,15 +32,16 @@ namespace BreakingPlates.Custom
 
         private GameObject Make()
         {
-            var src = (GDOUtils.GetExistingGDO(DiverChef) as PlayerCosmetic)?.Visual
+            var src = (GDOUtils.GetExistingGDO(BaseOutfit) as PlayerCosmetic)?.Visual
+                ?? (GDOUtils.GetExistingGDO(DiverChef) as PlayerCosmetic)?.Visual
                 ?? (GDOUtils.GetExistingGDO(AstronautChef) as PlayerCosmetic)?.Visual;
             var go = Object.Instantiate(src, PrefabUtil.Holder, false);
             go.name = "BreakingPlates " + UniqueNameID;
             var outfit = go.GetComponent<PlayerOutfitComponent>();
-            var suit = Materials.Flat("Hazmat Shell", Tuning.C("color.hazmat.suit", new Color(0.98f, 0.84f, 0.12f)), Tuning.F("hazmat.shine", 0.7f));
+            var suit = Materials.Flat("Hazmat Shell", Tuning.C("color.hazmat.suit", new Color(0.98f, 0.84f, 0.12f)), Tuning.F("hazmat.shine", 0.6f));
             var seam = Materials.Flat("Hazmat Seam", Tuning.C("color.hazmat.seam", new Color(0.85f, 0.7f, 0.08f)), 0.6f);
             var gloves = Materials.Flat("Hazmat Gloves", Tuning.C("color.hazmat.gloves", new Color(0.45f, 0.78f, 0.95f)), 0.6f);
-            var glass = Materials.Flat("Hazmat Visor Glass", new Color(0.16f, 0.22f, 0.3f), 1f);
+            var glass = Materials.Flat("Hazmat Visor Glass", new Color(0.2f, 0.27f, 0.36f), 1f);
             // Keine dunklen Flecken (Overlay des Shaders aus) – glatter, beschichteter Look.
             foreach (var m in new[] { suit, seam, gloves, glass }) { m.SetFloat("_OverlayMax", 0f); m.SetFloat("_OverlayMin", 0f); m.SetFloat("_Flatness", Tuning.F("hazmat.flatness", 0.5f)); }
 
@@ -47,15 +50,11 @@ namespace BreakingPlates.Custom
                 if (r == null) continue;
                 var n = r.name;
                 if (n == "Body") continue;
-                if (n.Contains("Gloves")) SetAll(r, gloves);
-                else if (n.Contains("Boots")) SetAll(r, suit);
-                else if (n.Contains("Suit"))
-                {
-                    var mats = r.sharedMaterials;
-                    for (int i = 0; i < mats.Length; i++) mats[i] = suit; // auch Gürtel/Besätze gelb: ein glatter Overall
-                    r.sharedMaterials = mats;
-                }
-                else Hide(outfit, r); // Taucherhelm, Tanks
+                if (n.Contains("Gloves")) { SetAll(r, gloves); continue; }
+                string[] extras = { "Helmet", "Hat", "Tanks", "Badge", "Buttons", "Strap", "Eyes", "Teeth", "Belt", "Apron", "Scarf", "Tie" };
+                if (System.Array.Exists(extras, e => n.Contains(e))) { Hide(outfit, r); continue; }
+                // Anzug, Hose, Stiefel: alles gelb, auch Besätze – ein glatter Overall.
+                SetAll(r, suit); // Taucherhelm, Tanks
             }
 
             if (Helmet)
@@ -90,14 +89,19 @@ namespace BreakingPlates.Custom
                 Apply(hood);
                 Tuning.Register(hood, "hood", Apply);
                 Shapes.Ball("Hood", hood.transform, Tuning.V3("hood.size", new Vector3(0.58f, 0.6f, 0.56f)), suit, new Vector3(0f, 0.15f, 0f));
-                Shapes.Ball("Collar", hood.transform, new Vector3(0.52f, 0.1f, 0.5f), seam, new Vector3(0f, -0.1f, 0f));
+                // Dichtung am Hals: flach und in Anzugfarbe, damit Kapuze und Anzug wie ein Stück wirken.
+                Shapes.Ball("Seal", hood.transform, new Vector3(0.5f, 0.07f, 0.48f), suit, new Vector3(0f, -0.07f, 0f));
                 var visor = new GameObject("Visor");
                 visor.transform.SetParent(hood.transform, false);
                 visor.transform.localPosition = Tuning.V3("visor.pos", new Vector3(0f, 0.15f, 0.25f));
                 visor.transform.localRotation = Quaternion.Euler(-6f, 0f, 0f);
                 Shapes.Ball("Rim", visor.transform, new Vector3(0.42f, 0.36f, 0.08f), seam, Vector3.zero);
                 Shapes.Ball("Glass", visor.transform, new Vector3(0.36f, 0.3f, 0.08f), glass, new Vector3(0f, 0f, 0.012f));
-                Shapes.Ball("Shine", visor.transform, new Vector3(0.08f, 0.04f, 0.02f), Materials.Flat("Hazmat Visor Shine", new Color(0.8f, 0.9f, 1f), 1f), new Vector3(-0.09f, 0.08f, 0.05f));
+                // Dezente, größere Reflexion statt weißem Punkt
+                var shineMat = Materials.Flat("Hazmat Visor Shine", new Color(0.36f, 0.46f, 0.57f), 1f);
+                shineMat.SetFloat("_OverlayMax", 0f);
+                var sh = Shapes.Ball("Reflection", visor.transform, new Vector3(0.2f, 0.05f, 0.02f), shineMat, new Vector3(-0.04f, 0.085f, 0.048f));
+                sh.transform.localRotation = Quaternion.Euler(0f, 0f, 14f);
                 if (outfit != null) outfit.AttachToHeadBone = head;
             }
             if (outfit != null) outfit.Hats = new List<Renderer>();

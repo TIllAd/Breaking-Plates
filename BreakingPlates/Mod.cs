@@ -124,6 +124,7 @@ namespace BreakingPlates
             AddGameDataObject<TheFly>();
             AddGameDataObject<SaulPoster>();
             AddGameDataObject<HazmatSuit>();
+
             // AddGameDataObject<HeisenbergHat>(); // Kostüme vorerst raus (macht Till später selbst)
             // AddGameDataObject<GasMask>(); // erstmal ohne Maske: Anzug mit Sichtfenster (Till, 06.11.)
 
