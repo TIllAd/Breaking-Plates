@@ -47,6 +47,15 @@ namespace BreakingPlates
                     }
             }
 
+            sb.AppendLine("\n##### Alle Outfits: Name | Renderer (Mesh, Vertices)");
+            foreach (var c in gameData.Get<PlayerCosmetic>())
+            {
+                if (c == null || c.Visual == null) continue;
+                var parts = c.Visual.GetComponentsInChildren<SkinnedMeshRenderer>(true)
+                    .Select(r => $"{r.name}({(r.sharedMesh != null ? r.sharedMesh.vertexCount : 0)}v, mats {r.sharedMaterials.Length}: {string.Join("/", r.sharedMaterials.Where(m => m != null).Select(m => m.name))})");
+                sb.AppendLine($"   OUTFIT {c.name} [{c.CosmeticType}] | {string.Join(" ; ", parts)}");
+            }
+
             sb.AppendLine("\n##### Kosmetik (Hüte/Outfits)");
             string[] cos = { "cowboy", "glasses", "bandana", "beanie", "tallchef", "baseball", "visor", "chef" };
             foreach (var c in gameData.Get<PlayerCosmetic>().Where(c => cos.Any(k => c.name.ToLower().Contains(k))))
