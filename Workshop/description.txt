@@ -6,7 +6,7 @@ It's just sugar. Probably.
 [list]
 [*]Take a [b]lab flask[/b] and add [b]sugar[/b] and [b]water[/b]
 [*][b]Cook[/b] it → blue syrup
-[*]Let it [b]cool down[/b] (a [b]freezer[/b] is much faster) to get crystals
+[*]Let it [b]cool down[/b] (a [b]freezer[/b] or the [b]Superlab[/b] is much faster) to get crystals
 [*][b]Interact[/b] on a counter to smash the crystals → 5 portions
 [*][b]Portion[/b] it and combine with a [b]candy bag[/b] to serve – no plates needed
 [/list]
@@ -18,16 +18,21 @@ It's just sugar. Probably.
 [*][b]Chili P[/b] – a chopped jalapeño in the bag, marked with a chili clip. "Chili P is my signature!"
 [*][b]Sugar-Free[/b] – cook with stevia, marked with a stevia sprig. "I'll need more stevia."
 [*][b]On a Stick[/b] – rock candy lollis straight from the flask. "Yeah, science!"
-[*][b]Mass Production[/b] – groups order a whole flask, in every variant you sell. "I'm in the empire business."
+[*][b]Mass Production[/b] – groups order a full flask, in every variant you sell. "I'm in the empire business."
 [*][b]Schraderbräu[/b] – home-brewed beer as a side. "Jesus, Marie!"
+[*][b]Funions[/b] – a bag from the snack rack as a side. "Bitch, I'm eating Funions."
+[*][b]Birthday Bacon[/b] – fry some bacon as a side. "Fifty-two."
 [*][b]Breaking Even[/b] – fewer customers, but 25% of each day's earnings are taken away at the end of the day. "Better call Saul!"
 [/list]
 
+[h2]Superlab[/h2]
+An oven turned lab reactor: cooks everything and cools your flasks, with a lamp and a timer.
+
 [h2]Decorations[/h2]
-Periodic table poster, yellow barrels (just decoration, honest) and a Los Pollitos Hermanos sign.
+11 decorations across all four styles: periodic table, Gale's lab notebook, Marie's purple armchair, a pink teddy bear, lily of the valley, Hank's mineral collection, a money stack, yellow barrels (just decoration, honest), a Los Pollitos Hermanos sign, a Better Call Saul! poster and a fly that won't leave.
 
 [h2]Colourblind support[/h2]
-Every flask stage and bag variant has a colourblind label (Su, W, Sy, Cr, Sh, 99, SF, St, P).
+Every flask stage and bag variant has a colourblind label (Su, W, Sy, Cr, Sh, Re, 99, SF, St, P, Fu, Be).
 
 [h2]Easter egg[/h2]
 Got [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3833762071]Chicken & Rice[/url] installed too? Its cards will show up more often. The family business.

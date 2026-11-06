@@ -12,7 +12,7 @@ namespace BreakingPlates
     {
         public const string MOD_GUID = "TillAd.PlateUp.BreakingPlates";
         public const string MOD_NAME = "Breaking Plates";
-        public const string MOD_VERSION = "0.2.0";
+        public const string MOD_VERSION = "1.0.0";
         public const string MOD_AUTHOR = "Till";
         public const string MOD_GAMEVERSION = ">=1.1.4";
 
