@@ -215,32 +215,24 @@ namespace BreakingPlates.Custom
             Tuning.Register(flowers, "stevia.flowers", ApplyF);
             var white = Materials.Solid("Stevia Flower", new Color(0.98f, 0.98f, 0.95f));
             var yellow = Materials.Solid("Stevia Flower Centre", new Color(1f, 0.85f, 0.2f));
+            // Blüten sitzen auf eigenen dünnen Stielen, die aus der Erde kommen – so schweben sie nicht neben den Blättern.
+            var stem = Materials.Solid("Stevia Stem", new Color(0.35f, 0.62f, 0.25f));
             Vector3[] spots =
             {
-                new Vector3(0.16f, 0.6f, -0.14f), new Vector3(0.08f, 0.82f, -0.06f), new Vector3(-0.16f, 0.55f, 0.02f),
-                new Vector3(-0.08f, 0.72f, 0.1f), new Vector3(0.18f, 0.5f, 0.14f), new Vector3(0.0f, 0.95f, 0.0f),
-                new Vector3(-0.18f, 0.45f, -0.1f), new Vector3(0.22f, 0.68f, 0.02f),
+                new Vector3(0.14f, 0.62f, -0.12f), new Vector3(0.06f, 0.8f, -0.04f), new Vector3(-0.14f, 0.58f, 0.02f),
+                new Vector3(-0.06f, 0.72f, 0.1f), new Vector3(0.15f, 0.54f, 0.12f), new Vector3(-0.02f, 0.9f, 0.02f),
             };
-            // Blüten an die Stängel-Enden (Knochen der Pflanze) hängen, damit sie mitwippen statt in der Luft zu stehen.
-            var tips = new List<Transform>();
-            foreach (var r in go.GetComponentsInChildren<SkinnedMeshRenderer>(true))
-                foreach (var bone in r.bones ?? new Transform[0])
-                    if (bone != null && bone.childCount == 0 && !tips.Contains(bone)) tips.Add(bone);
-            int made = 0;
-            if (tips.Count > 0 && Tuning.F("stevia.flowers.onbones", 1f) > 0.5f)
+            float soil = Tuning.F("stevia.soil", 0.3f);
+            for (int i = 0; i < spots.Length; i++)
             {
-                foreach (var tip in tips)
-                {
-                    var f = Flower(tip, "Flower " + made, white, yellow, made);
-                    var ls = tip.lossyScale;
-                    f.transform.localScale = new Vector3(1f / Mathf.Max(0.001f, ls.x), 1f / Mathf.Max(0.001f, ls.y), 1f / Mathf.Max(0.001f, ls.z));
-                    made++;
-                }
-                Mod.LogInfo("Stevia: " + made + " Blüten an Stängel-Enden");
+                var top = spots[i];
+                var bottom = new Vector3(top.x * 0.3f, soil, top.z * 0.3f);
+                var dir = top - bottom;
+                var s = ProcMesh.Create("Stem " + i, flowers.transform, ProcMesh.Box(new Vector3(0.014f, dir.magnitude, 0.014f)), stem, (top + bottom) * 0.5f);
+                s.transform.localRotation = Quaternion.FromToRotation(Vector3.up, dir);
+                var f = Flower(flowers.transform, "Flower " + i, white, yellow, i);
+                f.transform.localPosition = top;
             }
-            if (made == 0)
-                for (int i = 0; i < spots.Length; i++)
-                    Flower(flowers.transform, "Flower " + i, white, yellow, i).transform.localPosition = spots[i];
             // Pflanzschild "Stevia"
             var tag = new GameObject("Stevia Tag");
             tag.transform.SetParent(go.transform, false);
@@ -256,7 +248,7 @@ namespace BreakingPlates.Custom
         {
             var f = new GameObject(name);
             f.transform.SetParent(parent, false);
-            f.transform.localRotation = Quaternion.Euler(i * 23f, i * 47f, 0f);
+            f.transform.localRotation = Quaternion.Euler((i % 3 - 1) * 12f, i * 47f, 0f);
             for (int p = 0; p < 5; p++)
             {
                 float a = p * 72f * Mathf.Deg2Rad;
