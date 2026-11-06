@@ -133,7 +133,7 @@ namespace BreakingPlates.Custom
 
         protected override void Build(Transform root)
         {
-            const float cell = 0.05f, gap = 0.006f;
+            const float cell = 0.044f, gap = 0.005f; // Breite < 1 Feld, sonst schneidet die Nachbarwand die rechte Seite (mit Br) ab
             const int cols = 18, rows = 7;
             float w = cols * (cell + gap), h = rows * (cell + gap) + 0.12f;
             Box(root, "Paper", new Vector3(w + 0.06f, h + 0.06f, 0.01f), new Vector3(0f, 0f, 0.005f), Materials.Paper);
