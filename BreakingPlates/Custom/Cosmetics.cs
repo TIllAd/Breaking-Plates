@@ -97,21 +97,68 @@ namespace BreakingPlates.Custom
                 visor.transform.SetParent(hood.transform, false);
                 visor.transform.localPosition = Tuning.V3("visor.pos", new Vector3(0f, 0.15f, 0.25f));
                 visor.transform.localRotation = Quaternion.Euler(-6f, 0f, 0f);
-                Shapes.Ball("Rim", visor.transform, new Vector3(0.39f, 0.33f, 0.08f), seam, Vector3.zero); // schmaler Rahmen, mehr Glas
-                Shapes.Ball("Glass", visor.transform, new Vector3(0.36f, 0.3f, 0.08f), glass, new Vector3(0f, 0f, 0.012f));
+                // Visier tief in die Kapuze gedrückt: große, flache Ellipsoide, die aus der Rundung herauswachsen statt wie ein Teller aufzuliegen.
+                Shapes.Ball("Rim", visor.transform, new Vector3(0.39f, 0.33f, 0.2f), seam, new Vector3(0f, 0f, -0.058f)); // schmaler Rahmen, mehr Glas
+                Shapes.Ball("Glass", visor.transform, new Vector3(0.36f, 0.3f, 0.2f), glass, new Vector3(0f, 0f, -0.042f));
                 // Dezente, größere Reflexion statt weißem Punkt
                 // Weiche, breite Reflexion: zwei übereinanderliegende helle Flächen, oben links auf der Wölbung.
                 var soft = Materials.Flat("Hazmat Visor Soft", new Color(0.27f, 0.35f, 0.45f), 1f);
                 var bright = Materials.Flat("Hazmat Visor Shine", new Color(0.42f, 0.52f, 0.62f), 1f);
                 soft.SetFloat("_OverlayMax", 0f); bright.SetFloat("_OverlayMax", 0f);
-                var r1 = Shapes.Ball("Reflection Soft", visor.transform, new Vector3(0.24f, 0.13f, 0.02f), soft, new Vector3(-0.03f, 0.06f, 0.046f));
+                var r1 = Shapes.Ball("Reflection Soft", visor.transform, new Vector3(0.24f, 0.13f, 0.02f), soft, new Vector3(-0.03f, 0.06f, 0.04f));
                 r1.transform.localRotation = Quaternion.Euler(0f, 0f, 18f);
-                var r2 = Shapes.Ball("Reflection", visor.transform, new Vector3(0.12f, 0.05f, 0.02f), bright, new Vector3(-0.06f, 0.08f, 0.05f));
+                var r2 = Shapes.Ball("Reflection", visor.transform, new Vector3(0.12f, 0.05f, 0.02f), bright, new Vector3(-0.06f, 0.08f, 0.036f));
                 r2.transform.localRotation = Quaternion.Euler(0f, 0f, 22f);
+                // Warnzeichen hinten auf der Kapuze (Strahlungs-Kleeblatt in Schwarz)
+                var sign = new GameObject("Hazard Sign");
+                sign.transform.SetParent(hood.transform, false);
+                sign.transform.localPosition = Tuning.V3("hazmat.sign.pos", new Vector3(0f, 0.18f, -0.272f));
+                sign.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
+                Trefoil(sign.transform, Tuning.F("hazmat.sign.size", 0.1f), Materials.Black);
+
+                // Spielerfarbe: Anzug, Kapuze und Rand übernehmen die gewählte Farbe der Figur.
+                var tint = go.AddComponent<HazmatTint>();
+                tint.Outfit = outfit;
+                tint.Main = new List<Renderer>();
+                tint.Dark = new List<Renderer>();
+                foreach (var rr in go.GetComponentsInChildren<Renderer>(true))
+                {
+                    var sm = rr.sharedMaterial;
+                    if (sm == suit) tint.Main.Add(rr);
+                    else if (sm == seam) tint.Dark.Add(rr);
+                }
                 if (outfit != null) outfit.AttachToHeadBone = head;
             }
             if (outfit != null) outfit.Hats = new List<Renderer>();
             return go;
+        }
+
+        // Strahlungs-Warnzeichen: Punkt in der Mitte + drei 60°-Segmente.
+        private static void Trefoil(Transform parent, float radius, Material m)
+        {
+            ProcMesh.Create("Dot", parent, ProcMesh.Cylinder(radius * 0.17f, 0.006f, 16), m, Vector3.zero).transform.localRotation = Quaternion.Euler(-90f, 0f, 0f);
+            for (int i = 0; i < 3; i++)
+                ProcMesh.Create("Blade " + i, parent, Sector(radius * 0.28f, radius, 90f + i * 120f, 60f), m, Vector3.zero);
+        }
+
+        private static Mesh Sector(float inner, float outer, float centerDeg, float spanDeg, int steps = 10)
+        {
+            var verts = new List<Vector3>(); var tris = new List<int>();
+            for (int i = 0; i <= steps; i++)
+            {
+                float a = (centerDeg - spanDeg / 2f + spanDeg * i / steps) * Mathf.Deg2Rad;
+                verts.Add(new Vector3(Mathf.Cos(a) * inner, Mathf.Sin(a) * inner, 0f));
+                verts.Add(new Vector3(Mathf.Cos(a) * outer, Mathf.Sin(a) * outer, 0f));
+            }
+            for (int i = 0; i < steps; i++)
+            {
+                int b = i * 2;
+                // beidseitig
+                tris.AddRange(new[] { b, b + 1, b + 2, b + 1, b + 3, b + 2, b, b + 2, b + 1, b + 1, b + 2, b + 3 });
+            }
+            var mesh = new Mesh { name = "BreakingPlates Sector" };
+            mesh.SetVertices(verts); mesh.SetTriangles(tris, 0); mesh.RecalculateNormals(); mesh.RecalculateBounds();
+            return mesh;
         }
 
         private static void Hide(PlayerOutfitComponent outfit, SkinnedMeshRenderer r)
@@ -241,5 +288,38 @@ namespace BreakingPlates.Custom
         {
             (Locale.English, new CosmeticInfo { Name = "Gas Mask", Description = "Pairs well with a yellow suit." })
         };
+    }
+
+    // Färbt den Anzug in der Spielerfarbe (die das Spiel auf den Körper legt). Ohne Spieler (Vorschau) bleibt er gelb.
+    public class HazmatTint : MonoBehaviour
+    {
+        public PlayerOutfitComponent Outfit;
+        public List<Renderer> Main = new List<Renderer>(), Dark = new List<Renderer>();
+        private static readonly int Color0 = Shader.PropertyToID("_Color0");
+        private MaterialPropertyBlock _block;
+        private Color _last = new Color(-1f, 0f, 0f, 0f);
+
+        private void LateUpdate()
+        {
+            if (Tuning.F("hazmat.playercolour", 1f) < 0.5f) return;
+            var src = Outfit != null ? Outfit.Source : null;
+            if (src == null || src.sharedMaterial == null || !src.sharedMaterial.HasProperty(Color0)) return;
+            var c = src.sharedMaterial.GetColor(Color0);
+            if (c == _last) return;
+            _last = c;
+            _block ??= new MaterialPropertyBlock();
+            var main = new Color(c.r, c.g, c.b, 0f);
+            var dark = new Color(c.r * 0.82f, c.g * 0.82f, c.b * 0.82f, 0f);
+            foreach (var r in Main) Set(r, main);
+            foreach (var r in Dark) Set(r, dark);
+        }
+
+        private void Set(Renderer r, Color c)
+        {
+            if (r == null) return;
+            r.GetPropertyBlock(_block);
+            _block.SetColor(Color0, c);
+            r.SetPropertyBlock(_block);
+        }
     }
 }
