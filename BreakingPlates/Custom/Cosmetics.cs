@@ -95,8 +95,14 @@ namespace BreakingPlates.Custom
                 Shapes.Ball("Seal", hood.transform, new Vector3(0.4f, 0.06f, 0.38f), suit, new Vector3(0f, -0.06f, 0f)); // schmaler als die Verjüngung: keine seitlichen Spitzen
                 var visor = new GameObject("Visor");
                 visor.transform.SetParent(hood.transform, false);
-                visor.transform.localPosition = Tuning.V3("visor.pos", new Vector3(0f, 0.15f, 0.25f));
-                visor.transform.localRotation = Quaternion.Euler(Tuning.F("visor.tilt", 5f), 0f, 0f); // oben leicht nach hinten: aus der Draufsicht steht nichts über
+                // Lage live mit F8 einstellbar: visor.pos und visor.rot (x = Kippung, oben nach hinten positiv; y = Drehung; z = Neigung zur Seite).
+                void ApplyVisor(GameObject t)
+                {
+                    t.transform.localPosition = Tuning.V3("visor.pos", new Vector3(0f, 0.15f, 0.25f));
+                    t.transform.localRotation = Quaternion.Euler(Tuning.V3("visor.rot", new Vector3(5f, 5f, 20f)));
+                }
+                ApplyVisor(visor);
+                Tuning.Register(visor, "visor", ApplyVisor);
                 // Visier tief in die Kapuze gedrückt: große, flache Ellipsoide, die aus der Rundung herauswachsen statt wie ein Teller aufzuliegen.
                 Shapes.Ball("Rim", visor.transform, new Vector3(0.39f, 0.33f, 0.2f), seam, new Vector3(0f, 0f, -0.058f)); // schmaler Rahmen, mehr Glas
                 Shapes.Ball("Glass", visor.transform, new Vector3(0.36f, 0.3f, 0.2f), glass, new Vector3(0f, 0f, -0.042f));
