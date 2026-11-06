@@ -38,3 +38,45 @@ namespace BreakingPlates.Custom
         }
     }
 }
+
+namespace BreakingPlates.Custom
+{
+    // Reine Ware zuerst an den Gast, der rein bestellt hat: Hat am selben Tisch noch jemand eine offene
+    // 99,1 %-Bestellung, die genau passt, nimmt der Gast mit der normalen Bestellung die reine Ware nicht.
+    [HarmonyPatch(typeof(OrderingHelpers), nameof(OrderingHelpers.IsRequestSatisfied),
+        new[] { typeof(EntityContext), typeof(Unity.Entities.Entity), typeof(Unity.Entities.Entity), typeof(int) },
+        new[] { ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Out })]
+    public static class PureGoesToPureFirst
+    {
+        private static int Id<T>() where T : KitchenLib.Customs.CustomGameDataObject
+            => GDOUtils.GetCustomGameDataObject<T>()?.GameDataObject?.ID ?? 0;
+
+        public static void Postfix(EntityContext ctx, Unity.Entities.Entity request, Unity.Entities.Entity candidate, ref bool __result)
+        {
+            if (!__result) return;
+            try
+            {
+                var cand = ctx.GetOrDefault<CItem>(candidate);
+                var req = ctx.GetOrDefault<CItem>(request);
+                bool pureCand = cand.ID == Id<PureShardsPot>() || cand.ID == Id<PureCandyBag>();
+                if (!pureCand || req.ID == cand.ID) return; // nur wenn reine Ware gerade eine normale Bestellung erfüllen würde
+
+                var group = ctx.GetOrDefault<CRequestItemOf>(request).Group;
+                var em = Unity.Entities.World.DefaultGameObjectInjectionWorld.EntityManager;
+                if (group == default || !em.HasComponent<CWaitingForItem>(group)) return;
+                var split = ctx.GetOrDefault<CSplittableItem>(candidate);
+                foreach (var w in ctx.GetBuffer<CWaitingForItem>(group))
+                {
+                    if (w.Satisfied || w.Item == request || w.ItemID != cand.ID) continue;
+                    // Passt die reine Bestellung exakt? (gleiches Item, gleiche Zutaten)
+                    if (OrderingHelpers.IsRequestSatisfied(ctx.GetOrDefault<CItem>(w.Item), cand, out _, split))
+                    {
+                        __result = false;
+                        return;
+                    }
+                }
+            }
+            catch { }
+        }
+    }
+}
