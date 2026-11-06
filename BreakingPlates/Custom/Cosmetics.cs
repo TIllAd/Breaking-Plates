@@ -96,7 +96,7 @@ namespace BreakingPlates.Custom
                 var visor = new GameObject("Visor");
                 visor.transform.SetParent(hood.transform, false);
                 visor.transform.localPosition = Tuning.V3("visor.pos", new Vector3(0f, 0.15f, 0.25f));
-                visor.transform.localRotation = Quaternion.Euler(-6f, 0f, 0f);
+                visor.transform.localRotation = Quaternion.Euler(Tuning.F("visor.tilt", 5f), 0f, 0f); // oben leicht nach hinten: aus der Draufsicht steht nichts über
                 // Visier tief in die Kapuze gedrückt: große, flache Ellipsoide, die aus der Rundung herauswachsen statt wie ein Teller aufzuliegen.
                 Shapes.Ball("Rim", visor.transform, new Vector3(0.39f, 0.33f, 0.2f), seam, new Vector3(0f, 0f, -0.058f)); // schmaler Rahmen, mehr Glas
                 Shapes.Ball("Glass", visor.transform, new Vector3(0.36f, 0.3f, 0.2f), glass, new Vector3(0f, 0f, -0.042f));
@@ -109,16 +109,19 @@ namespace BreakingPlates.Custom
                 r1.transform.localRotation = Quaternion.Euler(0f, 0f, 18f);
                 var r2 = Shapes.Ball("Reflection", visor.transform, new Vector3(0.12f, 0.05f, 0.02f), bright, new Vector3(-0.06f, 0.08f, 0.036f));
                 r2.transform.localRotation = Quaternion.Euler(0f, 0f, 22f);
-                // Warnzeichen hinten auf der Kapuze (Strahlungs-Kleeblatt in Schwarz)
-                var sign = new GameObject("Hazard Sign");
-                sign.transform.SetParent(hood.transform, false);
-                sign.transform.localPosition = Tuning.V3("hazmat.sign.pos", new Vector3(0f, 0.18f, -0.272f));
-                sign.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
-                Trefoil(sign.transform, Tuning.F("hazmat.sign.size", 0.1f), Materials.Black);
-
+                // Warnschild auf dem Rücken: gelbes Dreieck mit schwarzem Rand und Strahlungs-Kleeblatt.
+                // Wird zur Laufzeit an den oberen Rücken-Knochen gehängt (das Spiel bietet nur den Kopf an).
+                var back = new GameObject("BP Back Sign");
+                back.transform.SetParent(go.transform, false);
+                var signRoot = new GameObject("Sign");
+                signRoot.transform.SetParent(back.transform, false);
+                WarningSign(signRoot.transform, Tuning.F("hazmat.back.size", 0.2f));
+                back.SetActive(false);
+                if (Tuning.F("hazmat.back.preview", 0f) > 0.5f) { back.SetActive(true); back.transform.localPosition = Tuning.V3("hazmat.back.previewpos", new Vector3(0.45f, 1.0f, 0.2f)); back.transform.localRotation = Quaternion.Euler(Tuning.V3("hazmat.back.previewrot", new Vector3(-90f, 0f, 0f))); }
                 // Spielerfarbe: Anzug, Kapuze und Rand übernehmen die gewählte Farbe der Figur.
                 var tint = go.AddComponent<HazmatTint>();
                 tint.Outfit = outfit;
+                tint.BackSign = back;
                 tint.Main = new List<Renderer>();
                 tint.Dark = new List<Renderer>();
                 foreach (var rr in go.GetComponentsInChildren<Renderer>(true))
@@ -133,7 +136,30 @@ namespace BreakingPlates.Custom
             return go;
         }
 
+        // Warnschild wie im echten Leben: schwarzes Dreieck (Rand), gelbes Dreieck, schwarzes Kleeblatt.
+        private static void WarningSign(Transform parent, float size)
+        {
+            var yellow = Materials.Flat("Hazard Sign Yellow", new Color(1f, 0.82f, 0.1f), 0.2f);
+            yellow.SetFloat("_OverlayMax", 0f);
+            ProcMesh.Create("Outline", parent, Triangle(size), Materials.Black, Vector3.zero);
+            ProcMesh.Create("Fill", parent, Triangle(size * 0.8f), yellow, new Vector3(0f, -size * 0.02f, -0.004f));
+            var t = new GameObject("Trefoil");
+            t.transform.SetParent(parent, false);
+            t.transform.localPosition = new Vector3(0f, -size * 0.08f, -0.008f);
+            Trefoil(t, size * 0.3f, Materials.Black);
+        }
+
+        private static Mesh Triangle(float size)
+        {
+            float h = size * 0.866f;
+            var verts = new List<Vector3> { new Vector3(-size / 2f, -h / 3f, 0f), new Vector3(size / 2f, -h / 3f, 0f), new Vector3(0f, 2f * h / 3f, 0f) };
+            var mesh = new Mesh { name = "BreakingPlates Triangle" };
+            mesh.SetVertices(verts); mesh.SetTriangles(new List<int> { 0, 2, 1, 0, 1, 2 }, 0); mesh.RecalculateNormals(); mesh.RecalculateBounds();
+            return mesh;
+        }
+
         // Strahlungs-Warnzeichen: Punkt in der Mitte + drei 60°-Segmente.
+        private static void Trefoil(GameObject parentGo, float radius, Material m) => Trefoil(parentGo.transform, radius, m);
         private static void Trefoil(Transform parent, float radius, Material m)
         {
             ProcMesh.Create("Dot", parent, ProcMesh.Cylinder(radius * 0.17f, 0.006f, 16), m, Vector3.zero).transform.localRotation = Quaternion.Euler(-90f, 0f, 0f);
@@ -294,13 +320,32 @@ namespace BreakingPlates.Custom
     public class HazmatTint : MonoBehaviour
     {
         public PlayerOutfitComponent Outfit;
+        public GameObject BackSign;
+        private bool _attached;
         public List<Renderer> Main = new List<Renderer>(), Dark = new List<Renderer>();
         private static readonly int Color0 = Shader.PropertyToID("_Color0");
         private MaterialPropertyBlock _block;
+        private void OnDestroy() { if (BackSign != null && _attached) Destroy(BackSign); }
         private Color _last = new Color(-1f, 0f, 0f, 0f);
 
         private void LateUpdate()
         {
+            if (!_attached && BackSign != null && Outfit != null && Outfit.Source != null && Outfit.Source.bones != null)
+            {
+                foreach (var b in Outfit.Source.bones)
+                {
+                    if (b == null || b.name != "UpperSpine") continue;
+                    BackSign.transform.SetParent(b, false);
+                    BackSign.SetActive(true);
+                    _attached = true;
+                    break;
+                }
+            }
+            if (_attached && BackSign != null)
+            {
+                BackSign.transform.localPosition = Tuning.V3("hazmat.back.pos", new Vector3(0f, 0.05f, -0.27f));
+                BackSign.transform.localRotation = Quaternion.Euler(Tuning.V3("hazmat.back.rot", new Vector3(0f, 180f, 0f)));
+            }
             if (Tuning.F("hazmat.playercolour", 1f) < 0.5f) return;
             var src = Outfit != null ? Outfit.Source : null;
             if (src == null || src.sharedMaterial == null || !src.sharedMaterial.HasProperty(Color0)) return;
