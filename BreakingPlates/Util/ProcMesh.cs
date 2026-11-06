@@ -124,7 +124,7 @@ namespace BreakingPlates
         // Einfacher Quader (für Druckverschluss-Streifen u.ä.).
         public static Mesh Box(Vector3 size)
         {
-            string key = $"box{size}";
+            string key = $"box{size.x:0.#####}_{size.y:0.#####}_{size.z:0.#####}";
             if (Cache.TryGetValue(key, out var cached)) return cached;
             var tmp = GameObject.CreatePrimitive(PrimitiveType.Cube);
             var mesh = Object.Instantiate(tmp.GetComponent<MeshFilter>().sharedMesh);
