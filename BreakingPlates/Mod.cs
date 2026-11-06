@@ -126,7 +126,6 @@ namespace BreakingPlates
             AddGameDataObject<GaleNotebook>();
             AddGameDataObject<TheFly>();
             AddGameDataObject<SaulPoster>();
-            AddGameDataObject<SaulPosterText>();
             // AddGameDataObject<HazmatSuit>(); // Kostüme vorerst raus (macht Till später selbst)
             // AddGameDataObject<HeisenbergHat>(); // Kostüme vorerst raus (macht Till später selbst)
             // AddGameDataObject<GasMask>(); // Kostüme vorerst raus (macht Till später selbst)

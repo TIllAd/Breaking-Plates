@@ -146,23 +146,53 @@ namespace BreakingPlates.Custom
             var velvet = Materials.Solid("Velvet", new Color(0.12f, 0.2f, 0.35f));
             Box(root, "Stand", new Vector3(0.6f, 0.5f, 0.4f), new Vector3(0f, 0.25f, 0f), wood);
             Box(root, "Velvet", new Vector3(0.56f, 0.02f, 0.36f), new Vector3(0f, 0.51f, 0f), velvet);
-            // Steine
+            // Steine: drei Stücke auf kleinen Sockeln, jedes mit eigener Struktur
             var pyrite = Materials.Flat("Pyrite", new Color(0.85f, 0.72f, 0.3f), 0.9f);
-            var geodeOut = Materials.Solid("Geode Rock", new Color(0.5f, 0.47f, 0.43f));
-            var geodeIn = Materials.Flat("Geode Inside", new Color(0.55f, 0.85f, 0.85f), 0.9f);
+            var pyriteDark = Materials.Flat("Pyrite Dark", new Color(0.62f, 0.5f, 0.2f), 0.6f);
+            var geodeOut = Materials.Solid("Geode Rock", new Color(0.55f, 0.5f, 0.45f));
+            var geodeIn = Materials.Flat("Geode Inside", new Color(0.5f, 0.82f, 0.85f), 0.9f);
             var quartz = Materials.Flat("Quartz", new Color(0.95f, 0.95f, 0.97f), 0.9f);
-            var malachite = Materials.Solid("Malachite", new Color(0.1f, 0.55f, 0.35f));
-            for (int i = 0; i < 4; i++)
+            var rock = Materials.Solid("Matrix Rock", new Color(0.45f, 0.42f, 0.4f));
+            var plinth = Materials.Solid("Plinth", new Color(0.2f, 0.2f, 0.22f));
+            float[] xs = { -0.19f, 0f, 0.19f };
+            foreach (var x in xs) Box(root, "Plinth", new Vector3(0.12f, 0.03f, 0.12f), new Vector3(x, 0.535f, 0.03f), plinth);
+            // 1) Pyrit: ineinander gewachsene Würfel mit Streifen
+            var py = new GameObject("Pyrite Cluster");
+            py.transform.SetParent(root, false);
+            py.transform.localPosition = new Vector3(xs[0], 0.55f, 0.03f);
+            float[][] cubes = { new[] { 0f, 0.03f, 0f, 0.06f }, new[] { 0.03f, 0.022f, 0.02f, 0.045f }, new[] { -0.03f, 0.02f, -0.015f, 0.04f }, new[] { 0.005f, 0.065f, 0.01f, 0.035f }, new[] { -0.02f, 0.05f, 0.025f, 0.03f } };
+            for (int i = 0; i < cubes.Length; i++)
             {
-                var c = ProcMesh.Create("Pyrite", root, ProcMesh.Box(Vector3.one * (0.05f - i * 0.006f)), pyrite, new Vector3(-0.2f + i * 0.025f, 0.54f + (i % 2) * 0.02f, 0.03f - i * 0.02f));
-                c.transform.localRotation = Quaternion.Euler(i * 17f, i * 33f, i * 9f);
+                var c = cubes[i];
+                var cube = ProcMesh.Create("Cube", py.transform, ProcMesh.Box(Vector3.one * c[3]), pyrite, new Vector3(c[0], c[1], c[2]));
+                cube.transform.localRotation = Quaternion.Euler(0f, i * 23f, i % 2 == 0 ? 0f : 8f);
+                ProcMesh.Create("Striation", cube.transform, ProcMesh.Box(new Vector3(c[3] * 1.01f, c[3] * 0.12f, c[3] * 1.01f)), pyriteDark, Vector3.zero);
             }
-            var g = Shapes.Ball("Geode", root, new Vector3(0.14f, 0.1f, 0.14f), geodeOut, new Vector3(-0.02f, 0.56f, 0f));
-            var gi = Shapes.Ball("Geode Inside", root, new Vector3(0.11f, 0.02f, 0.11f), geodeIn, new Vector3(-0.02f, 0.6f, -0.005f));
-            for (int i = 0; i < 3; i++)
-                Visuals.Crystal(root, "Quartz " + i, new Vector3(0.13f + i * 0.035f, 0.53f, -0.02f + (i % 2) * 0.05f), 0.5f, i * 40f);
-            foreach (Transform t in root) if (t.name.StartsWith("Quartz")) Materials.Apply(t.gameObject, quartz);
-            Shapes.Ball("Malachite", root, new Vector3(0.08f, 0.05f, 0.07f), malachite, new Vector3(0.12f, 0.545f, 0.1f));
+            // 2) Aufgeschnittene Geode: Schale, helles Inneres, Kranz aus kleinen Kristallspitzen
+            var ge = new GameObject("Geode");
+            ge.transform.SetParent(root, false);
+            ge.transform.localPosition = new Vector3(xs[1], 0.55f, 0.03f);
+            Shapes.Ball("Shell", ge.transform, new Vector3(0.13f, 0.08f, 0.13f), geodeOut, new Vector3(0f, 0.04f, 0f));
+            Shapes.Ball("Inside", ge.transform, new Vector3(0.105f, 0.012f, 0.105f), geodeIn, new Vector3(0f, 0.08f, 0f));
+            for (int i = 0; i < 10; i++)
+            {
+                float a = i * 36f * Mathf.Deg2Rad;
+                var tip = ProcMesh.Create("Tip", ge.transform, ProcMesh.Lathe(Shapes.BellProfile, 6), quartz, new Vector3(Mathf.Cos(a) * 0.035f, 0.075f, Mathf.Sin(a) * 0.035f));
+                tip.transform.localScale = new Vector3(0.012f, 0.025f, 0.012f);
+            }
+            // 3) Quarz-Stufe: Gesteinsbrocken mit mehreren sechseckigen Spitzen in verschiedenen Größen
+            var qz = new GameObject("Quartz Cluster");
+            qz.transform.SetParent(root, false);
+            qz.transform.localPosition = new Vector3(xs[2], 0.55f, 0.03f);
+            Shapes.Ball("Matrix", qz.transform, new Vector3(0.11f, 0.04f, 0.09f), rock, new Vector3(0f, 0.02f, 0f));
+            var prism = new[] { new Vector2(0f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0.7f), new Vector2(0f, 1f) };
+            float[][] spikes = { new[] { 0f, 0f, 0.1f, 0f, 0f }, new[] { 0.025f, 0.01f, 0.07f, 15f, -10f }, new[] { -0.025f, -0.01f, 0.08f, -18f, 8f }, new[] { 0.01f, -0.025f, 0.055f, 10f, 20f }, new[] { -0.015f, 0.025f, 0.05f, -12f, -18f } };
+            foreach (var sp in spikes)
+            {
+                var t = ProcMesh.Create("Spike", qz.transform, ProcMesh.Lathe(prism, 6), quartz, new Vector3(sp[0], 0.03f, sp[1]));
+                t.transform.localScale = new Vector3(0.025f, sp[2], 0.025f);
+                t.transform.localRotation = Quaternion.Euler(sp[3], 0f, sp[4]);
+            }
             // Glashaube
             Box(root, "Glass", new Vector3(0.58f, 0.24f, 0.38f), new Vector3(0f, 0.64f, 0f), Materials.Glass);
             // Kleines Messingschild vorne
@@ -217,8 +247,8 @@ namespace BreakingPlates.Custom
             b.transform.localPosition = pos;
             ProcMesh.Create("Paper", b.transform, ProcMesh.Box(new Vector3(w, h - 0.006f, d)), edge, Vector3.zero);
             ProcMesh.Create("Top", b.transform, ProcMesh.Box(new Vector3(w - 0.008f, 0.004f, d - 0.008f)), note, new Vector3(0f, (h - 0.006f) / 2f, 0f));
-            ProcMesh.Create("Print", b.transform, ProcMesh.Box(new Vector3(0.05f, 0.005f, 0.05f)), print, new Vector3(-0.045f, (h - 0.006f) / 2f, 0f));
-            ProcMesh.Create("Band", b.transform, ProcMesh.Box(new Vector3(0.035f, h - 0.002f, d + 0.004f)), band, new Vector3(0.03f, 0f, 0f));
+            ProcMesh.Create("Print", b.transform, ProcMesh.Box(new Vector3(0.05f, 0.004f, 0.05f)), print, new Vector3(-0.045f, (h - 0.006f) / 2f + 0.002f, 0f));
+            ProcMesh.Create("Band", b.transform, ProcMesh.Box(new Vector3(0.035f, h + 0.004f, d + 0.006f)), band, new Vector3(0.03f, 0f, 0f));
             return b;
         }
     }
@@ -303,7 +333,7 @@ namespace BreakingPlates.Custom
                 for (int l = 0; l < 6; l++)
                     ProcMesh.Create("Line", nb.transform, ProcMesh.Box(new Vector3(0.12f - (l % 3) * 0.02f, 0.002f, 0.007f)), Materials.DarkGrey, new Vector3(0.087f * sd - (l % 3) * 0.01f, 0.021f, 0.08f - l * 0.03f));
             }
-            var ww = Text(nb.transform, "WW", "W.W.", new Vector3(-0.09f, 0.022f, -0.08f), 0.32f, new Color(0.15f, 0.25f, 0.6f));
+            var ww = Text(nb.transform, "WW", "To W.W.", new Vector3(-0.087f, 0.022f, -0.08f), 0.26f, new Color(0.15f, 0.25f, 0.6f));
             ww.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
         }
     }
@@ -318,7 +348,7 @@ namespace BreakingPlates.Custom
         protected override int[] VanillaIDs => new[] { ApplianceReferences.FancyPainting, ApplianceReferences.Painting, ApplianceReferences.FriendsPoster, ApplianceReferences.BunnyPoster, ApplianceReferences.AffordableNeonSign1 };
         protected override string Title => "The Fly";
         protected override string Desc => "It's a contaminant.";
-        protected override Vector3 DefaultPos => new Vector3(0f, 0.75f, 0.45f);
+        protected override Vector3 DefaultPos => new Vector3(0f, 0.75f, 0.36f);
 
         protected override void Build(Transform root)
         {
@@ -389,7 +419,7 @@ namespace BreakingPlates.Custom
         protected override DecorationType Theme => DecorationType.Affordable;
         protected override int[] VanillaIDs => new[] { ApplianceReferences.FancyPainting, ApplianceReferences.Painting, ApplianceReferences.FriendsPoster, ApplianceReferences.BunnyPoster, ApplianceReferences.AffordableNeonSign1 };
         protected override string Desc => "Did you know that you have rights?";
-        protected override Vector3 DefaultPos => new Vector3(0f, 0.75f, 0.45f);
+        protected override Vector3 DefaultPos => new Vector3(0f, 0.75f, 0.36f);
         protected abstract bool Silhouette { get; }
 
         protected override void Build(Transform root)
@@ -423,12 +453,7 @@ namespace BreakingPlates.Custom
     {
         public override string UniqueNameID => "Saul Poster";
         protected override string Title => "Better Call Saul!";
-        protected override bool Silhouette => true;
-    }
-    public class SaulPosterText : SaulPosterBase
-    {
-        public override string UniqueNameID => "Saul Poster Text";
-        protected override string Title => "Better Call Saul! (Text)";
+        // Till: ohne Figur gefällt besser.
         protected override bool Silhouette => false;
     }
 }

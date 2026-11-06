@@ -339,10 +339,7 @@ namespace BreakingPlates.Custom
         public override ItemStorage ItemStorageFlags => ItemStorage.StackableFood;
         public override ItemValue ItemValue => ItemValue.Large;
         public override string ColourBlindTag => "99";
-        public override List<Item.ItemProcess> Processes => new List<Item.ItemProcess>
-        {
-            new Item.ItemProcess { Process = G.P(ProcessReferences.Chop), Duration = 1f, Result = G.I<BlueRockCandy>() }
-        };
+        // Kein Zurück-Schneiden zu normal mehr: rein erfüllt normale Bestellungen ohnehin (PureSatisfiesNormal).
 
         private GameObject _prefab;
         public override GameObject Prefab => _prefab ??= Make();
