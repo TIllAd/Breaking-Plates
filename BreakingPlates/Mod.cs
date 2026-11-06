@@ -65,6 +65,11 @@ namespace BreakingPlates
             AddGameDataObject<Stevia>();
             AddGameDataObject<SchraderTap>();
             AddGameDataObject<Schraderbraeu>();
+            AddGameDataObject<FunionsRack>();
+            AddGameDataObject<Funions>();
+            AddGameDataObject<BaconProvider>();
+            AddGameDataObject<BirthdayBacon>();
+            AddGameDataObject<RawBacon>();
             AddGameDataObject<BagProvider>();
             AddGameDataObject<EmptyBag>();
 
@@ -106,6 +111,8 @@ namespace BreakingPlates
             AddGameDataObject<PlatterDish>();
             // AddGameDataObject<BigFlaskDish>(); // großer Kolben vorerst raus (verwirrte eher)
             AddGameDataObject<SchraderDish>();
+            AddGameDataObject<FunionsDish>();
+            AddGameDataObject<BaconDish>();
             // AddGameDataObject<PizzaRoofDish>(); // Pizza vorerst raus (später evtl.)
             AddGameDataObject<BreakingEvenCard>();
 
@@ -113,6 +120,16 @@ namespace BreakingPlates
             AddGameDataObject<PeriodicPoster>();
             AddGameDataObject<YellowBarrels>();
             AddGameDataObject<LosPollitosSign>();
+            // Pilot 06.11.
+            AddGameDataObject<PinkTeddy>();
+            AddGameDataObject<LilyOfTheValley>();
+            AddGameDataObject<HankMinerals>();
+            AddGameDataObject<MoneyStack>();
+            AddGameDataObject<MariePurple>();
+            AddGameDataObject<GaleNotebook>();
+            AddGameDataObject<TheFly>();
+            AddGameDataObject<SaulPoster>();
+            AddGameDataObject<SaulPosterText>();
             // AddGameDataObject<HazmatSuit>(); // Kostüme vorerst raus (macht Till später selbst)
             // AddGameDataObject<HeisenbergHat>(); // Kostüme vorerst raus (macht Till später selbst)
             // AddGameDataObject<GasMask>(); // Kostüme vorerst raus (macht Till später selbst)
