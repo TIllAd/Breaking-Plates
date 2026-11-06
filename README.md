@@ -3,7 +3,7 @@
 A *Breaking Bad* parody mod for [PlateUp!](https://store.steampowered.com/app/1599600/PlateUp/):
 cook **Blue Rock Candy** in lab flasks, smash it up and serve it in little bags. It's just sugar. Probably.
 
-> Status: **v1.0.0** – first release.
+> Status: **v1.0.0** – initial release.
 
 ![Everything the mod adds – appliances, decorations and the whole cooking chain](docs/overview.png)
 
