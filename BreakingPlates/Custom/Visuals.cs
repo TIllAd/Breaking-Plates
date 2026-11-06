@@ -267,7 +267,7 @@ namespace BreakingPlates.Custom
             return root;
         }
 
-        // Großer Kolben fürs Superlab.
+        // Großer Kolben (vorerst ungenutzt).
         public const float BigFlaskScale = 1.35f;
 
         // Ein einzelner großer, besonders klarer Kristall (99 % Reinheit).

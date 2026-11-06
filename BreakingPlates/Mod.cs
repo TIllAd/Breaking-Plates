@@ -51,14 +51,14 @@ namespace BreakingPlates
             // Reihenfolge: Ergebnisse vor den Dingen, die auf sie verweisen.
             // Laborbedarf
             // AddGameDataObject<CrystalPurifier>(); // ersetzt durch Umkristallisieren
-            AddGameDataObject<LabReactor>();
+            AddGameDataObject<Superlab>();
             // AddGameDataObject<GlassReactor>(); // Vergleichsvariante, Ofen-Reactor gewählt
             AddGameDataObject<ReactProcess>();
             AddGameDataObject<ReactCoolProcess>();
             AddGameDataObject<FlaskProvider>();
             AddGameDataObject<LabFlask>();
-            // AddGameDataObject<BigFlaskProvider>(); // Superlab vorerst raus (verwirrte eher)
-            // AddGameDataObject<BigLabFlask>(); // Superlab vorerst raus (verwirrte eher)
+            // AddGameDataObject<BigFlaskProvider>(); // großer Kolben vorerst raus (verwirrte eher)
+            // AddGameDataObject<BigLabFlask>(); // großer Kolben vorerst raus (verwirrte eher)
             AddGameDataObject<StickProvider>();
             AddGameDataObject<CandyStick>();
             AddGameDataObject<SteviaProvider>();
@@ -86,10 +86,10 @@ namespace BreakingPlates
             AddGameDataObject<RecrystallisePot>();
             AddGameDataObject<SyrupPot>();
             AddGameDataObject<SugarPot>();
-            // AddGameDataObject<BigShardsPot>(); // Superlab vorerst raus (verwirrte eher)
-            // AddGameDataObject<BigCrystalPot>(); // Superlab vorerst raus (verwirrte eher)
-            // AddGameDataObject<BigSyrupPot>(); // Superlab vorerst raus (verwirrte eher)
-            // AddGameDataObject<BigSugarPot>(); // Superlab vorerst raus (verwirrte eher)
+            // AddGameDataObject<BigShardsPot>(); // großer Kolben vorerst raus (verwirrte eher)
+            // AddGameDataObject<BigCrystalPot>(); // großer Kolben vorerst raus (verwirrte eher)
+            // AddGameDataObject<BigSyrupPot>(); // großer Kolben vorerst raus (verwirrte eher)
+            // AddGameDataObject<BigSugarPot>(); // großer Kolben vorerst raus (verwirrte eher)
             AddGameDataObject<SteviaShardsPot>();
             AddGameDataObject<SteviaCrystalPot>();
             AddGameDataObject<SteviaSyrupPot>();
@@ -104,7 +104,7 @@ namespace BreakingPlates
             AddGameDataObject<SugarFreeDish>();
             AddGameDataObject<LolliDish>();
             AddGameDataObject<PlatterDish>();
-            // AddGameDataObject<SuperlabDish>(); // Superlab vorerst raus (verwirrte eher)
+            // AddGameDataObject<BigFlaskDish>(); // großer Kolben vorerst raus (verwirrte eher)
             AddGameDataObject<SchraderDish>();
             // AddGameDataObject<PizzaRoofDish>(); // Pizza vorerst raus (später evtl.)
             AddGameDataObject<BreakingEvenCard>();

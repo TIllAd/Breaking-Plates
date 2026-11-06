@@ -38,6 +38,8 @@ namespace BreakingPlates.Custom
         protected virtual void Decorate(GameObject bag) { }
 
         public override ItemStorage ItemStorageFlags => ItemStorage.None;
+        // Beilagen (z.B. Pommes) lassen sich mit ins Tütchen-Gericht legen, wie beim Teller.
+        public override bool CanContainSide => true;
         public override ItemValue ItemValue => ItemValue.Medium;
 
         public override List<ItemGroup.ItemSet> Sets => new List<ItemGroup.ItemSet>
@@ -69,6 +71,10 @@ namespace BreakingPlates.Custom
                 if (_prefab == null)
                 {
                     _prefab = PrefabUtil.CreateRoot(PrefabName);
+                    // Platz für eine Beilage neben dem Tütchen (wie beim Teller).
+                    var side = new GameObject("Side Container");
+                    side.transform.SetParent(_prefab.transform, false);
+                    side.transform.localPosition = new Vector3(0.28f, 0f, 0f);
                     // "Candy Slot" wird nur eingeblendet, wenn Candy im Tütchen ist: Inhalt + Varianten-Aufkleber.
                     // (Sonst zeigte z.B. leeres Tütchen + Chili schon das Stevia-Blatt.)
                     _slot = new GameObject("Candy Slot");

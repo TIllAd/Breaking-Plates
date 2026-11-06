@@ -136,7 +136,7 @@ namespace BreakingPlates.Custom
         }
     }
 
-    // --- Großer Kolben (Superlab) ---
+    // --- Großer Kolben ---
     public class BigLabFlask : CustomItem
     {
         public override string UniqueNameID => "Lab Flask - Big";
@@ -152,7 +152,7 @@ namespace BreakingPlates.Custom
     {
         public override string UniqueNameID => "Big Lab Flask Provider";
         protected override Item Provided => (Item)GDOUtils.GetCustomGameDataObject<BigLabFlask>().GameDataObject;
-        protected override string Title => "Superlab Flasks";
+        protected override string Title => "Big Flasks";
         protected override string Desc => "Bigger batches, longer cooks. Only 2.";
         protected override int Limit => 2;
         protected override void Decorate(Transform top) => Flask(top, "Flask", Vector3.zero, 0.9f);

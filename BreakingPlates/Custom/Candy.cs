@@ -11,7 +11,7 @@ namespace BreakingPlates.Custom
 {
     // Ablauf: Kolben + Zucker + Wasser -> kochen -> blauer Sirup -> abkühlen (Freezer schneller) -> Kristalle
     // -> mit der Hand zerschlagen (Kneten) -> Portionen. Lässt man die Kristalle noch länger abkühlen, werden sie rein (99,1 %).
-    // Varianten: Superlab (großer Kolben, 10 Portionen), Stevia (Sugar-Free), Stiel (Lollis).
+    // Varianten: großer Kolben (, 10 Portionen), Stevia (Sugar-Free), Stiel (Lollis).
 
     internal static class G
     {
@@ -356,7 +356,7 @@ namespace BreakingPlates.Custom
         }
     }
 
-    // ---------- Superlab (großer Kolben, 10 Portionen) ----------
+    // ---------- Großer Kolben (10 Portionen) ----------
 
     public class BigSugarPot : RawBatchBase
     {

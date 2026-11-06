@@ -208,18 +208,18 @@ namespace BreakingPlates.Custom
         protected override string RecipeText => "Serve a full flask of smashed candy (all 5 portions) to the table. Works for every variant you have (99.1%, sugar-free). The group shares it and leaves the empty flask behind.";
     }
 
-    // Superlab: großer Kolben, 10 Portionen, längere Kochzeit, mehr Bestellungen.
-    public class SuperlabDish : CandyCardBase
+    // Großer Kolben, 10 Portionen, längere Kochzeit, mehr Bestellungen.
+    public class BigFlaskDish : CandyCardBase
     {
-        public override string UniqueNameID => "Superlab Dish";
+        public override string UniqueNameID => "Big Flask Dish";
         public override DishType Type => DishType.Main;
         public override int Difficulty => 2;
         public override DishCustomerChange CustomerMultiplier => DishCustomerChange.SmallIncrease;
         public override HashSet<Item> MinimumIngredients => new HashSet<Item> { G.I<BigLabFlask>() };
         public override List<Dish.MenuItem> ResultingMenuItems => new List<Dish.MenuItem> { Menu(G.I<CandyBag>(), 0.5f) };
         private GameObject _icon;
-        public override GameObject IconPrefab => _icon ??= Icon("Superlab - Icon", t => Flask(t, "Flask", Vector3.zero, BigFlaskScale, Materials.BlueSyrup));
-        protected override string CardName => "Superlab";
+        public override GameObject IconPrefab => _icon ??= Icon("Big Flask - Icon", t => Flask(t, "Flask", Vector3.zero, BigFlaskScale, Materials.BlueSyrup));
+        protected override string CardName => "Big Flask";
         protected override string CardDescription => "Big flasks: 10 portions per batch, but they cook and cool longer. More customers.";
         protected override string Quote => "I'm in the empire business.";
         protected override string RecipeText => "Use the big lab flask with sugar and water. It takes longer to cook and cool, but gives 10 portions.";

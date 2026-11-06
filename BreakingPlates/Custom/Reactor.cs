@@ -9,11 +9,11 @@ namespace BreakingPlates.Custom
 {
     // Reactor: kocht UND kühlt automatisch (Kolben rein -> Kristalle raus). Eigenes Gerät, kein Upgrade,
     // eigener Prozess, damit er nur Kolben verarbeitet. Zum Vergleich gibt es gerade zwei Optiken:
-    // A = umgebauter Ofen (Lab Reactor), B = Glas-Reaktor auf Arbeitsfläche (Glass Reactor).
+    // A = umgebauter Ofen (Superlab), B = Glas-Reaktor auf Arbeitsfläche (Glass Reactor).
     public class ReactProcess : CustomProcess
     {
         public override string UniqueNameID => "React";
-        public override GameDataObject BasicEnablingAppliance => GDOUtils.GetCustomGameDataObject<LabReactor>().GameDataObject;
+        public override GameDataObject BasicEnablingAppliance => GDOUtils.GetCustomGameDataObject<Superlab>().GameDataObject;
         public override bool CanObfuscateProgress => true;
         public override List<(Locale, ProcessInfo)> InfoList => new List<(Locale, ProcessInfo)>
         {
@@ -29,7 +29,7 @@ namespace BreakingPlates.Custom
     public class ReactCoolProcess : CustomProcess
     {
         public override string UniqueNameID => "React Cool";
-        public override GameDataObject BasicEnablingAppliance => GDOUtils.GetCustomGameDataObject<LabReactor>().GameDataObject;
+        public override GameDataObject BasicEnablingAppliance => GDOUtils.GetCustomGameDataObject<Superlab>().GameDataObject;
         public override bool CanObfuscateProgress => true;
         public override List<(Locale, ProcessInfo)> InfoList => new List<(Locale, ProcessInfo)>
         {
@@ -100,9 +100,9 @@ namespace BreakingPlates.Custom
     }
 
     // A: Ofen aus dem Spiel, Edelstahl statt Rot, gelber Warnstreifen, schwarze Regler, Display, Gefahren-Raute an der Seite.
-    public class LabReactor : ReactorBase
+    public class Superlab : ReactorBase
     {
-        public override string UniqueNameID => "Lab Reactor";
+        public override string UniqueNameID => "Superlab";
         protected override Appliance Template => (Appliance)GDOUtils.GetExistingGDO(ApplianceReferences.Oven);
         protected override string Title => "Superlab";
         protected override string Desc => "Cooks and cools in one go. Industrial chemistry.";
@@ -127,17 +127,17 @@ namespace BreakingPlates.Custom
             if (knobs != null)
             {
                 var baseKnobs = knobs.localPosition;
-                void ApplyKnobs(GameObject t) => t.transform.localPosition = baseKnobs + Tuning.V3("reactor.knobs.offset", new Vector3(0.14f, 0f, 0f));
+                void ApplyKnobs(GameObject t) => t.transform.localPosition = baseKnobs + Tuning.V3("superlab.knobs.offset", new Vector3(0.14f, 0f, 0f));
                 ApplyKnobs(knobs.gameObject);
-                Tuning.Register(knobs.gameObject, "reactor.knobs", ApplyKnobs);
+                Tuning.Register(knobs.gameObject, "superlab.knobs", ApplyKnobs);
             }
 
             // Display rechts neben den Reglern (außen), orange Warnlampe oben.
-            var panel = Tuned(go.transform, "BP Panel", "reactor.panel", new Vector3(0.3f, 0.3f, -0.44f));
+            var panel = Tuned(go.transform, "BP Panel", "superlab.panel", new Vector3(0.3f, 0.3f, -0.44f));
             Part("Display", panel.transform, ProcMesh.Box(new Vector3(0.17f, 0.08f, 0.012f)), Materials.Black, Vector3.zero);
             DecoBase.MakeText(panel.transform, "Timer", "00:10", new Vector3(0f, 0f, -0.007f), 0.38f, new Color(0.35f, 1f, 0.45f));
 
-            var lamp = Tuned(go.transform, "BP Lamp", "reactor.lamp", new Vector3(0.3f, 0.92f, 0.3f));
+            var lamp = Tuned(go.transform, "BP Lamp", "superlab.lamp", new Vector3(0.3f, 0.92f, 0.3f));
             Part("Lamp Base", lamp.transform, ProcMesh.Cylinder(0.04f, 0.02f, 12), Materials.DarkGrey, Vector3.zero);
             var bulb = Part("Lamp", lamp.transform, ProcMesh.Cylinder(0.03f, 0.06f, 12), Materials.Solid("Reactor Lamp Off", new Color(0.45f, 0.3f, 0.15f)), new Vector3(0f, 0.02f, 0f));
             var status = go.AddComponent<ReactorStatus>();
@@ -147,7 +147,7 @@ namespace BreakingPlates.Custom
             status.Done = Materials.Solid("Reactor Lamp Done", new Color(0.3f, 0.95f, 0.35f));
 
             // Warnschild an der Seite (oberer Teil, nicht im Knick): Flamme + Eiskristall = heizt und kühlt.
-            var sign = Tuned(go.transform, "BP Sign", "reactor.sign", new Vector3(0.415f, 0.62f, 0f));
+            var sign = Tuned(go.transform, "BP Sign", "superlab.sign", new Vector3(0.415f, 0.62f, 0f));
             Part("Border", sign.transform, ProcMesh.Box(new Vector3(0.01f, 0.18f, 0.34f)), Materials.Black, Vector3.zero);
             Part("Plate", sign.transform, ProcMesh.Box(new Vector3(0.012f, 0.15f, 0.31f)), Materials.Hazmat, Vector3.zero);
             // Flamme
