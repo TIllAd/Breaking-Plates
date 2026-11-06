@@ -45,7 +45,7 @@ namespace BreakingPlates.Custom
         protected override DecorationType Theme => DecorationType.Charming;
         protected override int[] VanillaIDs => new[] { ApplianceReferences.CosyBarrel };
         protected override string Title => "Pink Teddy Bear";
-        protected override string Desc => "Found it in the pool. Don't ask.";
+        protected override string Desc => "Why is it so wet?";
         protected override Vector3 DefaultRot => new Vector3(0f, -20f, 8f);
 
         protected override void Build(Transform root)
@@ -82,7 +82,7 @@ namespace BreakingPlates.Custom
         protected override DecorationType Theme => DecorationType.Charming;
         protected override int[] VanillaIDs => new[] { ApplianceReferences.CosyBarrel };
         protected override string Title => "Lily of the Valley";
-        protected override string Desc => "Pretty. Keep away from children.";
+        protected override string Desc => "Do not eat.";
 
         protected override void Build(Transform root)
         {
@@ -210,7 +210,7 @@ namespace BreakingPlates.Custom
         protected override DecorationType Theme => DecorationType.Exclusive;
         protected override int[] VanillaIDs => new[] { ApplianceReferences.CosyBarrel };
         protected override string Title => "Money Stack";
-        protected override string Desc => "We've got a storage unit for that.";
+        protected override string Desc => "There has to be a better place for this.";
         protected override int Points => 2;
 
         protected override void Build(Transform root)
@@ -264,7 +264,7 @@ namespace BreakingPlates.Custom
         protected override DecorationType Theme => DecorationType.Formal;
         protected override int[] VanillaIDs => new[] { ApplianceReferences.CosyBarrel };
         protected override string Title => "Purple Armchair";
-        protected override string Desc => "It's not purple. It's amethyst.";
+        protected override string Desc => "Paid for. Probably.";
         protected override int Points => 2;
 
         protected override void Build(Transform root)

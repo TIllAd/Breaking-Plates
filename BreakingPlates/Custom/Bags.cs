@@ -60,7 +60,7 @@ namespace BreakingPlates.Custom
 
         public override List<ItemGroupView.ColourBlindLabel> Labels => new List<ItemGroupView.ColourBlindLabel>
         {
-            new ItemGroupView.ColourBlindLabel { Item = ChiliP, Text = "P" }
+            new ItemGroupView.ColourBlindLabel { Item = ChiliP, Text = "Ch" }
         };
 
         private GameObject _prefab, _slot, _content, _chili;
@@ -133,7 +133,7 @@ namespace BreakingPlates.Custom
         public override List<ItemGroupView.ColourBlindLabel> Labels => new List<ItemGroupView.ColourBlindLabel>
         {
             new ItemGroupView.ColourBlindLabel { Item = Candy, Text = "99" },
-            new ItemGroupView.ColourBlindLabel { Item = ChiliP, Text = "P" }
+            new ItemGroupView.ColourBlindLabel { Item = ChiliP, Text = "Ch" }
         };
     }
 
@@ -149,7 +149,7 @@ namespace BreakingPlates.Custom
         public override List<ItemGroupView.ColourBlindLabel> Labels => new List<ItemGroupView.ColourBlindLabel>
         {
             new ItemGroupView.ColourBlindLabel { Item = Candy, Text = "SF" },
-            new ItemGroupView.ColourBlindLabel { Item = ChiliP, Text = "P" }
+            new ItemGroupView.ColourBlindLabel { Item = ChiliP, Text = "Ch" }
         };
     }
 }

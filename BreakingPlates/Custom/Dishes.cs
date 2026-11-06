@@ -237,7 +237,7 @@ namespace BreakingPlates.Custom
         public override GameObject IconPrefab => _icon ??= Icon("Schraderbraeu - Icon", t => BeerMug(t, "Mug", Vector3.zero, 1.2f));
         protected override string CardName => "Schraderbräu";
         protected override string CardDescription => "Adds Schraderbräu as a side";
-        protected override string Quote => "Jesus, Marie!";
+        protected override string Quote => "Home-brewed to silky perfection.";
         protected override string RecipeText => "Pour a Schraderbräu from the tap and serve it with the order.";
     }
 

@@ -59,7 +59,9 @@ namespace BreakingPlates.Custom
         {
             // Kocht wie ein Ofen alles (Spiel-Prozess "Cook", schneller als der Herd) und kühlt zusätzlich unsere Kolben.
             new Appliance.ApplianceProcesses { Process = (Process)GDOUtils.GetExistingGDO(ProcessReferences.Cook), IsAutomatic = true, Speed = 1.6f },
-            new Appliance.ApplianceProcesses { Process = ReactCoolProcess.P, IsAutomatic = true, Speed = 1f }
+            new Appliance.ApplianceProcesses { Process = ReactCoolProcess.P, IsAutomatic = true, Speed = 1f },
+            // Friert auch Spiel-Sachen ein wie der Gefrierschrank (z.B. Homemade Ice Cream). Fajita-"Abkühlen" ist im Spiel ein Fehler-Vorgang, das bleibt draußen.
+            new Appliance.ApplianceProcesses { Process = (Process)GDOUtils.GetExistingGDO(ProcessReferences.Freeze), IsAutomatic = true, Speed = 1f }
         };
         public override List<IApplianceProperty> Properties => Template.Properties;
         public override bool IsPurchasable => true;

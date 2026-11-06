@@ -6,7 +6,8 @@ using UnityEngine;
 
 namespace BreakingPlates
 {
-    // Easter Egg: Ist auch "Chicken & Rice" installiert, werden dessen Karten bei der Kartenauswahl bevorzugt.
+    // Easter Egg (Los Pollos Hermanos): Hühnchen-Karten anderer Mods werden bei der Kartenauswahl bevorzugt –
+    // alle Karten von "Chicken & Rice" und Chicken-Karten anderer Mods wie "Fry That!" (erkannt am Namen).
     // (Die Mods bleiben sonst völlig getrennt.)
     public static class EasterEgg
     {
@@ -15,13 +16,25 @@ namespace BreakingPlates
 
         public static void Apply(GameData gameData)
         {
-            List<Unlock> cards;
+            var cards = new List<Unlock>();
             try
             {
-                cards = GDOUtils.GetCustomGameDataObjectsFromMod(ChickenModID)
-                    .Select(c => c.GameDataObject).OfType<Unlock>().ToList();
+                cards.AddRange(GDOUtils.GetCustomGameDataObjectsFromMod(ChickenModID)
+                    .Select(c => c.GameDataObject).OfType<Unlock>());
             }
-            catch { return; }
+            catch { }
+            try
+            {
+                // Andere Mods (z.B. "Fry That!"): Karten-Gerichte mit "Chicken" oder "Nugget" im Namen.
+                foreach (var c in KitchenLib.Customs.CustomGDO.GDOs.Values)
+                {
+                    if (c == null || c.ModID == ChickenModID || c.ModID == Mod.MOD_GUID) continue;
+                    if (!(c.GameDataObject is Dish d)) continue;
+                    string n = (c.UniqueNameID + " " + d.name).ToLower();
+                    if ((n.Contains("chicken") || n.Contains("nugget")) && !cards.Contains(d)) cards.Add(d);
+                }
+            }
+            catch { }
             if (cards.Count == 0) return;
 
             int packs = 0;

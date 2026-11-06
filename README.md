@@ -32,8 +32,8 @@ Every candy bag looks the same: clear foil, blue zip. Toppings and variants are 
 | **Chili P** | Topping | 1 | small decrease | +1 | Chopped jalapeño in the bag → **chili clipped to the zip** | *"Chili P is my signature!"* |
 | **Sugar-Free** | Main | 2 | small decrease | 5 | Cook with **stevia** instead of sugar → bag with a **stevia sprig** | *"I'll need more stevia."* |
 | **On a Stick** | Main | 2 | small decrease | 5 | **Candy stick** into the hot syrup → 5 lollis straight from the flask | *"Yeah, science!"* |
-| **Mass Production** | Main | 2 | small decrease | 20 | Groups order a **full flask** (up to 4 customers) – in every variant you sell. Only a full flask counts, and whoever orders a flask orders no side | *"I'm in the empire business."* |
-| **Schraderbräu** | Side | 1 | small decrease | 2 | Home-brewed beer from the tap | *"Jesus, Marie!"* |
+| **Mass Production** | Main | 2 | small decrease | 20 | Groups order a **full flask** (up to 5 customers – one per portion) – in every variant you sell. Only a full flask counts, and whoever orders a flask orders no side | *"I'm in the empire business."* |
+| **Schraderbräu** | Side | 1 | small decrease | 2 | Home-brewed beer from the tap | *"Home-brewed to silky perfection."* |
 | **Birthday Bacon** | Side | 2 | small decrease | 2 | Pork from the fridge → chop → fry into bacon (IngredientLib) | *"Fifty-two."* |
 | **Breaking Even** | Effect | – | **large decrease** | –25% of each day's earnings | Fewer customers, but 25% of the day's earnings are taken at the end of the day | *"Better call Saul!"* |
 
@@ -43,7 +43,7 @@ Values are a first pass and still need balancing in real runs.
 
 ## Appliances
 
-- **Superlab** – an oven turned lab reactor: cooks everything a little faster than the hob and also cools flasks (5 s). Lamp and timer show what it's doing.
+- **Superlab** – an oven turned lab reactor: cooks everything a little faster than the hob and also cools flasks (5 s) and freezes like a freezer. Lamp and timer show what it's doing.
 - **Lab Flasks** (only 4 – think of them as a very scientific pot), **Candy Sticks**, **Stevia** plant, **Candy Bags**, **Schraderbräu** tap.
 
 ## Decorations
@@ -54,11 +54,11 @@ They show up like the game's own decorations, when you pick the matching style.
 |---|---|---|---|
 | Periodic Table poster (Br and Ba highlighted) | Formal | 1 | 30 |
 | Lab Notebook – "To W.W." | Formal | 1 | 30 |
-| Purple Armchair – it's not purple, it's amethyst | Formal | 2 | 60 |
-| Pink Teddy Bear | Charming | 1 | 30 |
-| Lily of the Valley | Charming | 1 | 30 |
+| Purple Armchair – paid for. Probably. | Formal | 2 | 60 |
+| Pink Teddy Bear – why is it so wet? | Charming | 1 | 30 |
+| Lily of the Valley – do not eat | Charming | 1 | 30 |
 | Mineral Collection – they're minerals, Marie! | Exclusive | 3 | 100 |
-| Money Stack | Exclusive | 2 | 60 |
+| Money Stack – there has to be a better place for this | Exclusive | 2 | 60 |
 | Yellow Barrels – why does a kitchen produce so much chemical waste? | Affordable | 2 | 40 |
 | Los Pollitos Hermanos sign | Affordable | 1 | 30 |
 | Better Call Saul! poster | Affordable | 1 | 30 |
@@ -68,19 +68,19 @@ They show up like the game's own decorations, when you pick the matching style.
 
 | Label | Meaning |
 |---|---|
-| `Su` / `Stv` / `W` | sugar / stevia / water in the flask |
-| `Sy` | syrup |
+| `Su` / `SF` / `W` | sugar / stevia (sugar-free) / water in the flask |
+| `Sy` | blue syrup (cooked, still hot) |
 | `Cr` / `Sh` | crystals / smashed crystals |
+| `Re` | flask being recrystallised |
 | `99` | pure (99.1%) |
 | `SF` | sugar-free |
 | `St` | with sticks (lollis) |
-| `P` | Chili P |
-| `Be` | Schraderbräu |
-| `Re` | flask being recrystallised |
+| `Ch` | Chili P (chili) |
+| `Be` | Schraderbräu (beer) |
 
 ## Easter egg
 
-If [Chicken & Rice](https://github.com/TIllAd/ChickenFoodMod) is installed too, its cards show up more often. Los Pollos Hermanos would approve.
+If [Chicken & Rice](https://github.com/TIllAd/ChickenFoodMod) or another chicken mod like *Fry That!* is installed too, their chicken cards show up more often. Los Pollos Hermanos would approve.
 
 ---
 
@@ -89,28 +89,14 @@ If [Chicken & Rice](https://github.com/TIllAd/ChickenFoodMod) is installed too, 
 - [KitchenLib](https://steamcommunity.com/sharedfiles/filedetails/?id=2898069883)
 - [IngredientLib](https://steamcommunity.com/sharedfiles/filedetails/?id=2913877103)
 
-## Building
-
-```powershell
-dotnet build BreakingPlates -c Release -p:EnableModDeployLocal=false
-copy BreakingPlates\bin\Release\net472\BreakingPlates-Workshop.dll Workshop\content\
-```
-
-A **Debug** build copies itself into `PlateUp\Mods\BreakingPlates` and adds developer tools:
-
-- **F8 live tuning**: shapes, positions and colours are read from `PlateUp\Mods\BreakingPlates\tuning.txt`; edit a value and press F8 in game.
-- **Data dump**: `breakingplates_dump.txt` with the game data the mod builds on.
-
-All models (flasks, bags, stickers, appliances, decorations) are built in code from simple shapes – there is no Unity asset bundle.
-
 ## Testing
 
 Use [PlateUp-ModSelfTest](https://github.com/TIllAd/PlateUp-ModSelfTest) with the prefix `TillAd.PlateUp.BreakingPlates`.
 It checks every order and ingredient combination with the game's own logic and renders everything the mod adds.
 
-## Publishing
+## License
 
-Same as Chicken & Rice: create the item in the ModUploader (**Create**), then upload `Workshop\` via **Update** with "Content" ticked.
+[MIT](LICENSE)
 
 ---
 

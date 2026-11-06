@@ -200,7 +200,7 @@ namespace BreakingPlates.Custom
     {
         public override string UniqueNameID => "Stevia";
         public override ItemStorage ItemStorageFlags => ItemStorage.StackableFood;
-        public override string ColourBlindTag => "Stv";
+        public override string ColourBlindTag => "SF";
         public override Appliance DedicatedProvider => (Appliance)GDOUtils.GetCustomGameDataObject<SteviaProvider>().GameDataObject;
         private GameObject _prefab;
         public override GameObject Prefab => _prefab ??= MakeStevia();

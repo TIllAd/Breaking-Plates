@@ -73,7 +73,7 @@ namespace BreakingPlates.Custom
         // Farbenblind-Beschriftung: zeigt, was schon im Kolben ist.
         public override List<ItemGroupView.ColourBlindLabel> Labels => new List<ItemGroupView.ColourBlindLabel>
         {
-            new ItemGroupView.ColourBlindLabel { Item = Sweetener, Text = IsStevia ? "Stv" : "Su" },
+            new ItemGroupView.ColourBlindLabel { Item = Sweetener, Text = IsStevia ? "SF" : "Su" },
             new ItemGroupView.ColourBlindLabel { Item = Ref(ItemReferences.Water), Text = "W" },
         };
 
@@ -177,7 +177,7 @@ namespace BreakingPlates.Custom
         public override string ColourBlindTag => Pure ? "99" : "Sh";
         // Karte "Mass Production": der volle Kolben geht an eine ganze Gruppe, danach bleibt der leere Kolben stehen.
         protected virtual bool WholeBatch => true;
-        public override int MaxOrderSharers => WholeBatch ? 4 : 0;
+        public override int MaxOrderSharers => WholeBatch ? 5 : 0; // 5 Portionen = bis zu 5 Gäste
         public override Item DirtiesTo => WholeBatch ? Container : null;
         // Ganzer Kolben = 5 Portionen für eine Gruppe: fester Preis statt "Small" (3).
         public override ItemValue ItemValue => WholeBatch ? ItemValue.ExtraLarge : ItemValue.Small;
