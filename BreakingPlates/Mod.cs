@@ -65,8 +65,6 @@ namespace BreakingPlates
             AddGameDataObject<Stevia>();
             AddGameDataObject<SchraderTap>();
             AddGameDataObject<Schraderbraeu>();
-            AddGameDataObject<FunionsRack>();
-            AddGameDataObject<Funions>();
             AddGameDataObject<BagProvider>();
             AddGameDataObject<EmptyBag>();
 
@@ -108,7 +106,6 @@ namespace BreakingPlates
             AddGameDataObject<PlatterDish>();
             // AddGameDataObject<BigFlaskDish>(); // großer Kolben vorerst raus (verwirrte eher)
             AddGameDataObject<SchraderDish>();
-            AddGameDataObject<FunionsDish>();
             AddGameDataObject<BaconDish>();
             // AddGameDataObject<PizzaRoofDish>(); // Pizza vorerst raus (später evtl.)
             AddGameDataObject<BreakingEvenCard>();

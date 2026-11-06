@@ -5,6 +5,10 @@ cook **Blue Rock Candy** in lab flasks, smash it up and serve it in little bags.
 
 > Status: **v1.0.0** – first release.
 
+![Everything the mod adds – appliances, decorations and the whole cooking chain](docs/overview.png)
+
+**At a glance:** 1 new dish with 4 variants (99.1% pure, Chili P, sugar-free, on a stick), whole-flask orders for groups, 2 sides, an effect card, the **Superlab** (an oven turned lab reactor) and 11 decorations across all four styles. Everything is built from simple shapes in code and checked with an automated self-test.
+
 ---
 
 ## The dish
@@ -30,7 +34,6 @@ Every candy bag looks the same: clear foil, blue zip. Toppings and variants are 
 | **On a Stick** | Main | 2 | small decrease | 5 | **Candy stick** into the hot syrup → 5 lollis straight from the flask | *"Yeah, science!"* |
 | **Mass Production** | Main | 2 | small decrease | 20 | Groups order a **full flask** (up to 4 customers) – in every variant you sell. Only a full flask counts, and whoever orders a flask orders no side | *"I'm in the empire business."* |
 | **Schraderbräu** | Side | 1 | small decrease | 2 | Home-brewed beer from the tap | *"Jesus, Marie!"* |
-| **Funions** | Side | 1 | small decrease | 1 | A bag of Funions from the snack rack | *"Bitch, I'm eating Funions."* |
 | **Birthday Bacon** | Side | 2 | small decrease | 2 | Pork from the fridge → chop → fry into bacon (IngredientLib) | *"Fifty-two."* |
 | **Breaking Even** | Effect | – | **large decrease** | –25% of each day's earnings | Fewer customers, but 25% of the day's earnings are taken at the end of the day | *"Better call Saul!"* |
 
@@ -41,7 +44,7 @@ Values are a first pass and still need balancing in real runs.
 ## Appliances
 
 - **Superlab** – an oven turned lab reactor: cooks everything a little faster than the hob and also cools flasks (5 s). Lamp and timer show what it's doing.
-- **Lab Flasks** (only 4 – think of them as a very scientific pot), **Candy Sticks**, **Stevia** plant, **Candy Bags**, **Schraderbräu** tap, **Funions** rack.
+- **Lab Flasks** (only 4 – think of them as a very scientific pot), **Candy Sticks**, **Stevia** plant, **Candy Bags**, **Schraderbräu** tap.
 
 ## Decorations
 
@@ -72,7 +75,6 @@ They show up like the game's own decorations, when you pick the matching style.
 | `SF` | sugar-free |
 | `St` | with sticks (lollis) |
 | `P` | Chili P |
-| `Fu` | Funions |
 | `Be` | Schraderbräu |
 | `Re` | flask being recrystallised |
 
