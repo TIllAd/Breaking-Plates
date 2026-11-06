@@ -88,14 +88,16 @@ namespace BreakingPlates.Custom
                 }
                 Apply(hood);
                 Tuning.Register(hood, "hood", Apply);
-                Shapes.Ball("Hood", hood.transform, Tuning.V3("hood.size", new Vector3(0.58f, 0.6f, 0.56f)), suit, new Vector3(0f, 0.15f, 0f));
+                Shapes.Ball("Hood", hood.transform, Tuning.V3("hood.size", new Vector3(0.56f, 0.62f, 0.54f)), suit, new Vector3(0f, 0.15f, 0f));
+                // Verjüngung zum Hals: weniger Kugel, mehr weiche Kapuze.
+                Shapes.Ball("Taper", hood.transform, new Vector3(0.46f, 0.22f, 0.44f), suit, new Vector3(0f, -0.01f, 0f));
                 // Dichtung am Hals: flach und in Anzugfarbe, damit Kapuze und Anzug wie ein Stück wirken.
                 Shapes.Ball("Seal", hood.transform, new Vector3(0.5f, 0.07f, 0.48f), suit, new Vector3(0f, -0.07f, 0f));
                 var visor = new GameObject("Visor");
                 visor.transform.SetParent(hood.transform, false);
                 visor.transform.localPosition = Tuning.V3("visor.pos", new Vector3(0f, 0.15f, 0.25f));
                 visor.transform.localRotation = Quaternion.Euler(-6f, 0f, 0f);
-                Shapes.Ball("Rim", visor.transform, new Vector3(0.42f, 0.36f, 0.08f), seam, Vector3.zero);
+                Shapes.Ball("Rim", visor.transform, new Vector3(0.39f, 0.33f, 0.08f), seam, Vector3.zero); // schmaler Rahmen, mehr Glas
                 Shapes.Ball("Glass", visor.transform, new Vector3(0.36f, 0.3f, 0.08f), glass, new Vector3(0f, 0f, 0.012f));
                 // Dezente, größere Reflexion statt weißem Punkt
                 var shineMat = Materials.Flat("Hazmat Visor Shine", new Color(0.36f, 0.46f, 0.57f), 1f);
