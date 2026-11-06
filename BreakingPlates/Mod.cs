@@ -126,7 +126,7 @@ namespace BreakingPlates
             AddGameDataObject<HazmatSuit>();
 
             // AddGameDataObject<HeisenbergHat>(); // Kostüme vorerst raus (macht Till später selbst)
-            // AddGameDataObject<GasMask>(); // erstmal ohne Maske: Anzug mit Sichtfenster (Till, 06.11.)
+            AddGameDataObject<GasMask>();
 
             Events.BuildGameDataPreSetupEvent += (s, args) => PrefabUtil.FixMaterials();
             Events.BuildGameDataEvent += (s, args) =>

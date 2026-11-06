@@ -108,19 +108,9 @@ namespace BreakingPlates.Custom
                 Shapes.Ball("Glass", visor.transform, new Vector3(0.36f, 0.3f, 0.2f), glass, new Vector3(0f, 0f, -0.042f));
                 // Dezente, größere Reflexion statt weißem Punkt
                 // Keine aufgesetzte Reflexion: das Glas glänzt selbst (Shininess), die flache Scheibe stand bei gekipptem Visier heraus.
-                // Warnschild auf dem Rücken: gelbes Dreieck mit schwarzem Rand und Strahlungs-Kleeblatt.
-                // Wird zur Laufzeit an den oberen Rücken-Knochen gehängt (das Spiel bietet nur den Kopf an).
-                var back = new GameObject("BP Back Sign");
-                back.transform.SetParent(go.transform, false);
-                var signRoot = new GameObject("Sign");
-                signRoot.transform.SetParent(back.transform, false);
-                WarningSign(signRoot.transform, Tuning.F("hazmat.back.size", 0.2f));
-                back.SetActive(false);
-                if (Tuning.F("hazmat.back.preview", 0f) > 0.5f) { back.SetActive(true); back.transform.localPosition = Tuning.V3("hazmat.back.previewpos", new Vector3(0.45f, 1.0f, 0.2f)); back.transform.localRotation = Quaternion.Euler(Tuning.V3("hazmat.back.previewrot", new Vector3(-90f, 0f, 0f))); }
                 // Spielerfarbe: Anzug, Kapuze und Rand übernehmen die gewählte Farbe der Figur.
                 var tint = go.AddComponent<HazmatTint>();
                 tint.Outfit = outfit;
-                tint.BackSign = back;
                 tint.Main = new List<Renderer>();
                 tint.Dark = new List<Renderer>();
                 foreach (var rr in go.GetComponentsInChildren<Renderer>(true))
@@ -130,6 +120,7 @@ namespace BreakingPlates.Custom
                     else if (sm == seam) tint.Dark.Add(rr);
                 }
                 if (outfit != null) outfit.AttachToHeadBone = head;
+                go.AddComponent<HeadFollower>();
             }
             if (outfit != null) outfit.Hats = new List<Renderer>();
             return go;
@@ -265,47 +256,62 @@ namespace BreakingPlates.Custom
             m.transform.SetParent(head.transform, false);
             void Apply(GameObject t)
             {
-                t.transform.localPosition = Tuning.V3("mask.pos", new Vector3(0f, 0.03f, 0.21f));
+                t.transform.localPosition = Tuning.V3("mask.pos", Vector3.zero);
                 t.transform.localRotation = Quaternion.Euler(Tuning.V3("mask.rot", Vector3.zero));
                 t.transform.localScale = Vector3.one * Tuning.F("mask.scale", 1f);
             }
             Apply(m);
             Tuning.Register(m, "mask", Apply);
-            // Maske (Form B): dunkle Halbmaske mit einem großen roten Filter vorne.
-            var maskMat = Materials.Solid("Gas Mask", new Color(0.22f, 0.22f, 0.24f));
+
+            // Vollmaske: dunkle Gesichtsplatte, zwei große runde Augengläser, roter Filter vorne, Riemen um den Kopf,
+            // dazu ein kurzer geriffelter Schlauch vom Filter nach unten.
+            var maskMat = Materials.Flat("Gas Mask", new Color(0.2f, 0.2f, 0.22f), 0.4f);
+            var rubber = Materials.Flat("Gas Mask Rubber", new Color(0.1f, 0.1f, 0.11f), 0.3f);
+            var lens = Materials.Flat("Gas Mask Lens", new Color(0.55f, 0.75f, 0.85f), 1f);
             var filterRed = Materials.Solid("Gas Mask Filter", new Color(0.88f, 0.29f, 0.23f));
             var filterDark = Materials.Solid("Gas Mask Filter Inner", new Color(0.48f, 0.12f, 0.09f));
-            Shapes.Ball("Face", m.transform, new Vector3(0.2f, 0.14f, 0.1f), maskMat, new Vector3(0f, -0.01f, 0f));
-            var housing = ProcMesh.Create("Housing", m.transform, ProcMesh.Cylinder(0.035f, 0.03f, 14), Materials.Black, new Vector3(0f, -0.03f, 0.04f));
-            housing.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
-            var filter = ProcMesh.Create("Filter", m.transform, ProcMesh.Cylinder(0.055f, 0.04f, 18), filterRed, new Vector3(0f, -0.03f, 0.065f));
-            filter.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
-            var inner = ProcMesh.Create("Filter Inner", m.transform, ProcMesh.Cylinder(0.028f, 0.01f, 14), filterDark, new Vector3(0f, -0.03f, 0.1f));
-            inner.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            foreach (var mat in new[] { maskMat, rubber, lens }) mat.SetFloat("_OverlayMax", 0f);
 
-            // Brille (aus A): schwarzer Rahmen mit zwei runden hellblauen Gläsern, Riemen um den Kopf.
-            var g = new GameObject("Goggles");
-            g.transform.SetParent(head.transform, false);
-            void ApplyG(GameObject t)
-            {
-                t.transform.localPosition = Tuning.V3("goggles.pos", new Vector3(0f, 0.12f, 0.2f));
-                t.transform.localRotation = Quaternion.Euler(Tuning.V3("goggles.rot", Vector3.zero));
-                t.transform.localScale = Vector3.one * Tuning.F("goggles.scale", 1f);
-            }
-            ApplyG(g);
-            Tuning.Register(g, "goggles", ApplyG);
-            var lens = Materials.Solid("Goggle Lens", new Color(0.62f, 0.83f, 0.91f));
-            ProcMesh.Create("Frame", g.transform, ProcMesh.Box(new Vector3(0.22f, 0.075f, 0.035f)), Materials.Black, Vector3.zero);
+            Shapes.Ball("Face Plate", m.transform, new Vector3(0.36f, 0.34f, 0.16f), maskMat, new Vector3(0f, 0.07f, 0.2f));
             foreach (var x in new[] { -1f, 1f })
             {
-                var l = ProcMesh.Create("Lens", g.transform, ProcMesh.Cylinder(0.03f, 0.012f, 16), lens, new Vector3(x * 0.052f, 0f, 0.012f));
-                l.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
-                ProcMesh.Create("Strap Side", g.transform, ProcMesh.Box(new Vector3(0.02f, 0.03f, 0.36f)), Materials.Black, new Vector3(x * 0.215f, 0f, -0.19f));
+                var eye = new GameObject("Eye");
+                eye.transform.SetParent(m.transform, false);
+                eye.transform.localPosition = new Vector3(x * 0.075f, 0.12f, 0.272f);
+                eye.transform.localRotation = Quaternion.Euler(90f - 8f, x * 14f, 0f);
+                ProcMesh.Create("Rim", eye.transform, ProcMesh.Cylinder(0.062f, 0.022f, 20), rubber, Vector3.zero);
+                ProcMesh.Create("Lens", eye.transform, ProcMesh.Cylinder(0.05f, 0.026f, 20), lens, Vector3.zero);
             }
-            ProcMesh.Create("Strap Back", g.transform, ProcMesh.Box(new Vector3(0.45f, 0.03f, 0.02f)), Materials.Black, new Vector3(0f, 0f, -0.37f));
+            var housing = ProcMesh.Create("Housing", m.transform, ProcMesh.Cylinder(0.04f, 0.04f, 14), rubber, new Vector3(0f, -0.01f, 0.27f));
+            housing.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            var filter = ProcMesh.Create("Filter", m.transform, ProcMesh.Cylinder(0.06f, 0.045f, 18), filterRed, new Vector3(0f, -0.015f, 0.3f));
+            filter.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            var inner = ProcMesh.Create("Filter Inner", m.transform, ProcMesh.Cylinder(0.03f, 0.01f, 14), filterDark, new Vector3(0f, -0.015f, 0.345f));
+            inner.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            // Riemen
+            foreach (var x in new[] { -1f, 1f })
+                ProcMesh.Create("Strap Side", m.transform, ProcMesh.Box(new Vector3(0.02f, 0.035f, 0.34f)), rubber, new Vector3(x * 0.25f, 0.13f, 0.02f));
+            ProcMesh.Create("Strap Back", m.transform, ProcMesh.Box(new Vector3(0.5f, 0.035f, 0.02f)), rubber, new Vector3(0f, 0.13f, -0.16f));
+            // Schlauch: Ringe entlang eines Bogens vom Filter nach unten/seitlich
+            if (Tuning.F("mask.hose", 1f) > 0.5f)
+            {
+                var hose = new GameObject("Hose");
+                hose.transform.SetParent(m.transform, false);
+                Vector3 p0 = new Vector3(0f, -0.06f, 0.3f), p1 = new Vector3(0.05f, -0.22f, 0.34f), p2 = new Vector3(0.14f, -0.32f, 0.2f);
+                const int rings = 9;
+                for (int i = 0; i <= rings; i++)
+                {
+                    float t = i / (float)rings;
+                    var pos = (1 - t) * (1 - t) * p0 + 2 * (1 - t) * t * p1 + t * t * p2;
+                    var tan = (2 * (1 - t) * (p1 - p0) + 2 * t * (p2 - p1)).normalized;
+                    var ring = ProcMesh.Create("Ring", hose.transform, ProcMesh.Cylinder(0.026f, 0.018f, 12), i % 2 == 0 ? rubber : maskMat, pos);
+                    ring.transform.localRotation = Quaternion.FromToRotation(Vector3.up, tan);
+                }
+            }
             outfit.AttachToHeadBone = head;
             outfit.Renderers = new List<SkinnedMeshRenderer>();
             outfit.Hats = new List<Renderer>();
+            go.AddComponent<HeadFollower>();
             return go;
         }
 
@@ -319,32 +325,13 @@ namespace BreakingPlates.Custom
     public class HazmatTint : MonoBehaviour
     {
         public PlayerOutfitComponent Outfit;
-        public GameObject BackSign;
-        private bool _attached;
         public List<Renderer> Main = new List<Renderer>(), Dark = new List<Renderer>();
         private static readonly int Color0 = Shader.PropertyToID("_Color0");
         private MaterialPropertyBlock _block;
-        private void OnDestroy() { if (BackSign != null && _attached) Destroy(BackSign); }
         private Color _last = new Color(-1f, 0f, 0f, 0f);
 
         private void LateUpdate()
         {
-            if (!_attached && BackSign != null && Outfit != null && Outfit.Source != null && Outfit.Source.bones != null)
-            {
-                foreach (var b in Outfit.Source.bones)
-                {
-                    if (b == null || b.name != "UpperSpine") continue;
-                    BackSign.transform.SetParent(b, false);
-                    BackSign.SetActive(true);
-                    _attached = true;
-                    break;
-                }
-            }
-            if (_attached && BackSign != null)
-            {
-                BackSign.transform.localPosition = Tuning.V3("hazmat.back.pos", new Vector3(0f, 0.05f, -0.27f));
-                BackSign.transform.localRotation = Quaternion.Euler(Tuning.V3("hazmat.back.rot", new Vector3(0f, 180f, 0f)));
-            }
             if (Tuning.F("hazmat.playercolour", 0f) < 0.5f) return;
             var src = Outfit != null ? Outfit.Source : null;
             if (src == null || src.sharedMaterial == null || !src.sharedMaterial.HasProperty(Color0)) return;
@@ -365,5 +352,43 @@ namespace BreakingPlates.Custom
             _block.SetColor(Color0, c);
             r.SetPropertyBlock(_block);
         }
+    }
+
+    // Hängt Kapuze/Maske NICHT als Kind an den Kopf-Knochen (das bringt den Animator der Spielfigur beim Szenenwechsel
+    // zum Absturz: "Transform ... not found in HumanDescription"), sondern lässt sie dem Kopf jedes Bild folgen.
+    public class HeadFollower : MonoBehaviour
+    {
+        private PlayerOutfitComponent _outfit;
+        private GameObject _obj;
+        private Transform _head;
+
+        private void Awake()
+        {
+            _outfit = GetComponent<PlayerOutfitComponent>();
+            if (_outfit == null || _outfit.AttachToHeadBone == null) return;
+            _obj = _outfit.AttachToHeadBone;
+            _outfit.AttachToHeadBone = null; // das Spiel soll es nicht in die Knochen hängen
+            _obj.transform.SetParent(null, false);
+            DontDestroyOnLoad(_obj);
+            _obj.SetActive(false);
+        }
+
+        private void LateUpdate()
+        {
+            if (_obj == null) return;
+            if (_head == null)
+            {
+                var bones = _outfit != null && _outfit.Source != null ? _outfit.Source.bones : null;
+                if (bones != null)
+                    foreach (var b in bones) if (b != null && b.name == "Head") { _head = b; break; }
+                if (_head == null) return;
+            }
+            if (!_obj.activeSelf) _obj.SetActive(true);
+            _obj.transform.SetPositionAndRotation(_head.position, _head.rotation);
+            _obj.transform.localScale = _head.lossyScale;
+        }
+
+        private void OnDisable() { if (_obj != null) _obj.SetActive(false); }
+        private void OnDestroy() { if (_obj != null) Destroy(_obj); }
     }
 }
