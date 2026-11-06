@@ -41,7 +41,7 @@ namespace BreakingPlates.Custom
     // Rosa Teddybär aus dem Pool: ein Auge fehlt, ein paar angekokelte Stellen.
     public class PinkTeddy : DecoBase
     {
-        public override string UniqueNameID => "Pink Teddy";
+        public override string UniqueNameID => "Pink Teddy Bear";
         protected override DecorationType Theme => DecorationType.Charming;
         protected override int[] VanillaIDs => new[] { ApplianceReferences.CosyBarrel };
         protected override string Title => "Pink Teddy Bear";
@@ -78,7 +78,7 @@ namespace BreakingPlates.Custom
     // Maiglöckchen im Terrakotta-Topf: hängende Glöckchen, damit es nicht wie die Stevia-Pflanze aussieht.
     public class LilyOfTheValley : DecoBase
     {
-        public override string UniqueNameID => "Lily Of The Valley";
+        public override string UniqueNameID => "Lily of the Valley";
         protected override DecorationType Theme => DecorationType.Charming;
         protected override int[] VanillaIDs => new[] { ApplianceReferences.CosyBarrel };
         protected override string Title => "Lily of the Valley";
@@ -134,7 +134,7 @@ namespace BreakingPlates.Custom
     // "They're minerals, Marie!" – Vitrine mit Hanks Steinen (bewusst nicht lila).
     public class HankMinerals : DecoBase
     {
-        public override string UniqueNameID => "Hank Minerals";
+        public override string UniqueNameID => "Mineral Collection";
         protected override DecorationType Theme => DecorationType.Exclusive;
         protected override int[] VanillaIDs => new[] { ApplianceReferences.CosyBarrel };
         protected override string Title => "Mineral Collection";
@@ -260,7 +260,7 @@ namespace BreakingPlates.Custom
     // Maries lila Ecke: lila Sessel + lila Vase mit lila Blumen.
     public class MariePurple : DecoBase
     {
-        public override string UniqueNameID => "Marie Purple Chair";
+        public override string UniqueNameID => "Purple Armchair";
         protected override DecorationType Theme => DecorationType.Formal;
         protected override int[] VanillaIDs => new[] { ApplianceReferences.CosyBarrel };
         protected override string Title => "Purple Armchair";
@@ -300,7 +300,7 @@ namespace BreakingPlates.Custom
     // Gales Laborbuch auf einem Bücherstapel.
     public class GaleNotebook : DecoBase
     {
-        public override string UniqueNameID => "Gale Notebook";
+        public override string UniqueNameID => "Lab Notebook";
         protected override DecorationType Theme => DecorationType.Formal;
         protected override int[] VanillaIDs => new[] { ApplianceReferences.CosyBarrel };
         protected override string Title => "Lab Notebook";
@@ -419,7 +419,7 @@ namespace BreakingPlates.Custom
     // "Better Call Saul!"-Plakat (nur Schrift).
     public class SaulPoster : DecoBase
     {
-        public override string UniqueNameID => "Saul Poster";
+        public override string UniqueNameID => "Better Call Saul";
         protected override string Title => "Better Call Saul!";
         protected override DecorationType Theme => DecorationType.Affordable;
         protected override int[] VanillaIDs => new[] { ApplianceReferences.FancyPainting, ApplianceReferences.Painting, ApplianceReferences.FriendsPoster, ApplianceReferences.BunnyPoster, ApplianceReferences.AffordableNeonSign1 };

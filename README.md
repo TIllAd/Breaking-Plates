@@ -34,7 +34,7 @@ Every candy bag looks the same: clear foil, blue zip. Toppings and variants are 
 | **On a Stick** | Main | 2 | small decrease | 5 | **Candy stick** into the hot syrup → 5 lollis straight from the flask | *"Yeah, science!"* |
 | **Mass Production** | Main | 2 | small decrease | 20 | Groups order a **full flask** (up to 5 customers – one per portion) – in every variant you sell. Only a full flask counts. Whoever orders a flask or a lolli orders no side | *"I'm in the empire business."* |
 | **Schraderbräu** | Side | 1 | small decrease | 2 | Home-brewed beer from the tap | *"Home-brewed to silky perfection."* |
-| **Birthday Bacon** | Side | 2 | small decrease | 2 | Pork from the fridge → chop → fry into bacon (IngredientLib) | *"Fifty-two."* |
+| **Birthday Bacon** | Side | 2 | small decrease | 2 | Pork from the fridge → chop → fry into bacon (IngredientLib) | *"Happy birthday."* |
 | **Breaking Even** | Effect | – | **large decrease** | –25% money | Fewer customers, earn 25% less money | *"Better call Saul!"* |
 
 "Small decrease" / "large decrease" are the game's customer tags (about −15% / −28% customers).

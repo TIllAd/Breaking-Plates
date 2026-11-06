@@ -211,7 +211,7 @@ namespace BreakingPlates.Custom
 
     public class SugarPot : RawBatchBase
     {
-        public override string UniqueNameID => "Sugar Pot";
+        public override string UniqueNameID => "Flask - Sugar";
         protected override Item Container => G.I<LabFlask>();
         protected override Item Sweetener => Ref(ItemReferences.Sugar);
         protected override Item CookResult => G.I<SyrupPot>();
@@ -219,21 +219,21 @@ namespace BreakingPlates.Custom
 
     public class SyrupPot : SyrupBase
     {
-        public override string UniqueNameID => "Blue Syrup Pot";
+        public override string UniqueNameID => "Flask - Syrup";
         protected override Item Container => G.I<LabFlask>();
         protected override Item Crystallised => G.I<CrystalPot>();
     }
 
     public class CrystalPot : CrystalBase
     {
-        public override string UniqueNameID => "Crystal Pot";
+        public override string UniqueNameID => "Flask - Crystals";
         protected override Item Container => G.I<LabFlask>();
         protected override Item Smashed => G.I<ShardsPot>();
     }
 
     public class PureCrystalPot : CrystalBase
     {
-        public override string UniqueNameID => "Crystal Pot - Pure";
+        public override string UniqueNameID => "Flask - Crystals - Pure";
         protected override Item Container => G.I<LabFlask>();
         protected override Item Smashed => G.I<PureShardsPot>();
         protected override bool Pure => true;
@@ -241,14 +241,14 @@ namespace BreakingPlates.Custom
 
     public class ShardsPot : ShardsBase
     {
-        public override string UniqueNameID => "Crystal Shards Pot";
+        public override string UniqueNameID => "Flask - Smashed";
         protected override Item Container => G.I<LabFlask>();
         protected override Item Portion => G.I<BlueRockCandy>();
     }
 
     public class PureShardsPot : ShardsBase
     {
-        public override string UniqueNameID => "Crystal Shards Pot - Pure";
+        public override string UniqueNameID => "Flask - Smashed - Pure";
         protected override Item Container => G.I<LabFlask>();
         protected override Item Portion => G.I<PureBlueRockCandy>();
         protected override bool Pure => true;
@@ -259,7 +259,7 @@ namespace BreakingPlates.Custom
 
     public class RecrystallisePot : CustomItemGroup
     {
-        public override string UniqueNameID => "Recrystallise Pot";
+        public override string UniqueNameID => "Flask - Recrystallise";
         public override ItemStorage ItemStorageFlags => ItemStorage.None;
         public override Item DisposesTo => G.I<LabFlask>();
         public override string ColourBlindTag => "Re";
@@ -308,7 +308,7 @@ namespace BreakingPlates.Custom
     // Klarer, heller Sirup: wird beim Abkühlen zu reinen Kristallen.
     public class PureSyrupPot : SyrupBase
     {
-        public override string UniqueNameID => "Blue Syrup Pot - Pure";
+        public override string UniqueNameID => "Flask - Syrup - Pure";
         protected override Item Container => G.I<LabFlask>();
         protected override Item Crystallised => G.I<PureCrystalPot>();
         protected override Material SyrupMaterial => Materials.Solid("Pure Syrup", new Color(0.6f, 0.85f, 1f));
@@ -357,7 +357,7 @@ namespace BreakingPlates.Custom
 
     public class SteviaPot : RawBatchBase
     {
-        public override string UniqueNameID => "Stevia Pot";
+        public override string UniqueNameID => "Flask - Stevia";
         protected override Item Container => G.I<LabFlask>();
         protected override Item Sweetener => G.I<Stevia>();
         protected override Item CookResult => G.I<SteviaSyrupPot>();
@@ -367,7 +367,7 @@ namespace BreakingPlates.Custom
     public class SteviaSyrupPot : SyrupBase
     {
         protected override bool MarkStevia => true;
-        public override string UniqueNameID => "Blue Syrup Pot - Stevia";
+        public override string UniqueNameID => "Flask - Syrup - Sugar-Free";
         protected override Item Container => G.I<LabFlask>();
         protected override Item Crystallised => G.I<SteviaCrystalPot>();
         public override string ColourBlindTag => "SF";
@@ -376,7 +376,7 @@ namespace BreakingPlates.Custom
     public class SteviaCrystalPot : CrystalBase
     {
         protected override bool MarkStevia => true;
-        public override string UniqueNameID => "Crystal Pot - Stevia";
+        public override string UniqueNameID => "Flask - Crystals - Sugar-Free";
         protected override Item Container => G.I<LabFlask>();
         protected override Item Smashed => G.I<SteviaShardsPot>();
         public override string ColourBlindTag => "SF";
@@ -385,7 +385,7 @@ namespace BreakingPlates.Custom
     public class SteviaShardsPot : ShardsBase
     {
         protected override bool MarkStevia => true;
-        public override string UniqueNameID => "Crystal Shards Pot - Stevia";
+        public override string UniqueNameID => "Flask - Smashed - Sugar-Free";
         protected override Item Container => G.I<LabFlask>();
         protected override Item Portion => G.I<SugarFreeCandy>();
         public override string ColourBlindTag => "SF";
@@ -414,7 +414,7 @@ namespace BreakingPlates.Custom
     // Sirup + Stiel: Stiel muss rein, bevor der Sirup fest wird.
     public class StickSyrupPot : CustomItemGroup
     {
-        public override string UniqueNameID => "Blue Syrup Pot - Sticks";
+        public override string UniqueNameID => "Flask - Syrup - Sticks";
         public override ItemStorage ItemStorageFlags => ItemStorage.None;
         public override Item DisposesTo => G.I<LabFlask>();
         public override string ColourBlindTag => "St";
@@ -458,7 +458,7 @@ namespace BreakingPlates.Custom
     // Fertige Lollis im Kolben: direkt 5 Stück entnehmen (kein Kneten).
     public class LolliPot : ShardsBase
     {
-        public override string UniqueNameID => "Crystal Lolli Pot";
+        public override string UniqueNameID => "Flask - Lollis";
         protected override bool WholeBatch => false;
         protected override Item Container => G.I<LabFlask>();
         protected override Item Portion => G.I<RockCandyLolli>();
@@ -477,7 +477,7 @@ namespace BreakingPlates.Custom
 
     public class RockCandyLolli : CustomItem
     {
-        public override string UniqueNameID => "Blue Rock Candy Lolli";
+        public override string UniqueNameID => "Blue Rock Candy - Lolli";
         public override ItemStorage ItemStorageFlags => ItemStorage.StackableFood;
         public override ItemValue ItemValue => ItemValue.Medium;
         public override string ColourBlindTag => "St";

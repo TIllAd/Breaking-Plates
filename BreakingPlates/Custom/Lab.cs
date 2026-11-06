@@ -98,7 +98,7 @@ namespace BreakingPlates.Custom
     // --- Tütchen ---
     public class BagProvider : ProviderBase
     {
-        public override string UniqueNameID => "Candy Bag Provider";
+        public override string UniqueNameID => "Candy Bags";
         protected override Item Provided => (Item)GDOUtils.GetCustomGameDataObject<EmptyBag>().GameDataObject;
         protected override string Title => "Candy Bags";
         protected override string Desc => "Provides small bags. Strictly for candy.";
@@ -124,7 +124,7 @@ namespace BreakingPlates.Custom
 
     public class FlaskProvider : ProviderBase
     {
-        public override string UniqueNameID => "Lab Flask Provider";
+        public override string UniqueNameID => "Lab Flasks";
         protected override Item Provided => (Item)GDOUtils.GetCustomGameDataObject<LabFlask>().GameDataObject;
         protected override string Title => "Lab Flasks";
         protected override string Desc => "Think of it as a pot. A very scientific pot.";
@@ -155,7 +155,7 @@ namespace BreakingPlates.Custom
 
     public class StickProvider : ProviderBase
     {
-        public override string UniqueNameID => "Candy Stick Provider";
+        public override string UniqueNameID => "Candy Sticks";
         protected override Item Provided => (Item)GDOUtils.GetCustomGameDataObject<CandyStick>().GameDataObject;
         protected override string Title => "Candy Sticks";
         protected override string Desc => "Put one in the syrup before it sets.";
@@ -192,9 +192,9 @@ namespace BreakingPlates.Custom
 
     public class SteviaProvider : ProviderBase
     {
-        public override string UniqueNameID => "Stevia Provider";
+        public override string UniqueNameID => "Stevia Plant";
         protected override Item Provided => (Item)GDOUtils.GetCustomGameDataObject<Stevia>().GameDataObject;
-        protected override string Title => "Stevia";
+        protected override string Title => "Stevia Plant";
         protected override string Desc => "Sugar-free. Lydia insists.";
         // Topfpflanze aus dem Spiel als Quelle, aber eigene Farben + Schild, damit sie nicht wie die Deko-Pflanze aussieht.
         protected override int BaseApplianceID => ApplianceReferences.Plant;

@@ -14,7 +14,7 @@ namespace BreakingPlates.Custom
     public class BaconDish : CandyCardBase
     {
         private static Item ILib<T>() where T : CustomGameDataObject => (Item)GDOUtils.GetCustomGameDataObject<T>().GameDataObject;
-        public override string UniqueNameID => "Birthday Bacon Side";
+        public override string UniqueNameID => "Birthday Bacon Card";
         public override DishType Type => DishType.Side;
         public override int Difficulty => 2;
         public override HashSet<Item> MinimumIngredients => new HashSet<Item> { ILib<IngredientLib.Ingredient.Items.Pork>() };
@@ -25,7 +25,7 @@ namespace BreakingPlates.Custom
             PrefabUtil.CloneCustomItem(GDOUtils.GetCustomGameDataObject<IngredientLib.Ingredient.Items.Bacon>(), t, "Bacon", Vector3.zero, 1.4f));
         protected override string CardName => "Birthday Bacon";
         protected override string CardDescription => "Adds Bacon as a side";
-        protected override string Quote => "Fifty-two.";
+        protected override string Quote => "Happy birthday.";
         protected override string RecipeText => "Take pork from the fridge, chop it and fry it into bacon. Serve it with the order.";
     }
 }

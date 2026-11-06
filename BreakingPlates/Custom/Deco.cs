@@ -124,7 +124,7 @@ namespace BreakingPlates.Custom
     // Periodensystem-Poster (Br und Ba grün hervorgehoben).
     public class PeriodicPoster : DecoBase
     {
-        public override string UniqueNameID => "Periodic Table Poster";
+        public override string UniqueNameID => "Periodic Table";
         protected override DecorationType Theme => DecorationType.Formal;
         protected override int[] VanillaIDs => new[] { ApplianceReferences.FancyPainting, ApplianceReferences.Painting, ApplianceReferences.FriendsPoster, ApplianceReferences.BunnyPoster, ApplianceReferences.AffordableNeonSign1 };
         protected override string Title => "Periodic Table";
@@ -210,7 +210,7 @@ namespace BreakingPlates.Custom
     // Los-Pollitos-Schild (Wand).
     public class LosPollitosSign : DecoBase
     {
-        public override string UniqueNameID => "Los Pollitos Sign";
+        public override string UniqueNameID => "Los Pollitos Hermanos";
         protected override DecorationType Theme => DecorationType.Affordable;
         protected override int[] VanillaIDs => new[] { ApplianceReferences.FancyPainting, ApplianceReferences.Painting, ApplianceReferences.FriendsPoster, ApplianceReferences.BunnyPoster, ApplianceReferences.AffordableNeonSign1 };
         protected override string Title => "Los Pollitos Hermanos";

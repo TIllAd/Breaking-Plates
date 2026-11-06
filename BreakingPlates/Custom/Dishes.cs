@@ -44,7 +44,7 @@ namespace BreakingPlates.Custom
 
     public class BlueRockCandyDish : CustomDish
     {
-        public override string UniqueNameID => "Blue Rock Candy Dish";
+        public override string UniqueNameID => "Blue Rock Candy Card";
         public override DishType Type => DishType.Base;
         public override CardType CardType => CardType.Default;
         public override UnlockGroup UnlockGroup => UnlockGroup.Dish;
@@ -107,7 +107,7 @@ namespace BreakingPlates.Custom
     // 99,1 %: Umkristallisieren (Splitter + Wasser, kochen, abkühlen) -> reine Kristalle.
     public class PureCandyDish : CandyCardBase
     {
-        public override string UniqueNameID => "Pure Blue Rock Candy Dish";
+        public override string UniqueNameID => "Purity Card";
         public override DishType Type => DishType.Main;
         public override bool IsMainThatDoesNotNeedPlates => true;
         public override int Difficulty => 2;
@@ -127,7 +127,7 @@ namespace BreakingPlates.Custom
     // Chili P: Jalapeño schneiden und ins Tütchen -> roter Verschluss.
     public class ChiliPDish : CandyCardBase
     {
-        public override string UniqueNameID => "Chili P Dish";
+        public override string UniqueNameID => "Chili P Card";
         public override DishType Type => DishType.Extra;
         public override int Difficulty => 1;
         public override HashSet<Item> MinimumIngredients => new HashSet<Item> { G.I<IngredientLib.Ingredient.Items.Jalapeno>() };
@@ -157,7 +157,7 @@ namespace BreakingPlates.Custom
     // Sugar-Free: Stevia statt Zucker, grüner Verschluss.
     public class SugarFreeDish : CandyCardBase
     {
-        public override string UniqueNameID => "Sugar-Free Rock Candy Dish";
+        public override string UniqueNameID => "Sugar-Free Card";
         public override DishType Type => DishType.Main;
         public override bool IsMainThatDoesNotNeedPlates => true;
         public override int Difficulty => 2;
@@ -174,7 +174,7 @@ namespace BreakingPlates.Custom
     // Am Stiel: Stiel in den Sirup, bevor er fest wird -> Kristall-Lollis.
     public class LolliDish : CandyCardBase
     {
-        public override string UniqueNameID => "Rock Candy Lolli Dish";
+        public override string UniqueNameID => "On a Stick Card";
         public override DishType Type => DishType.Main;
         public override bool IsMainThatDoesNotNeedPlates => true;
         public override int Difficulty => 2;
@@ -191,7 +191,7 @@ namespace BreakingPlates.Custom
     // Ganze Platte: der volle Kolben für eine ganze Gruppe.
     public class PlatterDish : CandyCardBase
     {
-        public override string UniqueNameID => "Rock Candy Platter Dish";
+        public override string UniqueNameID => "Mass Production Card";
         public override DishType Type => DishType.Main;
         public override int Difficulty => 2;
         public override bool IsMainThatDoesNotNeedPlates => true;
@@ -211,7 +211,7 @@ namespace BreakingPlates.Custom
     // Schraderbräu als Beilage.
     public class SchraderDish : CandyCardBase
     {
-        public override string UniqueNameID => "Schraderbraeu Side";
+        public override string UniqueNameID => "Schraderbraeu Card";
         public override DishType Type => DishType.Side;
         public override int Difficulty => 1;
         public override HashSet<Item> MinimumIngredients => new HashSet<Item> { G.I<Schraderbraeu>() };
@@ -227,7 +227,7 @@ namespace BreakingPlates.Custom
     // Effekt-Karte "Breaking Even": weniger Kunden (~30 %), dafür 25 % weniger Geld am Tagesende.
     public class BreakingEvenCard : CustomUnlockCard
     {
-        public override string UniqueNameID => "Breaking Even";
+        public override string UniqueNameID => "Breaking Even Card";
         public override CardType CardType => CardType.Default;
         public override UnlockGroup UnlockGroup => UnlockGroup.Generic;
         public override bool IsUnlockable => true;

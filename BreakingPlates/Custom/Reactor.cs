@@ -10,7 +10,7 @@ namespace BreakingPlates.Custom
     // Abkühlen im Superlab: eigener Vorgang mit Eiskristall-Symbol, nur für Kolben.
     public class ReactCoolProcess : CustomProcess
     {
-        public override string UniqueNameID => "React Cool";
+        public override string UniqueNameID => "Superlab Cool";
         public override GameDataObject BasicEnablingAppliance => GDOUtils.GetCustomGameDataObject<Superlab>().GameDataObject;
         public override bool CanObfuscateProgress => true;
         public override List<(Locale, ProcessInfo)> InfoList => new List<(Locale, ProcessInfo)>
