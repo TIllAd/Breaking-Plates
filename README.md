@@ -44,7 +44,7 @@ Values are a first pass and still need balancing in real runs.
 ## Appliances
 
 - **Superlab** – an oven turned lab reactor: cooks everything a little faster than the hob and also cools flasks (5 s). Lamp and timer show what it's doing.
-- **Lab Flasks** (only 4 – think of them as a very scientific pot), **Candy Sticks**, **Stevia** plant, **Candy Bags**, **Schraderbräu** tap.
+- **Lab Flasks** - think of them as a very scientific pot, **Candy Sticks**, **Stevia** plant, **Candy Bags**, **Schraderbräu** tap.
 
 ## Decorations
 
