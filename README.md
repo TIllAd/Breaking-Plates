@@ -46,6 +46,10 @@ Values are a first pass and still need balancing in real runs.
 - **Superlab** – an oven turned lab reactor: cooks everything a little faster than the hob and also cools flasks (5 s) and freezes like a freezer. Lamp and timer show what it's doing.
 - **Lab Flasks** (only 4 – think of them as a very scientific pot), **Candy Sticks**, **Stevia** plant, **Candy Bags**, **Schraderbräu** tap.
 
+## Outfit
+
+- **Hazmat Suit** – a yellow full-body suit with a hood, a big dark visor, light blue gloves and a radiation warning sign on the back.
+
 ## Decorations
 
 They show up like the game's own decorations, when you pick the matching style.

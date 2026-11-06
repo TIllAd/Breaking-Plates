@@ -345,7 +345,7 @@ namespace BreakingPlates.Custom
                 BackSign.transform.localPosition = Tuning.V3("hazmat.back.pos", new Vector3(0f, 0.05f, -0.27f));
                 BackSign.transform.localRotation = Quaternion.Euler(Tuning.V3("hazmat.back.rot", new Vector3(0f, 180f, 0f)));
             }
-            if (Tuning.F("hazmat.playercolour", 1f) < 0.5f) return;
+            if (Tuning.F("hazmat.playercolour", 0f) < 0.5f) return;
             var src = Outfit != null ? Outfit.Source : null;
             if (src == null || src.sharedMaterial == null || !src.sharedMaterial.HasProperty(Color0)) return;
             var c = src.sharedMaterial.GetColor(Color0);

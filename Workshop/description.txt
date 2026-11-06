@@ -27,6 +27,9 @@ It's just sugar. Probably.
 [h2]Superlab[/h2]
 An oven turned lab reactor: cooks everything and cools your flasks, with a lamp and a timer.
 
+[h2]Outfit[/h2]
+A yellow hazmat suit with hood, visor and a radiation sign on the back.
+
 [h2]Decorations[/h2]
 11 decorations across all four styles: periodic table, Gale's lab notebook, Marie's purple armchair, a pink teddy bear, lily of the valley, Hank's mineral collection, a money stack, yellow barrels (just decoration, honest), a Los Pollitos Hermanos sign, a Better Call Saul! poster and a fly that won't leave.
 
