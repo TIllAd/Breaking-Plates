@@ -64,9 +64,10 @@ namespace BreakingPlates.Custom
             {
                 var list = (Vanilla.Properties ?? new List<IApplianceProperty>())
                     .Where(p => p != null && !(p is Kitchen.CImmovable) && !(p is Kitchen.CGivesDecoration)).ToList();
+                int v = Points;
                 list.Add(KitchenPropertiesUtils.GetCGivesDecoration(
-                    Theme == DecorationType.Affordable ? 1 : 0, Theme == DecorationType.Charming ? 1 : 0,
-                    Theme == DecorationType.Exclusive ? 1 : 0, Theme == DecorationType.Formal ? 1 : 0, 0));
+                    Theme == DecorationType.Affordable ? v : 0, Theme == DecorationType.Charming ? v : 0,
+                    Theme == DecorationType.Exclusive ? v : 0, Theme == DecorationType.Formal ? v : 0, 0));
                 return list;
             }
         }
@@ -75,7 +76,10 @@ namespace BreakingPlates.Custom
         public override bool IsPurchasable => true;
         public override ShoppingTags ShoppingTags => Vanilla.ShoppingTags;
         public override RarityTier RarityTier => Vanilla.RarityTier;
-        public override PriceTier PriceTier => Vanilla.PriceTier;
+        // Deko-Punkte fürs Thema und Preis: 1 Punkt = 30, 2 = 60, 3 = 100 (Spiel-Stufen DecoCheap/DecoMedium/DecoExpensive).
+        protected virtual int Points => 1;
+        protected virtual PriceTier Price => Points >= 3 ? PriceTier.DecoExpensive : Points == 2 ? PriceTier.DecoMedium : PriceTier.DecoCheap;
+        public override PriceTier PriceTier => Price;
         public override DecorationType ThemeRequired => Theme;
         // Kommt nur über die normalen Deko-Angebote (wie Spiel-Deko), kein fester Shop-Platz.
         public override bool StapleWhenMissing => false;
@@ -164,6 +168,9 @@ namespace BreakingPlates.Custom
         protected override int[] VanillaIDs => new[] { ApplianceReferences.CosyBarrel };
         protected override string Title => "Yellow Barrels";
         protected override string Desc => "Why does a kitchen produce so much chemical waste?";
+        // Till: Fässer 2 Punkte und besser als der Sessel -> gleiche Punkte, aber günstiger.
+        protected override int Points => 2;
+        protected override PriceTier Price => PriceTier.DecoMediumCheap;
 
         protected override void Build(Transform root)
         {

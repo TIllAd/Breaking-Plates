@@ -139,6 +139,7 @@ namespace BreakingPlates.Custom
         protected override int[] VanillaIDs => new[] { ApplianceReferences.CosyBarrel };
         protected override string Title => "Mineral Collection";
         protected override string Desc => "They're minerals, Marie!";
+        protected override int Points => 3;
 
         protected override void Build(Transform root)
         {
@@ -210,6 +211,7 @@ namespace BreakingPlates.Custom
         protected override int[] VanillaIDs => new[] { ApplianceReferences.CosyBarrel };
         protected override string Title => "Money Stack";
         protected override string Desc => "We've got a storage unit for that.";
+        protected override int Points => 2;
 
         protected override void Build(Transform root)
         {
@@ -263,6 +265,7 @@ namespace BreakingPlates.Custom
         protected override int[] VanillaIDs => new[] { ApplianceReferences.CosyBarrel };
         protected override string Title => "Purple Armchair";
         protected override string Desc => "It's not purple. It's amethyst.";
+        protected override int Points => 2;
 
         protected override void Build(Transform root)
         {

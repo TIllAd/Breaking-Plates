@@ -35,6 +35,18 @@ namespace BreakingPlates
             foreach (var a in gameData.Get<Appliance>().Where(a => appl.Any(k => a.name.ToLower().Contains(k))))
                 DumpObject(sb, a);
 
+            sb.AppendLine("\n##### Deko-Werte (alle Geräte mit Deko-Punkten): Name | Werte | Preisstufe | Preis | Thema");
+            foreach (var a in gameData.Get<Appliance>())
+            {
+                if (a?.Properties == null) continue;
+                foreach (var prop in a.Properties)
+                    if (prop is Kitchen.CGivesDecoration gd)
+                    {
+                        var dv = gd.DecorationValues;
+                        sb.AppendLine($"   DECO {a.name} | Aff {dv.Affordable} Cha {dv.Charming} Exc {dv.Exclusive} For {dv.Formal} | {a.PriceTier} | {a.PurchaseCost} | {a.ThemeRequired}");
+                    }
+            }
+
             sb.AppendLine("\n##### Kosmetik (Hüte/Outfits)");
             string[] cos = { "cowboy", "glasses", "bandana", "beanie", "tallchef", "baseball", "visor", "chef" };
             foreach (var c in gameData.Get<PlayerCosmetic>().Where(c => cos.Any(k => c.name.ToLower().Contains(k))))
