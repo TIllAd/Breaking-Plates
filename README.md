@@ -7,7 +7,7 @@ cook **Blue Rock Candy** in lab flasks, smash it up and serve it in little bags.
 
 ![Everything the mod adds – appliances, decorations and the whole cooking chain](docs/overview.png)
 
-**At a glance:** 1 new dish with 4 variants (99.1% pure, Chili P, sugar-free, on a stick), whole-flask orders for groups, 2 sides, an effect card, the **Superlab** (an oven turned lab reactor) and 11 decorations across all four styles. Everything is built from simple shapes in code and checked with an automated self-test.
+**At a glance:** 1 new dish with 4 variants (99.1% pure, Chili P, sugar-free, on a stick), whole-flask orders for groups, 2 sides, an effect card, the **Superlab** (an oven turned lab reactor) 11 decorations across all four styles, a hazmat suit and a gas mask. Everything is built from simple shapes in code and checked with an automated self-test.
 
 ---
 
@@ -46,9 +46,10 @@ Values are a first pass and still need balancing in real runs.
 - **Superlab** – an oven turned lab reactor: cooks everything a little faster than the hob and also cools flasks (5 s) and freezes like a freezer. Lamp and timer show what it's doing.
 - **Lab Flasks** (only 4 – think of them as a very scientific pot), **Candy Sticks**, **Stevia** plant, **Candy Bags**, **Schraderbräu** tap.
 
-## Outfit
+## Outfits
 
-- **Hazmat Suit** – a yellow full-body suit with a hood, a big dark visor, light blue gloves and a radiation warning sign on the back.
+- **Hazmat Suit** (outfit) – a yellow full-body suit with a hood, a big dark visor and light blue gloves.
+- **Gas Mask** (hat) – full-face mask with big round lenses, a red filter and a hose.
 
 ## Decorations
 
